@@ -1,0 +1,22 @@
+{
+  "name": "JotilLabs",
+  "short_name": "JotilLabs",
+  "description": "AI-first customer platform. Automate. Empower. Scale.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFBFD",
+  "theme_color": "#3859a8",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "180x180",
+      "purpose": "any maskable"
+    }
+  ]
+}

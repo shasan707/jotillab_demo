@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="JotilLabs logo">
+  <!--
+    JotilLabs Logo — Round 1 recreation
+    Reference: brand doc pages 7-8 (rasterized JPEG in PDF)
+    Palette tokens used:
+      brand-primary  #3859a8
+      brand-navy     #0f1129
+      brand-white    #FFFFFF
+      brand-accent   #22D3EE  (cyan — dots)
+
+    Structure:
+      1. Pointy-top hexagon (circumradius 100, center 120,120)
+      2. Navy bottom band (3D depth illusion — sides viewed from above)
+      3. Isometric 3D "L" inside hex (three rhombi forming a cube-corner L)
+      4. Three progressive ascending dots upper-right
+  -->
+
+  <!-- ========== 1. Hex body (primary blue fill) ========== -->
+  <polygon
+    points="120,20 206.6,70 206.6,170 120,220 33.4,170 33.4,70"
+    fill="#3859a8"
+  />
+
+  <!-- ========== 2. Navy 3D-depth band (bottom two edges + left/right sloped walls seen "under" the hex) ========== -->
+  <!--
+    Creates the illusion that the hex is a 3D prism seen slightly from above.
+    The darker navy fills the "lower" visible faces.
+  -->
+  <polygon
+    points="33.4,170 120,220 206.6,170 120,180"
+    fill="#0f1129"
+  />
+
+  <!-- ========== 3. Isometric 3D "L" ========== -->
+  <!--
+    Isometric L constructed inside the hex:
+      - Horizontal arm (bottom) with top face + front face visible
+      - Vertical arm (left) with top face + right face visible
+      - Meeting at a corner
+    Values chosen for visual balance inside the pointy-top hex.
+  -->
+
+  <!-- Horizontal arm — top face (lightest) -->
+  <polygon
+    points="68,140 124,172 180,140 124,108"
+    fill="#FFFFFF"
+  />
+  <!-- Horizontal arm — front (lower) face -->
+  <polygon
+    points="68,140 124,172 124,182 68,150"
+    fill="#d0d8ec"
+  />
+  <!-- Horizontal arm — right (outside) face -->
+  <polygon
+    points="124,172 180,140 180,150 124,182"
+    fill="#98a6cc"
+  />
+
+  <!-- Vertical arm — top face (lightest) -->
+  <polygon
+    points="68,90 96,106 96,150 68,134"
+    fill="#FFFFFF"
+  />
+  <!-- Vertical arm — right face (front) -->
+  <polygon
+    points="96,106 96,150 124,166 124,122"
+    fill="#d0d8ec"
+  />
+  <!-- Vertical arm — top sliver at very top (cap) -->
+  <polygon
+    points="68,90 96,74 124,90 96,106"
+    fill="#e8edf7"
+  />
+
+  <!-- ========== 4. Three progressive ascending dots (upper right) ========== -->
+  <!--
+    Positioned breaking out of the hex's upper-right edge.
+    Sizes grow as they ascend, reinforcing the "growth/scale" metaphor.
+  -->
+  <circle cx="175" cy="78"  r="5"   fill="#22D3EE" />
+  <circle cx="196" cy="60"  r="7"   fill="#22D3EE" />
+  <circle cx="220" cy="40"  r="9.5" fill="#22D3EE" />
+</svg>

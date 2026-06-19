@@ -1,0 +1,459 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import * as LucideIcons from 'lucide-react'
+import { Check, ArrowRight } from 'lucide-react'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { Badge } from '@/components/ui/Badge'
+import { AtmosphericDivider } from '@/components/design'
+import { Button } from '@/components/ui/Button'
+import { IconBox } from '@/components/ui/IconBox'
+import { PricingCard } from '@/components/pricing/PricingCard'
+import {
+  ReceptionistLogo,
+  MessengerLogo,
+  OutreachLogo,
+  SpaceLogo,
+  FlowLogo,
+  AvatarLogo,
+} from '@/components/ui/ProductLogos'
+import { DemoVisualization } from '@/components/product/DemoVisualization'
+import { FAQAccordion } from '@/components/product/FAQAccordion'
+import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
+
+const LOGO_MAP = {
+  receptionist: ReceptionistLogo,
+  messenger: MessengerLogo,
+  outreach: OutreachLogo,
+  space: SpaceLogo,
+  flow: FlowLogo,
+  avatar: AvatarLogo,
+}
+
+/* ─── Static generation ─── */
+
+export async function generateStaticParams() {
+  const { productSlugs } = await import('@/data/products')
+  return productSlugs.map((slug) => ({ slug }))
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params
+  const { getProductBySlug } = await import('@/data/products')
+  const product = getProductBySlug(slug)
+  return {
+    title: product?.name ?? 'Product',
+    description: product?.tagline ?? '',
+  }
+}
+
+/* ─── Helpers ─── */
+
+function getLucideIcon(name) {
+  // PascalCase lookup
+  const Icon = LucideIcons[name]
+  if (Icon) return Icon
+  // Try common fallback
+  return LucideIcons['Sparkles']
+}
+
+/* ─── Page ─── */
+
+export default async function ProductPage({ params }) {
+  const { slug } = await params
+  const { getProductBySlug } = await import('@/data/products')
+  const product = getProductBySlug(slug)
+
+  if (!product) notFound()
+
+  const Logo = LOGO_MAP[slug]
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: product.faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {/* ─── 1. Hero ─── */}
+      {slug === 'receptionist' ? (
+        /* Voice-agent hero: the live voice panel is the centerpiece */
+        <section className="relative pt-28 pb-24 px-4 overflow-hidden">
+          {/* Background orbs */}
+          <div
+            className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
+            aria-hidden="true"
+            style={{ background: 'radial-gradient(ellipse, #3859a815 0%, transparent 65%)', filter: 'blur(80px)' }}
+          />
+          {/* Glowing arc beneath the panel (reference-style horizon glow) */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 bottom-[2%] w-[130%] h-[46%] pointer-events-none"
+            aria-hidden="true"
+            style={{ background: 'radial-gradient(58% 100% at 50% 100%, rgba(59,130,246,0.22), transparent 70%)', filter: 'blur(46px)' }}
+          />
+
+          <div className="relative max-w-3xl mx-auto text-center">
+            <AnimatedSection>
+              <Badge variant="blue" className="mb-5">{product.badge}</Badge>
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
+              >
+                <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
+              </h1>
+              <p
+                className="text-lg sm:text-xl font-semibold text-text-secondary mb-4"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                {product.tagline}
+              </p>
+              <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-xl mx-auto">
+                {product.heroDescription}
+              </p>
+              <div className="flex items-center justify-center gap-3 flex-wrap mb-14">
+                <Button href="/contact" variant="primary" size="lg">
+                  Book a Demo
+                </Button>
+                <Button
+                  href={`/products/${slug}/pricing`}
+                  variant="outline"
+                  size="lg"
+                >
+                  View Pricing
+                </Button>
+              </div>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.15}>
+              <VoiceAgentPanel />
+            </AnimatedSection>
+          </div>
+        </section>
+      ) : (
+        <section className="relative pt-28 pb-20 px-4 overflow-hidden">
+          {/* Background orbs */}
+          <div
+            className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
+            aria-hidden="true"
+            style={{ background: 'radial-gradient(ellipse, #3859a815 0%, transparent 65%)', filter: 'blur(80px)' }}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full opacity-25 pointer-events-none"
+            aria-hidden="true"
+            style={{ background: 'radial-gradient(ellipse, #3B82F610 0%, transparent 70%)', filter: 'blur(60px)' }}
+          />
+
+          <div className="relative max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              {/* Left column */}
+              <AnimatedSection>
+                <Badge variant="blue" className="mb-5">{product.badge}</Badge>
+                <h1
+                  className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                  style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
+                >
+                  <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
+                </h1>
+                <p
+                  className="text-xl font-semibold text-text-secondary mb-4"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  {product.tagline}
+                </p>
+                <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-lg">
+                  {product.heroDescription}
+                </p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <Button href="/contact" variant="primary" size="lg">
+                    Book a Demo
+                  </Button>
+                  <Button
+                    href={`/products/${slug}/pricing`}
+                    variant="outline"
+                    size="lg"
+                  >
+                    View Pricing
+                  </Button>
+                </div>
+              </AnimatedSection>
+
+              {/* Right column - Product visual / placeholder */}
+              <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
+                <div
+                  className="relative w-full max-w-md aspect-[4/3] rounded-3xl flex flex-col items-center justify-center gap-4 overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.30)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(56, 89, 168,0.1)',
+                    boxShadow: '0 16px 48px rgba(56, 89, 168,0.08), 0 4px 16px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  {Logo && <Logo size={80} />}
+                  <p className="text-sm font-medium text-text-secondary">Product demo coming soon</p>
+                  <div
+                    className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm border border-black/5 shadow-sm rounded-xl px-3 py-1.5 flex items-center gap-2"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span className="text-[11px] font-medium text-text-secondary">Live preview</span>
+                  </div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <AtmosphericDivider from="var(--color-primary-50)" to="var(--color-bg)" height={50} />
+
+      {/* ─── 2. Services breakdown ─── */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <AnimatedSection className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What you get</p>
+            <h2
+              className="text-3xl font-bold text-text tracking-tight"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              What&apos;s included
+            </h2>
+          </AnimatedSection>
+
+          <div
+            className={`grid gap-6 ${
+              product.services.length === 2
+                ? 'grid-cols-1 md:grid-cols-2'
+                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+            }`}
+          >
+            {product.services.map((svc, i) => (
+              <AnimatedSection key={i} delay={i * 0.08}>
+                <div className="card-premium h-full flex flex-col">
+                  <h3
+                    className="text-lg font-bold text-text mb-3"
+                    style={{ fontFamily: 'var(--font-display)' }}
+                  >
+                    {svc.name}
+                  </h3>
+                  <p className="text-sm text-text-secondary leading-relaxed mb-5 flex-1">
+                    {svc.description}
+                  </p>
+                  <ul className="space-y-2.5">
+                    {svc.features.map((f, fi) => (
+                      <li key={fi} className="flex items-start gap-2.5 text-sm text-text-secondary">
+                        <span className="mt-0.5 h-4 w-4 rounded-full bg-[#EEF3FE] flex items-center justify-center shrink-0">
+                          <Check size={9} className="text-primary" strokeWidth={3} />
+                        </span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
+
+      {/* ─── 3. Demo visualization (client component) ─── */}
+      <DemoVisualization slug={slug} />
+
+      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
+
+      {/* ─── 4. Features grid ─── */}
+      <section className="py-20 px-4 surface-sunken">
+        <div className="max-w-6xl mx-auto">
+          <AnimatedSection className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Why it works</p>
+            <h2
+              className="text-3xl font-bold text-text tracking-tight"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Built for results
+            </h2>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {product.features.map((feat, i) => {
+              const Icon = getLucideIcon(feat.icon)
+              return (
+                <AnimatedSection key={i} delay={i * 0.06}>
+                  <div className="card h-full">
+                    <IconBox size="md" glow className="mb-4">
+                      <Icon strokeWidth={1.5} />
+                    </IconBox>
+                    <h3
+                      className="text-base font-semibold text-text mb-2"
+                      style={{ fontFamily: 'var(--font-display)' }}
+                    >
+                      {feat.title}
+                    </h3>
+                    <p className="text-sm text-text-secondary leading-relaxed">{feat.description}</p>
+                  </div>
+                </AnimatedSection>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
+
+      {/* ─── 5. Pricing teaser — single highlighted tier + CTA to full pricing page ─── */}
+      <section id="pricing" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <AnimatedSection className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Pricing</p>
+            <h2
+              className="text-3xl font-bold text-text tracking-tight"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Simple, transparent pricing
+            </h2>
+            <p className="text-text-secondary mt-3 max-w-md mx-auto">
+              Start free, scale when you need to. Every plan includes onboarding support.
+            </p>
+          </AnimatedSection>
+
+          {product.pricing.billingModel === 'contact' ? (
+            <AnimatedSection className="max-w-2xl mx-auto text-center">
+              <p className="text-text-secondary mb-6 leading-relaxed">
+                {product.pricing.subhead}
+              </p>
+              <Link
+                href={product.pricing.primaryCTA.href}
+                className="inline-flex items-center gap-2 btn-gradient no-underline text-white font-semibold rounded-lg px-6 py-3 hover:-translate-y-0.5 transition-transform"
+              >
+                {product.pricing.primaryCTA.label}
+                <ArrowRight size={16} strokeWidth={2} />
+              </Link>
+            </AnimatedSection>
+          ) : (
+            <>
+              {(() => {
+                // Build the same 4-tier grid as the dedicated pricing page —
+                // Starter / Pro / Business / Enterprise (Enterprise synthesized
+                // inline from pricing.enterprise data). Keeps the product page
+                // and the dedicated /pricing page visually consistent, which
+                // is the industry pattern (HubSpot / Dialpad / Zendesk / etc.).
+                const coreTiers = product.pricing.tiers
+                const ent = product.pricing.enterprise
+                const enterpriseTier = ent
+                  ? {
+                      slug: 'enterprise',
+                      name: 'Enterprise',
+                      price: 'Custom',
+                      period: '',
+                      description: ent.description,
+                      priceFrom: ent.priceFrom,
+                      features: ent.features ?? [],
+                    }
+                  : null
+                const gridTiers = enterpriseTier
+                  ? [...coreTiers, enterpriseTier]
+                  : coreTiers
+                const gridColsClass =
+                  gridTiers.length === 4
+                    ? 'lg:grid-cols-4'
+                    : 'lg:grid-cols-3'
+                return (
+                  <div
+                    className={`grid grid-cols-1 md:grid-cols-2 ${gridColsClass} auto-rows-fr gap-6 items-stretch`}
+                  >
+                    {gridTiers.map((tier, i) => (
+                      <AnimatedSection key={tier.slug ?? i} delay={i * 0.06}>
+                        <PricingCard
+                          tier={tier}
+                          productSlug={slug}
+                          unitLabel={product.pricing.unitLabel}
+                        />
+                      </AnimatedSection>
+                    ))}
+                  </div>
+                )
+              })()}
+
+              <AnimatedSection delay={0.3}>
+                <div className="text-center mt-10">
+                  <Link
+                    href={`/products/${slug}/pricing`}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary no-underline hover:gap-3 transition-all"
+                  >
+                    See full pricing — all tiers and compare plans
+                    <ArrowRight size={16} strokeWidth={2} />
+                  </Link>
+                </div>
+              </AnimatedSection>
+            </>
+          )}
+        </div>
+      </section>
+
+      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
+
+      {/* ─── 6. FAQ (client accordion) ─── */}
+      <FAQAccordion faq={product.faq} />
+
+      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
+
+      {/* ─── 7. Bottom CTA ─── */}
+      <section className="py-20 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <AnimatedSection>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Get Started</p>
+            <h2
+              className="text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              Ready to try{' '}
+              <span className="text-primary">{product.name}</span>?
+            </h2>
+            <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
+              Join businesses already using {product.name} to handle their customer communications automatically.
+            </p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <Button href="/contact" variant="primary" size="lg">
+                Book a Demo
+              </Button>
+              <Button href="/products" variant="outline" size="lg">
+                Explore the Platform
+              </Button>
+            </div>
+
+            {/* Integration logos row */}
+            {product.integrations?.length > 0 && (
+              <div className="mt-10 pt-8 border-t border-black/5">
+                <p className="text-xs font-medium text-text-secondary mb-3 uppercase tracking-wider">
+                  Integrates with
+                </p>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {product.integrations.map((name) => (
+                    <span
+                      key={name}
+                      className="text-xs font-medium text-text-secondary bg-white border border-black/5 rounded-full px-3 py-1"
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </AnimatedSection>
+        </div>
+      </section>
+    </>
+  )
+}

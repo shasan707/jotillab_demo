@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.next
+.vercel
+.env
+.env.local
+.env.production
+
+# Playwright
+test-results
+playwright-report
+.playwright-mcp
+# Ad-hoc Playwright screenshots dropped at repo root during dev/audits
+/d-*.png
+/d-*.jpg
+/d-*.jpeg
+/m-*.png
+/m-*.jpg
+/m-*.jpeg
+/t-*.png
+/t-*.jpg
+/t-*.jpeg
+/mobile-*.png
+/mobile-*.jpg
+/mobile-*.jpeg
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

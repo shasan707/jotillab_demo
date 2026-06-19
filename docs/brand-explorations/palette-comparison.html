@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JotilLabs — Palette Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat+Alternates:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --font-display: 'Montserrat Alternates', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:var(--font-body);color:#0f1129;background:#f5f6fa}
+  .page{max-width:1700px;margin:0 auto;padding:48px 24px 96px}
+  .header{text-align:center;margin-bottom:40px}
+  .header h1{font-family:var(--font-display);font-weight:700;font-size:32px;margin:0 0 8px;letter-spacing:-0.02em}
+  .header p{margin:0;color:#4a4d6a;max-width:720px;margin-left:auto;margin-right:auto;font-size:15px;line-height:1.55}
+  .grid{display:grid;grid-template-columns:1fr;gap:24px}
+  @media (min-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:1500px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+  .option{border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,17,41,.04),0 8px 24px rgba(15,17,41,.06);display:flex;flex-direction:column}
+  .opt-head{padding:20px 24px;border-bottom:1px solid rgba(15,17,41,.06);background:#fff}
+  .opt-tag{display:inline-block;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7098;margin-bottom:6px}
+  .opt-title{font-family:var(--font-display);font-weight:700;font-size:20px;margin:0 0 4px;letter-spacing:-0.01em}
+  .opt-sub{margin:0;font-size:13px;color:#6b7098;line-height:1.5}
+
+  .swatches{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px;background:#fafbff;border-bottom:1px solid rgba(15,17,41,.05)}
+  .sw{display:flex;align-items:center;gap:6px;font-size:11px;color:#4a4d6a;font-family:'JetBrains Mono',ui-monospace,monospace}
+  .sw .dot{width:16px;height:16px;border-radius:5px;border:1px solid rgba(0,0,0,.08)}
+
+  .demo{padding:0}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(15,17,41,.06)}
+  .logo{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-0.01em}
+  .logo .mark{width:22px;height:22px;border-radius:5px;display:inline-block}
+  .links{display:flex;gap:12px;font-size:11.5px;color:#4a4d6a;font-weight:500}
+  .cta-nav{font-size:12px;padding:6px 12px;border-radius:8px;font-weight:600;border:0;cursor:pointer;font-family:var(--font-body)}
+
+  .hero{padding:26px 22px;position:relative;overflow:hidden}
+  .eyebrow{font-family:var(--font-display);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;position:relative;z-index:1}
+  .h1{font-family:var(--font-display);font-weight:700;font-size:23px;line-height:1.15;letter-spacing:-0.02em;margin:0 0 10px;position:relative;z-index:1}
+  .lede{font-size:12.5px;line-height:1.55;margin:0 0 16px;color:#4a4d6a;position:relative;z-index:1}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+  .btn{font-weight:600;font-size:12.5px;padding:9px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;cursor:pointer;font-family:var(--font-body)}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 22px 22px}
+  .card{border-radius:14px;padding:14px;border:1px solid;background:#fff;position:relative;overflow:hidden}
+  .card .lbl{font-family:var(--font-display);font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  .card .num{font-family:var(--font-display);font-weight:700;font-size:21px;margin:0}
+  .card .sub{font-size:10.5px;color:#6b7098;margin-top:2px}
+
+  .footer-demo{padding:14px 22px;font-size:10.5px;color:#6b7098;border-top:1px solid rgba(15,17,41,.06);display:flex;justify-content:space-between;align-items:center}
+
+  /* shared light hero base */
+  .hero-light{background:linear-gradient(180deg,#ffffff 0%,#F4F6FB 100%)}
+  .hero-whitish{background:#fafbfd}
+
+  /* ============== A — MINIMAL (light, no accent) ============== */
+  .a .hero{background:#ffffff}
+  .a .eyebrow{color:#3859a8}
+  .a .h1{color:#0f1129}
+  .a .lede{color:#3a3d5f}
+  .a .btn-primary{background:#0f1129;color:#fff}
+  .a .btn-secondary{background:transparent;color:#0f1129;border-color:rgba(15,17,41,.2)}
+  .a .logo .mark{background:#3859a8}.a .logo{color:#0f1129}
+  .a .cta-nav{background:#0f1129;color:#fff}
+  .a .cards{background:#ffffff}
+  .a .card{border-color:rgba(15,17,41,.08)}
+  .a .card .lbl{color:#6b7098}
+  .a .card .num{color:#0f1129}
+
+  /* ============== B — BRAND + ELECTRIC CYAN (light) ============== */
+  .b .hero{background:linear-gradient(180deg,#ffffff 0%,#EEF7FD 100%);position:relative}
+  .b .hero::after{content:"";position:absolute;top:-60%;right:-25%;width:360px;height:360px;background:radial-gradient(closest-side,rgba(34,211,238,.28),transparent 70%);pointer-events:none}
+  .b .eyebrow{color:#0e7c95}
+  .b .h1{color:#0f1129}
+  .b .h1 .hl{background:linear-gradient(90deg,#3859a8,#22D3EE);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .b .lede{color:#4a4d6a}
+  .b .btn-primary{background:linear-gradient(90deg,#3859a8,#22D3EE);color:#fff;font-weight:700}
+  .b .btn-secondary{background:#fff;color:#0f1129;border-color:rgba(15,17,41,.15)}
+  .b .logo .mark{background:linear-gradient(135deg,#3859a8,#22D3EE)}.b .logo{color:#0f1129}
+  .b .cta-nav{background:linear-gradient(90deg,#3859a8,#22D3EE);color:#fff}
+  .b .cards{background:#fafbff}
+  .b .card{border-color:rgba(15,17,41,.08)}
+  .b .card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(#22D3EE,#3859a8)}
+  .b .card .lbl{color:#0e7c95}
+  .b .card .num{color:#0f1129}
+
+  /* ============== D — BRAND + CURRENT BRIGHT BLUE (light) ============== */
+  .d .hero{background:linear-gradient(180deg,#ffffff 0%,#F0F4FF 100%);position:relative}
+  .d .hero::after{content:"";position:absolute;top:-60%;right:-25%;width:360px;height:360px;background:radial-gradient(closest-side,rgba(59,123,242,.22),transparent 70%);pointer-events:none}
+  .d .eyebrow{color:#3B7BF2}
+  .d .h1{color:#0f1129}
+  .d .h1 .hl{background:linear-gradient(90deg,#3859a8,#3B7BF2);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .d .lede{color:#4a4d6a}
+  .d .btn-primary{background:linear-gradient(90deg,#3859a8,#3B7BF2);color:#fff;font-weight:700}
+  .d .btn-secondary{background:#fff;color:#0f1129;border-color:rgba(15,17,41,.15)}
+  .d .logo .mark{background:linear-gradient(135deg,#3859a8,#3B7BF2)}.d .logo{color:#0f1129}
+  .d .cta-nav{background:linear-gradient(90deg,#3859a8,#3B7BF2);color:#fff}
+  .d .cards{background:#fafbff}
+  .d .card{border-color:rgba(15,17,41,.08)}
+  .d .card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(#3B7BF2,#3859a8)}
+  .d .card .lbl{color:#3B7BF2}
+  .d .card .num{color:#0f1129}
+
+  /* ============== C — CURRENT PALETTE, SHIFTED BLUES ============== */
+  .c .hero{background:linear-gradient(180deg,#fafbfd 0%,#F0F4FF 100%)}
+  .c .eyebrow{color:#3859a8}
+  .c .h1{color:#111}
+  .c .h1 .hl{background:linear-gradient(90deg,#3859a8,#6366F1,#0EA5E9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .c .lede{color:#6B7280}
+  .c .btn-primary{background:linear-gradient(90deg,#3859a8,#6366F1);color:#fff}
+  .c .btn-secondary{background:#fff;color:#3859a8;border-color:rgba(56,89,168,.25)}
+  .c .logo .mark{background:#3859a8}.c .logo{color:#111}
+  .c .cta-nav{background:#3859a8;color:#fff}
+  .c .cards{background:#fafbfd}
+  .c .card{border-color:rgba(15,17,41,.05);box-shadow:0 1px 2px rgba(15,17,41,.03)}
+  .c .card .lbl{color:#6366F1}
+  .c .card .num{color:#111}
+
+  .notes{padding:16px 22px 20px;border-top:1px solid rgba(15,17,41,.06);background:#fafbff;font-size:12px;line-height:1.55;color:#4a4d6a}
+  .notes strong{color:#0f1129;font-weight:700;font-family:var(--font-display)}
+  .notes ul{margin:4px 0 0;padding-left:16px}
+  .notes li{margin-bottom:2px}
+  .pros li::marker{color:#16a34a}
+  .cons li::marker{color:#dc2626}
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>Palette Comparison — JotilLabs Rebrand</h1>
+      <p>All four options on light/whitish backgrounds (matching the actual site). Same mock UI per column — nav, hero, CTAs, stat cards. Montserrat Alternates for display, Inter for body.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- A -->
+      <section class="option a">
+        <div class="opt-head">
+          <span class="opt-tag">Option A</span>
+          <h2 class="opt-title">Faithful minimalism</h2>
+          <p class="opt-sub">Only the 4 brand swatches. No accent. Navy for CTA.</p>
+        </div>
+        <div class="swatches">
+          <div class="sw"><span class="dot" style="background:#3859a8"></span>#3859a8</div>
+          <div class="sw"><span class="dot" style="background:#0f1129"></span>#0f1129</div>
+          <div class="sw"><span class="dot" style="background:#000"></span>#000000</div>
+          <div class="sw"><span class="dot" style="background:#fff"></span>#ffffff</div>
+        </div>
+        <div class="demo">
+          <div class="nav">
+            <span class="logo"><span class="mark"></span>JotilLabs</span>
+            <span class="links"><span>Solutions</span><span>About</span></span>
+            <button class="cta-nav">Book a demo</button>
+          </div>
+          <div class="hero">
+            <div class="eyebrow">AI-first customer platform</div>
+            <h3 class="h1">Make every call, message, and lead land where it should.</h3>
+            <p class="lede">Smart solutions. Strong systems. Better business.</p>
+            <div class="btns">
+              <button class="btn btn-primary">Get started</button>
+              <button class="btn btn-secondary">See how it works</button>
+            </div>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="lbl">Calls answered</div><div class="num">24 / 7</div><div class="sub">Never miss a customer</div></div>
+            <div class="card"><div class="lbl">Response time</div><div class="num">&lt; 2s</div><div class="sub">Voice + chat + SMS</div></div>
+          </div>
+          <div class="footer-demo"><span>© JotilLabs 2026</span><span>Lehi, Utah</span></div>
+        </div>
+        <div class="notes">
+          <strong>Feel:</strong> Editorial, corporate, law-firm calm.
+          <ul class="pros"><li>Maximum "mature/reliable"</li><li>Cheap to maintain, 4 tokens</li></ul>
+          <ul class="cons"><li>CTAs/hover states feel flat</li><li>Hero has no highlight</li></ul>
+        </div>
+      </section>
+
+      <!-- B -->
+      <section class="option b">
+        <div class="opt-head">
+          <span class="opt-tag">Option B</span>
+          <h2 class="opt-title">Brand + Electric Cyan</h2>
+          <p class="opt-sub">Cyan <code>#22D3EE</code> accent. Matches brand doc's glow treatment.</p>
+        </div>
+        <div class="swatches">
+          <div class="sw"><span class="dot" style="background:#3859a8"></span>#3859a8</div>
+          <div class="sw"><span class="dot" style="background:#0f1129"></span>#0f1129</div>
+          <div class="sw"><span class="dot" style="background:#22D3EE"></span>#22D3EE</div>
+          <div class="sw"><span class="dot" style="background:#fff"></span>#ffffff</div>
+        </div>
+        <div class="demo">
+          <div class="nav">
+            <span class="logo"><span class="mark"></span>JotilLabs</span>
+            <span class="links"><span>Solutions</span><span>About</span></span>
+            <button class="cta-nav">Book a demo</button>
+          </div>
+          <div class="hero">
+            <div class="eyebrow">AI-first customer platform</div>
+            <h3 class="h1">Make every call, message, and lead <span class="hl">land where it should.</span></h3>
+            <p class="lede">Smart solutions. Strong systems. Better business.</p>
+            <div class="btns">
+              <button class="btn btn-primary">Get started</button>
+              <button class="btn btn-secondary">See how it works</button>
+            </div>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="lbl">Calls answered</div><div class="num">24 / 7</div><div class="sub">Never miss a customer</div></div>
+            <div class="card"><div class="lbl">Response time</div><div class="num">&lt; 2s</div><div class="sub">Voice + chat + SMS</div></div>
+          </div>
+          <div class="footer-demo"><span>© JotilLabs 2026</span><span>Lehi, Utah</span></div>
+        </div>
+        <div class="notes">
+          <strong>Feel:</strong> Fresh, "AI-forward," voice/signal vibe.
+          <ul class="pros"><li>Distinct from current site</li><li>Cyan reads as AI/voice</li></ul>
+          <ul class="cons"><li>Cyan isn't in your current system</li><li>Needs discipline to stay accent-only</li></ul>
+        </div>
+      </section>
+
+      <!-- D -->
+      <section class="option d">
+        <div class="opt-head">
+          <span class="opt-tag">Option D — recommended</span>
+          <h2 class="opt-title">Brand + current bright blue</h2>
+          <p class="opt-sub">Keep <code>#3B7BF2</code> (current primary) as the light accent on top of new navy brand.</p>
+        </div>
+        <div class="swatches">
+          <div class="sw"><span class="dot" style="background:#3859a8"></span>#3859a8</div>
+          <div class="sw"><span class="dot" style="background:#0f1129"></span>#0f1129</div>
+          <div class="sw"><span class="dot" style="background:#3B7BF2"></span>#3B7BF2</div>
+          <div class="sw"><span class="dot" style="background:#fff"></span>#ffffff</div>
+        </div>
+        <div class="demo">
+          <div class="nav">
+            <span class="logo"><span class="mark"></span>JotilLabs</span>
+            <span class="links"><span>Solutions</span><span>About</span></span>
+            <button class="cta-nav">Book a demo</button>
+          </div>
+          <div class="hero">
+            <div class="eyebrow">AI-first customer platform</div>
+            <h3 class="h1">Make every call, message, and lead <span class="hl">land where it should.</span></h3>
+            <p class="lede">Smart solutions. Strong systems. Better business.</p>
+            <div class="btns">
+              <button class="btn btn-primary">Get started</button>
+              <button class="btn btn-secondary">See how it works</button>
+            </div>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="lbl">Calls answered</div><div class="num">24 / 7</div><div class="sub">Never miss a customer</div></div>
+            <div class="card"><div class="lbl">Response time</div><div class="num">&lt; 2s</div><div class="sub">Voice + chat + SMS</div></div>
+          </div>
+          <div class="footer-demo"><span>© JotilLabs 2026</span><span>Lehi, Utah</span></div>
+        </div>
+        <div class="notes">
+          <strong>Feel:</strong> Continuity — current site's energy, new brand's depth.
+          <ul class="pros"><li>Uses colors users already know</li><li>Navy→bright-blue gradient is monochromatic and clean</li><li>Less risk, preserves existing glow/ring visuals</li></ul>
+          <ul class="cons"><li>Less "new" than B — users who knew the old site will feel familiarity</li></ul>
+        </div>
+      </section>
+
+      <!-- C -->
+      <section class="option c">
+        <div class="opt-head">
+          <span class="opt-tag">Option C</span>
+          <h2 class="opt-title">Current palette, blues shifted</h2>
+          <p class="opt-sub">Keep 15-token system. Only swap two hexes. Indigo + cyan stay.</p>
+        </div>
+        <div class="swatches">
+          <div class="sw"><span class="dot" style="background:#3859a8"></span>#3859a8</div>
+          <div class="sw"><span class="dot" style="background:#0f1129"></span>#0f1129</div>
+          <div class="sw"><span class="dot" style="background:#6366F1"></span>#6366F1</div>
+          <div class="sw"><span class="dot" style="background:#0EA5E9"></span>#0EA5E9</div>
+          <div class="sw"><span class="dot" style="background:#fff"></span>#ffffff</div>
+        </div>
+        <div class="demo">
+          <div class="nav">
+            <span class="logo"><span class="mark"></span>JotilLabs</span>
+            <span class="links"><span>Solutions</span><span>About</span></span>
+            <button class="cta-nav">Book a demo</button>
+          </div>
+          <div class="hero">
+            <div class="eyebrow">AI-first customer platform</div>
+            <h3 class="h1">Make every call, message, and lead <span class="hl">land where it should.</span></h3>
+            <p class="lede">Smart solutions. Strong systems. Better business.</p>
+            <div class="btns">
+              <button class="btn btn-primary">Get started</button>
+              <button class="btn btn-secondary">See how it works</button>
+            </div>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="lbl">Calls answered</div><div class="num">24 / 7</div><div class="sub">Never miss a customer</div></div>
+            <div class="card"><div class="lbl">Response time</div><div class="num">&lt; 2s</div><div class="sub">Voice + chat + SMS</div></div>
+          </div>
+          <div class="footer-demo"><span>© JotilLabs 2026</span><span>Lehi, Utah</span></div>
+        </div>
+        <div class="notes">
+          <strong>Feel:</strong> Current site with calmer blue.
+          <ul class="pros"><li>Lowest-risk migration</li><li>Existing gradients still work</li></ul>
+          <ul class="cons"><li>Doesn't read as rebranded</li><li>Indigo + cyan aren't in brand doc</li></ul>
+        </div>
+      </section>
+
+    </div>
+
+    <p style="text-align:center;margin-top:40px;color:#6b7098;font-size:13px">
+      Pick A, B, C or D — or ask me to iterate (e.g. "D but deeper blue", "B without gradient").
+    </p>
+  </div>
+</body>
+</html>

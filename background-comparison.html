@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JotilLabs Background Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #1a1a2e;
+    color: #0F1129;
+  }
+
+  .controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(15, 17, 41, 0.95);
+    backdrop-filter: blur(12px);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .controls h1 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: auto;
+  }
+
+  .controls button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .controls button:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+  }
+
+  .controls button.active {
+    background: #3859a8;
+    border-color: #3859a8;
+    color: #fff;
+  }
+
+  .view-container {
+    padding-top: 64px;
+    min-height: 100vh;
+  }
+
+  .side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: #1a1a2e;
+    min-height: calc(100vh - 64px);
+  }
+
+  .panel {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+  }
+
+  .panel-label {
+    position: sticky;
+    top: 72px;
+    z-index: 10;
+    margin: 16px;
+    padding: 8px 16px;
+    background: rgba(15, 17, 41, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  .panel-label span {
+    font-weight: 400;
+    opacity: 0.6;
+    text-transform: none;
+    letter-spacing: 0;
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+  }
+
+  .full-width {
+    display: none;
+  }
+
+  .full-width .panel {
+    min-height: 100vh;
+  }
+
+  .full-width .panel-label {
+    position: fixed;
+    top: 72px;
+    left: 16px;
+    z-index: 50;
+  }
+
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .demo-content {
+    position: relative;
+    z-index: 5;
+    padding: 100px 32px 60px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .demo-content h2 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: #0F1129;
+  }
+
+  .demo-content p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #4A4D6A;
+    margin-bottom: 24px;
+  }
+
+  .demo-card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(16px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.70);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(15, 17, 41, 0.04), 0 8px 24px rgba(15, 17, 41, 0.03);
+    margin-bottom: 20px;
+  }
+
+  .demo-card h3 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .demo-card p {
+    font-size: 13px;
+    margin-bottom: 0;
+    color: #6B7098;
+  }
+
+  .demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #3859a8, #2a4688);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    margin-top: 8px;
+  }
+
+  .demo-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(56, 89, 168, 0.08);
+    color: #3859a8;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .demo-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .demo-stat {
+    text-align: center;
+    padding: 16px 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .demo-stat .num {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #3859a8;
+  }
+
+  .demo-stat .label {
+    font-size: 11px;
+    color: #6B7098;
+    margin-top: 4px;
+  }
+
+  /* ---- NOISE: SVG overlay for colorful bg (A) — current site style ---- */
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+  }
+
+  /* ---- NOISE: Grainy Gradients technique (contrast+brightness on feTurbulence) ---- */
+  .noise-grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 250px 250px;
+    background-repeat: repeat;
+    filter: contrast(170%) brightness(1000%);
+    mix-blend-mode: overlay;
+    opacity: 0.30;
+  }
+
+  /* ==============================================================
+     VERSION A: CURRENT (violet/pink + blue/peach)
+     ============================================================== */
+  .bg-current { background: #F0F2F8; }
+
+  .bg-current .atmo-1 {
+    position: absolute;
+    top: -20%; left: -10%;
+    width: 70%; height: 80%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(138, 107, 255, 0.35), transparent 60%),
+      radial-gradient(circle at 70% 60%, rgba(255, 122, 182, 0.25), transparent 55%);
+    filter: blur(60px);
+  }
+
+  .bg-current .atmo-2 {
+    position: absolute;
+    top: 10%; right: -15%;
+    width: 65%; height: 70%;
+    background:
+      radial-gradient(circle at 60% 40%, rgba(47, 91, 255, 0.28), transparent 60%),
+      radial-gradient(circle at 30% 70%, rgba(255, 201, 163, 0.3), transparent 55%);
+    filter: blur(70px);
+  }
+
+  /* ==============================================================
+     VERSION B: SOFT WASH
+     Same warm multi-tonal character as A, just turned down.
+     Keeps lavender + peach warmth, reduces opacity ~40%.
+     Background pushed lighter toward white.
+     ============================================================== */
+  .bg-soft { background: #F5F6FA; }
+
+  .bg-soft .atmo-1 {
+    position: absolute;
+    top: -20%; left: -10%;
+    width: 70%; height: 80%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(138, 107, 255, 0.18), transparent 60%),
+      radial-gradient(circle at 70% 60%, rgba(255, 122, 182, 0.12), transparent 55%);
+    filter: blur(70px);
+  }
+
+  .bg-soft .atmo-2 {
+    position: absolute;
+    top: 10%; right: -15%;
+    width: 65%; height: 70%;
+    background:
+      radial-gradient(circle at 60% 40%, rgba(47, 91, 255, 0.14), transparent 60%),
+      radial-gradient(circle at 30% 70%, rgba(255, 201, 163, 0.16), transparent 55%);
+    filter: blur(80px);
+  }
+
+  /* ==============================================================
+     VERSION C: WARM SUBTLE
+     Even lighter — same hues at whisper opacity on near-white.
+     Still warm, still alive, just very quiet.
+     ============================================================== */
+  .bg-warm-subtle { background: #F8F8FC; }
+
+  .bg-warm-subtle .atmo-1 {
+    position: absolute;
+    top: -20%; left: -10%;
+    width: 70%; height: 80%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(138, 107, 255, 0.10), transparent 60%),
+      radial-gradient(circle at 70% 60%, rgba(255, 122, 182, 0.07), transparent 55%);
+    filter: blur(80px);
+  }
+
+  .bg-warm-subtle .atmo-2 {
+    position: absolute;
+    top: 10%; right: -15%;
+    width: 65%; height: 70%;
+    background:
+      radial-gradient(circle at 60% 40%, rgba(47, 91, 255, 0.08), transparent 60%),
+      radial-gradient(circle at 30% 70%, rgba(255, 201, 163, 0.09), transparent 55%);
+    filter: blur(90px);
+  }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <h1>JotilLabs Background Comparison</h1>
+  <button class="active" onclick="showView('split')">Side by Side</button>
+  <button onclick="showView('a')">A: Current</button>
+  <button onclick="showView('b')">B: Soft Wash</button>
+  <button onclick="showView('c')">C: Warm Subtle</button>
+</div>
+
+<div class="view-container">
+
+  <div class="side-by-side" id="view-split">
+
+    <div class="panel bg-current">
+      <div class="panel-label">
+        A: Current
+        <span>Violet/pink + blue/peach, full intensity</span>
+      </div>
+      <div class="bg-layer">
+        <div class="atmo-1"></div>
+        <div class="atmo-2"></div>
+        <div class="noise-overlay"></div>
+      </div>
+      <div class="demo-content">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card">
+          <h3>AI Receptionist</h3>
+          <p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p>
+        </div>
+        <div class="demo-card">
+          <h3>AI Messenger</h3>
+          <p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p>
+        </div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+
+    <div class="panel bg-soft">
+      <div class="panel-label">
+        B: Soft Wash
+        <span>Same warm hues, ~40% reduced opacity</span>
+      </div>
+      <div class="bg-layer">
+        <div class="atmo-1"></div>
+        <div class="atmo-2"></div>
+        <div class="noise-grain"></div>
+      </div>
+      <div class="demo-content">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card">
+          <h3>AI Receptionist</h3>
+          <p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p>
+        </div>
+        <div class="demo-card">
+          <h3>AI Messenger</h3>
+          <p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p>
+        </div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+
+    <div class="panel bg-warm-subtle">
+      <div class="panel-label">
+        C: Warm Subtle
+        <span>Same hues at whisper level, near-white base</span>
+      </div>
+      <div class="bg-layer">
+        <div class="atmo-1"></div>
+        <div class="atmo-2"></div>
+        <div class="noise-grain"></div>
+      </div>
+      <div class="demo-content">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card">
+          <h3>AI Receptionist</h3>
+          <p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p>
+        </div>
+        <div class="demo-card">
+          <h3>AI Messenger</h3>
+          <p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p>
+        </div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FULL WIDTH VIEWS -->
+  <div class="full-width" id="view-a">
+    <div class="panel bg-current">
+      <div class="panel-label">A: Current <span>Violet/pink + blue/peach, full intensity</span></div>
+      <div class="bg-layer"><div class="atmo-1"></div><div class="atmo-2"></div><div class="noise-overlay"></div></div>
+      <div class="demo-content" style="max-width: 680px;">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card"><h3>AI Receptionist</h3><p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p></div>
+        <div class="demo-card"><h3>AI Messenger</h3><p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p></div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-width" id="view-b">
+    <div class="panel bg-soft">
+      <div class="panel-label">B: Soft Wash <span>Same warm hues, ~40% reduced opacity</span></div>
+      <div class="bg-layer"><div class="atmo-1"></div><div class="atmo-2"></div><div class="noise-grain"></div></div>
+      <div class="demo-content" style="max-width: 680px;">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card"><h3>AI Receptionist</h3><p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p></div>
+        <div class="demo-card"><h3>AI Messenger</h3><p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p></div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-width" id="view-c">
+    <div class="panel bg-warm-subtle">
+      <div class="panel-label">C: Warm Subtle <span>Same hues at whisper level, near-white base</span></div>
+      <div class="bg-layer"><div class="atmo-1"></div><div class="atmo-2"></div><div class="noise-grain"></div></div>
+      <div class="demo-content" style="max-width: 680px;">
+        <div class="demo-badge">AI-First Customer Platform</div>
+        <h2>Never miss another customer</h2>
+        <p>Every missed call is a missed opportunity. JotilLabs answers, qualifies, and books meetings around the clock so your team can focus on closing.</p>
+        <div class="demo-stats">
+          <div class="demo-stat"><div class="num">97%</div><div class="label">Answer rate</div></div>
+          <div class="demo-stat"><div class="num">24/7</div><div class="label">Availability</div></div>
+          <div class="demo-stat"><div class="num">3x</div><div class="label">More leads</div></div>
+        </div>
+        <div class="demo-card"><h3>AI Receptionist</h3><p>Answers every call, qualifies leads, and books appointments. Your customers never wait on hold again.</p></div>
+        <div class="demo-card"><h3>AI Messenger</h3><p>Responds to texts and chats instantly. Handles questions, collects info, and routes conversations to the right person.</p></div>
+        <button class="demo-btn">See how it works</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showView(id) {
+    document.getElementById('view-split').style.display = id === 'split' ? 'grid' : 'none';
+    document.getElementById('view-a').style.display = id === 'a' ? 'block' : 'none';
+    document.getElementById('view-b').style.display = id === 'b' ? 'block' : 'none';
+    document.getElementById('view-c').style.display = id === 'c' ? 'block' : 'none';
+
+    document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
