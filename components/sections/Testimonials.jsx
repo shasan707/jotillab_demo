@@ -112,67 +112,84 @@ export function Testimonials() {
 }
 
 function MarqueeRow({ items, reverse = false }) {
-  // Two copies of the row enable a seamless loop. The row auto-scrolls via rAF
-  // and is also draggable: native horizontal scroll handles touch/swipe, and
-  // pointer handlers add cursor drag-to-scroll. Auto-scroll pauses while the
-  // user hovers or grabs, then resumes.
+  // Two copies of the row enable a seamless loop. The track auto-scrolls by
+  // animating translateX (so it always moves regardless of screen width) and
+  // is draggable by cursor AND touch via pointer events. touch-action:pan-y
+  // lets vertical swipes scroll the PAGE while horizontal swipes drag the row.
   const doubled = [...items, ...items]
-  const scrollerRef = useRef(null)
+  const trackRef = useRef(null)
   const reduced = useReducedMotion()
-  const state = useRef({ paused: false, dragging: false, startX: 0, startScroll: 0, raf: 0 })
+  const st = useRef({ offset: 0, half: 0, paused: false, dragging: false, startX: 0, startOffset: 0, raf: 0 })
 
   useEffect(() => {
-    const el = scrollerRef.current
-    if (!el) return
-    const speed = reverse ? -0.5 : 0.5
+    const track = trackRef.current
+    if (!track) return
+    const s = st.current
+    const dir = reverse ? 1 : -1
+    const speed = 0.5
 
-    // Start a reverse row at the midpoint so it can scroll back toward 0.
-    if (reverse) el.scrollLeft = el.scrollWidth / 2
+    const measure = () => { s.half = track.scrollWidth / 2 }
+    measure()
+    s.offset = reverse ? -s.half : 0
+    track.style.transform = `translate3d(${s.offset}px,0,0)`
 
-    if (reduced) return // honor reduced-motion: still hand-scrollable, no auto-run
+    const onResize = () => measure()
+    window.addEventListener('resize', onResize)
 
-    const s = state.current
+    if (reduced) {
+      return () => window.removeEventListener('resize', onResize)
+    }
+
     const tick = () => {
-      if (!s.dragging && !s.paused) {
-        const half = el.scrollWidth / 2
-        let next = el.scrollLeft + speed
-        if (next >= half) next -= half
-        else if (next <= 0) next += half
-        el.scrollLeft = next
+      if (!s.dragging && !s.paused && s.half > 0) {
+        s.offset += dir * speed
+        if (s.offset <= -s.half) s.offset += s.half
+        else if (s.offset >= 0) s.offset -= s.half
+        track.style.transform = `translate3d(${s.offset}px,0,0)`
       }
       s.raf = requestAnimationFrame(tick)
     }
     s.raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(s.raf)
+    return () => {
+      cancelAnimationFrame(s.raf)
+      window.removeEventListener('resize', onResize)
+    }
   }, [reverse, reduced])
 
+  const applyOffset = (o) => {
+    const s = st.current
+    if (s.half > 0) {
+      while (o <= -s.half) o += s.half
+      while (o > 0) o -= s.half
+    }
+    s.offset = o
+    if (trackRef.current) trackRef.current.style.transform = `translate3d(${o}px,0,0)`
+  }
+
   const onPointerDown = (e) => {
-    const s = state.current
-    s.paused = true
-    if (e.pointerType === 'touch') return // native touch scroll takes over
-    const el = scrollerRef.current
+    const s = st.current
     s.dragging = true
+    s.paused = true
     s.startX = e.clientX
-    s.startScroll = el.scrollLeft
-    el.setPointerCapture?.(e.pointerId)
+    s.startOffset = s.offset
+    if (e.pointerType !== 'touch') e.currentTarget.setPointerCapture?.(e.pointerId)
   }
   const onPointerMove = (e) => {
-    const s = state.current
+    const s = st.current
     if (!s.dragging) return
-    scrollerRef.current.scrollLeft = s.startScroll - (e.clientX - s.startX)
+    applyOffset(s.startOffset + (e.clientX - s.startX))
   }
   const endDrag = () => {
-    const s = state.current
+    const s = st.current
     s.dragging = false
     s.paused = false
   }
 
   return (
     <div
-      ref={scrollerRef}
-      className="no-scrollbar overflow-x-auto select-none cursor-grab active:cursor-grabbing py-2"
+      className="overflow-hidden select-none cursor-grab active:cursor-grabbing py-2"
       style={{
-        touchAction: 'pan-x',
+        touchAction: 'pan-y',
         WebkitMaskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
         maskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
       }}
@@ -181,10 +198,10 @@ function MarqueeRow({ items, reverse = false }) {
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
       onPointerLeave={endDrag}
-      onMouseEnter={() => { state.current.paused = true }}
-      onMouseLeave={() => { if (!state.current.dragging) state.current.paused = false }}
+      onMouseEnter={() => { st.current.paused = true }}
+      onMouseLeave={() => { if (!st.current.dragging) st.current.paused = false }}
     >
-      <div className="flex w-max items-stretch gap-5">
+      <div ref={trackRef} className="flex w-max items-stretch gap-5" style={{ willChange: 'transform' }}>
         {doubled.map((t, i) => (
           <TiltCard
             key={`${t.name}-${i}`}

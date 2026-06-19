@@ -711,14 +711,6 @@ textarea:focus-visible {
   animation: glitchV9B 3.6s infinite steps(1);
   clip-path: inset(60% 0 0 0);
 }
-/* Disable the glitch copies on small screens — the offset duplicates read as
-   a rendering glitch on phones. Headline stays clean and solid there. */
-@media (max-width: 767px) {
-  .glitch-v9::before,
-  .glitch-v9::after {
-    display: none;
-  }
-}
 @keyframes glitchV9A {
   0%, 89%, 100% { transform: translate(0, 0); opacity: 0; }
   90% { transform: translate(-3px, -1px); opacity: .85; }
