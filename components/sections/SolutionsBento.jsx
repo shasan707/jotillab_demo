@@ -76,7 +76,7 @@ export function SolutionsBento() {
             Six ways to{' '}
             <em
               className="text-gradient not-italic"
-              style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontStyle: 'italic', fontWeight: 560 }}
+              style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontStyle: 'italic', fontWeight: 560, letterSpacing: 'normal', padding: '0 0.12em' }}
             >
               never miss
             </em>{' '}

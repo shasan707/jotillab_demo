@@ -1,5 +1,7 @@
 'use client'
 
+import { useRef, useEffect } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { SerifAccent, TiltCard } from '@/components/design'
 
@@ -110,15 +112,79 @@ export function Testimonials() {
 }
 
 function MarqueeRow({ items, reverse = false }) {
-  // Track holds two copies of the row; CSS translates by half for a seamless loop.
+  // Two copies of the row enable a seamless loop. The row auto-scrolls via rAF
+  // and is also draggable: native horizontal scroll handles touch/swipe, and
+  // pointer handlers add cursor drag-to-scroll. Auto-scroll pauses while the
+  // user hovers or grabs, then resumes.
   const doubled = [...items, ...items]
+  const scrollerRef = useRef(null)
+  const reduced = useReducedMotion()
+  const state = useRef({ paused: false, dragging: false, startX: 0, startScroll: 0, raf: 0 })
+
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    const speed = reverse ? -0.5 : 0.5
+
+    // Start a reverse row at the midpoint so it can scroll back toward 0.
+    if (reverse) el.scrollLeft = el.scrollWidth / 2
+
+    if (reduced) return // honor reduced-motion: still hand-scrollable, no auto-run
+
+    const s = state.current
+    const tick = () => {
+      if (!s.dragging && !s.paused) {
+        const half = el.scrollWidth / 2
+        let next = el.scrollLeft + speed
+        if (next >= half) next -= half
+        else if (next <= 0) next += half
+        el.scrollLeft = next
+      }
+      s.raf = requestAnimationFrame(tick)
+    }
+    s.raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(s.raf)
+  }, [reverse, reduced])
+
+  const onPointerDown = (e) => {
+    const s = state.current
+    s.paused = true
+    if (e.pointerType === 'touch') return // native touch scroll takes over
+    const el = scrollerRef.current
+    s.dragging = true
+    s.startX = e.clientX
+    s.startScroll = el.scrollLeft
+    el.setPointerCapture?.(e.pointerId)
+  }
+  const onPointerMove = (e) => {
+    const s = state.current
+    if (!s.dragging) return
+    scrollerRef.current.scrollLeft = s.startScroll - (e.clientX - s.startX)
+  }
+  const endDrag = () => {
+    const s = state.current
+    s.dragging = false
+    s.paused = false
+  }
 
   return (
-    <div className="marquee py-2">
-      <div
-        className={`marquee-track items-stretch ${reverse ? 'marquee-reverse' : ''}`}
-        style={{ '--marquee-duration': reverse ? '56s' : '48s' }}
-      >
+    <div
+      ref={scrollerRef}
+      className="no-scrollbar overflow-x-auto select-none cursor-grab active:cursor-grabbing py-2"
+      style={{
+        touchAction: 'pan-x',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+        maskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+      }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerLeave={endDrag}
+      onMouseEnter={() => { state.current.paused = true }}
+      onMouseLeave={() => { if (!state.current.dragging) state.current.paused = false }}
+    >
+      <div className="flex w-max items-stretch gap-5">
         {doubled.map((t, i) => (
           <TiltCard
             key={`${t.name}-${i}`}

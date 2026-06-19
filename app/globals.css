@@ -699,6 +699,7 @@ textarea:focus-visible {
   width: 100%;
   overflow: hidden;
   pointer-events: none;
+  opacity: 0; /* hidden unless the animation explicitly raises it */
 }
 .glitch-v9::before {
   color: #3859a8;
@@ -709,6 +710,14 @@ textarea:focus-visible {
   color: #0f1129;
   animation: glitchV9B 3.6s infinite steps(1);
   clip-path: inset(60% 0 0 0);
+}
+/* Disable the glitch copies on small screens — the offset duplicates read as
+   a rendering glitch on phones. Headline stays clean and solid there. */
+@media (max-width: 767px) {
+  .glitch-v9::before,
+  .glitch-v9::after {
+    display: none;
+  }
 }
 @keyframes glitchV9A {
   0%, 89%, 100% { transform: translate(0, 0); opacity: 0; }
@@ -917,6 +926,10 @@ textarea:focus-visible {
   -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
   mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
 }
+
+/* Hide scrollbars on drag-scroll carousels (testimonials) */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
 .marquee-track {
   display: flex;
