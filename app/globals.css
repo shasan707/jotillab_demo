@@ -429,14 +429,14 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Gradients ── */
 
 .text-gradient {
-  background: linear-gradient(115deg, #3859a8 0%, #3B82F6 55%, #60A5FA 100%);
+  background: linear-gradient(115deg, #3B82F6 0%, #7c3aed 52%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .btn-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #3859a8 55%, #2a4688 100%);
+  background: linear-gradient(135deg, #3B82F6 0%, #6d28d9 55%, #7c3aed 100%);
 }
 
 .icon-gradient-bg {
