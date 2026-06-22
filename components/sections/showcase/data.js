@@ -67,3 +67,41 @@ export const PRODUCT_SLIDES = [
     deviceType: 'browser',
   },
 ]
+
+/* Human-readable "what's happening now" labels, indexed to match each screen's
+   phase transitions (the screens emit onStep(index) at those points). Surfaced
+   by DeviceCaption next to the device so the audience can follow the animation. */
+export const PRODUCT_STEPS = {
+  receptionist: [
+    'Incoming call answered',
+    'Caller asks to book',
+    'AI checks the calendar',
+    'Appointment booked',
+    'Confirmation text sent',
+  ],
+  messenger: [
+    'Visitor sends a message',
+    'AI replies instantly',
+    'Details captured',
+    'Demo booked',
+  ],
+  outreach: [
+    'Lead list uploaded',
+    'Contacts parsed',
+    'AI calls every lead',
+    'Personalized emails sent',
+    'Follow-up texts delivered',
+  ],
+  space: [
+    'Pick the best AI model',
+    'Ask for the sales report',
+    'Switch to agent builder',
+    'New agent deployed',
+  ],
+  avatar: [
+    'Avatar greets the visitor',
+    'Visitor asks about pricing',
+    'AI explains the plan',
+    'Guides them to a demo',
+  ],
+}

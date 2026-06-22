@@ -188,9 +188,10 @@ export function SplineAura() {
           </div>
         </div>
 
-        {/* Right column — transparent glass orb cycling unique product icons */}
-        <div className="hidden items-center justify-center lg:flex">
-          <div className="relative mx-auto flex h-[460px] w-[460px] max-w-full items-center justify-center">
+        {/* Right column — transparent glass orb cycling unique product icons.
+            Shown on mobile too (below the copy), scaled down to fit. */}
+        <div className="flex items-center justify-center">
+          <div className="relative mx-auto flex h-[300px] w-[300px] max-w-full items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[460px] lg:w-[460px]">
             {/* Vibrant ambient glow (tracks the active product hue) */}
             <motion.div
               key={`glow-${product.iconKey}`}
@@ -213,7 +214,7 @@ export function SplineAura() {
                   ease: [0.22, 1, 0.36, 1],
                   borderRadius: { duration: 6, repeat: Infinity },
                 }}
-                className="relative flex h-[320px] w-[320px] flex-col items-center justify-center gap-4 px-8 text-center"
+                className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-3 px-6 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
                 style={{
                   background: 'linear-gradient(150deg, rgba(255,255,255,0.62), rgba(255,255,255,0.30))',
                   backdropFilter: 'blur(16px) saturate(1.3)',

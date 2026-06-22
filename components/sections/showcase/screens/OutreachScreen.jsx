@@ -127,12 +127,12 @@ function SheetView({ rowsVisible }) {
       <div className="px-3 py-2 flex items-center gap-2 border-b border-gray-100" style={{ backgroundColor: '#f8f9fb' }}>
         <FileSpreadsheet className="w-3.5 h-3.5" style={{ color: COLORS.primary }} strokeWidth={1.6} />
         <p className="text-[10px] font-semibold text-gray-900 flex-1">leads_q2.xlsx</p>
-        <p className="text-[8.5px] text-gray-500 font-mono">{CONTACTS_TOTAL} rows</p>
+        <p className="text-[9.5px] text-gray-500 font-mono">{CONTACTS_TOTAL} rows</p>
       </div>
 
       <div>
         <div
-          className="grid items-center text-[8.5px] font-bold text-gray-500 uppercase tracking-wider px-2 py-1.5 border-b border-gray-100"
+          className="grid items-center text-[9.5px] font-bold text-gray-500 uppercase tracking-wider px-2 py-1.5 border-b border-gray-100"
           style={{ gridTemplateColumns: '1fr 1.1fr 1.2fr', backgroundColor: '#fafbfd' }}
         >
           <span>Name</span>
@@ -165,7 +165,7 @@ function SheetView({ rowsVisible }) {
             transition={{ delay: 0.2 }}
             className="px-2 py-1.5 text-center"
           >
-            <p className="text-[8.5px] text-gray-400 italic">+ {CONTACTS_TOTAL - LEADS.length} more contacts</p>
+            <p className="text-[9.5px] text-gray-400 italic">+ {CONTACTS_TOTAL - LEADS.length} more contacts</p>
           </motion.div>
         )}
       </div>
@@ -204,7 +204,7 @@ function CallingView({ activeIdx, finished }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-bold text-gray-900 leading-tight">Calling leads</p>
-          <p className="text-[8.5px] text-gray-500">From leads_q2.xlsx</p>
+          <p className="text-[9.5px] text-gray-500">From leads_q2.xlsx</p>
         </div>
       </div>
 
@@ -279,7 +279,7 @@ function EmailView({ activeIdx }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-bold text-gray-900 leading-tight">Sending emails</p>
-          <p className="text-[8.5px] text-gray-500">Personalized for each lead</p>
+          <p className="text-[9.5px] text-gray-500">Personalized for each lead</p>
         </div>
       </div>
 
@@ -302,7 +302,7 @@ function EmailView({ activeIdx }) {
               >
                 <div className="px-2 py-1 flex items-center gap-1 border-b border-gray-100">
                   <Mail className="w-2.5 h-2.5 shrink-0" style={{ color: COLORS.email }} strokeWidth={1.8} />
-                  <p className="text-[8.5px] text-gray-500 truncate flex-1">
+                  <p className="text-[9.5px] text-gray-500 truncate flex-1">
                     To: <span className="text-gray-900 font-mono">{lead.email}</span>
                   </p>
                   {isActive ? (
@@ -332,7 +332,7 @@ function EmailView({ activeIdx }) {
                 </div>
                 <div className="px-2 py-1.5">
                   <p className="text-[9px] font-bold text-gray-900 truncate mb-0.5">Quick idea for your team</p>
-                  <p className="text-[8.5px] text-gray-600 leading-snug line-clamp-2">
+                  <p className="text-[9.5px] text-gray-600 leading-snug line-clamp-2">
                     Hi {firstName}, noticed your team is growing. Quick idea on streamlining your sales outreach...
                   </p>
                 </div>
@@ -358,7 +358,7 @@ function SmsView({ activeIdx }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[12px] font-bold text-gray-900 leading-tight">Sending SMS</p>
-          <p className="text-[8.5px] text-gray-500">Across the full contact list</p>
+          <p className="text-[9.5px] text-gray-500">Across the full contact list</p>
         </div>
       </div>
 
@@ -375,7 +375,7 @@ function SmsView({ activeIdx }) {
                 transition={{ duration: 0.3 }}
                 className="flex flex-col gap-0.5 shrink-0"
               >
-                <p className="text-[8px] text-gray-400 font-mono px-1">To: {lead.phone}</p>
+                <p className="text-[9px] text-gray-400 font-mono px-1">To: {lead.phone}</p>
                 <div className="flex justify-end">
                   <div
                     className="max-w-[88%] px-2.5 py-1.5 rounded-xl rounded-br-sm text-white"
@@ -451,7 +451,7 @@ function ResultCard({ icon: Icon, statValue, statSuffix, label, color }) {
   )
 }
 
-export function OutreachScreen({ isActive, onAction }) {
+export function OutreachScreen({ isActive, onAction, onStep }) {
   const [phase, setPhase] = useState('idle')
   const [uploadProgress, setUploadProgress] = useState(0)
   const [sheetRows, setSheetRows] = useState(0)
@@ -496,7 +496,7 @@ export function OutreachScreen({ isActive, onAction }) {
       let now = PHASE_TIMES.uploadStart
 
       // Upload
-      t(() => setPhase('upload'), now)
+      t(() => { setPhase('upload'); onStep?.(0) }, now)
       const uploadSteps = 30
       for (let i = 0; i <= uploadSteps; i++) {
         t(
@@ -507,7 +507,7 @@ export function OutreachScreen({ isActive, onAction }) {
       now += PHASE_TIMES.uploadDuration
 
       // Sheet opens
-      t(() => setPhase('sheet'), now + 200)
+      t(() => { setPhase('sheet'); onStep?.(1) }, now + 200)
       LEADS.forEach((_, i) => {
         t(() => setSheetRows(i + 1), now + 200 + (i + 1) * PHASE_TIMES.sheetRowDelay)
       })
@@ -517,6 +517,7 @@ export function OutreachScreen({ isActive, onAction }) {
       t(() => {
         setPhase('calling')
         setCallIdx(0)
+        onStep?.(2)
       }, now)
       LEADS.forEach((_, i) => {
         t(() => setCallIdx(i), now + i * PHASE_TIMES.callPerLead)
@@ -529,6 +530,7 @@ export function OutreachScreen({ isActive, onAction }) {
       t(() => {
         setPhase('email')
         setEmailIdx(0)
+        onStep?.(3)
       }, now)
       LEADS.forEach((_, i) => {
         t(() => setEmailIdx(i), now + i * PHASE_TIMES.emailPerLead)
@@ -542,6 +544,7 @@ export function OutreachScreen({ isActive, onAction }) {
       t(() => {
         setPhase('sms')
         setSmsIdx(0)
+        onStep?.(4)
       }, now)
       LEADS.forEach((_, i) => {
         t(() => setSmsIdx(i), now + i * PHASE_TIMES.smsPerLead)
@@ -558,7 +561,7 @@ export function OutreachScreen({ isActive, onAction }) {
     runLoop()
     loopRef.current = timers
     return () => timers.forEach(clearTimeout)
-  }, [isActive])
+  }, [isActive, onStep])
 
   return (
     <div className="w-full h-full flex flex-col bg-white text-[11px]">

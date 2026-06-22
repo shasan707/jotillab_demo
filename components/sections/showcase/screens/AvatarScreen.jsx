@@ -65,7 +65,7 @@ function SpeakingIndicator({ active }) {
   )
 }
 
-export function AvatarScreen({ isActive, onAction }) {
+export function AvatarScreen({ isActive, onAction, onStep }) {
   const [sentMessages, setSentMessages] = useState([])
   const [activeTurnIdx, setActiveTurnIdx] = useState(-1)
   const [aiSpeaking, setAiSpeaking] = useState(false)
@@ -104,6 +104,7 @@ export function AvatarScreen({ isActive, onAction }) {
             setActiveTurnIdx(idx)
             setAiSpeaking(true)
             setSentMessages((prev) => [...prev, turn])
+            onStep?.(idx)
           }, now)
           now += speakDuration
           t(() => setAiSpeaking(false), now)
@@ -112,6 +113,7 @@ export function AvatarScreen({ isActive, onAction }) {
           t(() => {
             setActiveTurnIdx(idx)
             setSentMessages((prev) => [...prev, turn])
+            onStep?.(idx)
           }, now)
           now += 1100
         }

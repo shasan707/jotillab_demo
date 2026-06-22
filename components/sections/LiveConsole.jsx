@@ -38,16 +38,19 @@ const CONSOLE_STATS = [
   { value: '24/7', label: 'Always on coverage' },
 ]
 
-/** Looping typewriter conversation driving the console's call panel. */
+/** Looping conversation driving the console's call panel. A typing indicator
+   shows while a party "types", then the full message drops in — like a real
+   messaging app. This avoids per-character reflow/word-wrap jumps. */
 function useConversationDemo() {
   const reduced = useReducedMotion()
   const [messages, setMessages] = useState([])
+  const [typingSpeaker, setTypingSpeaker] = useState(null)
   const [aiSpeaking, setAiSpeaking] = useState(false)
   const [booked, setBooked] = useState(false)
 
   useEffect(() => {
     if (reduced) {
-      setMessages(DEMO_SCRIPT.map(m => ({ ...m, shown: m.text })))
+      setMessages(DEMO_SCRIPT)
       setBooked(true)
       return
     }
@@ -61,31 +64,26 @@ function useConversationDemo() {
       })
 
     async function run() {
-      await wait(1400)
+      await wait(1200)
       while (!cancelled) {
         setMessages([])
         setBooked(false)
+        await wait(500)
         for (const msg of DEMO_SCRIPT) {
           if (cancelled) return
+          // "typing…" indicator, duration scaled to message length
+          setTypingSpeaker(msg.speaker)
           setAiSpeaking(msg.speaker === 'ai')
-          await wait(420)
-          setMessages(prev => [...prev, { ...msg, shown: '' }])
-          for (let c = 1; c <= msg.text.length; c++) {
-            if (cancelled) return
-            const shown = msg.text.slice(0, c)
-            setMessages(prev => {
-              const next = [...prev]
-              next[next.length - 1] = { ...msg, shown }
-              return next
-            })
-            await wait(msg.speaker === 'ai' ? 20 : 28)
-          }
-          await wait(600)
+          await wait(Math.min(1700, 650 + msg.text.length * 22))
+          if (cancelled) return
+          setTypingSpeaker(null)
+          setMessages(prev => [...prev, msg])
+          await wait(750)
         }
         if (cancelled) return
         setAiSpeaking(false)
         setBooked(true)
-        await wait(4200)
+        await wait(4500)
       }
     }
 
@@ -96,17 +94,18 @@ function useConversationDemo() {
     }
   }, [reduced])
 
-  return { messages, aiSpeaking, booked }
+  return { messages, typingSpeaker, aiSpeaking, booked }
 }
 
 /** Activity feed that streams a new event in every few seconds. */
 function useActivityFeed() {
   const reduced = useReducedMotion()
-  const [items, setItems] = useState(() => [2, 1, 0].map(i => ({ ...FEED_EVENTS[i], key: i })))
+  // Start already full (5 rows) so the list never grows/reflows — only swaps.
+  const [items, setItems] = useState(() => [4, 3, 2, 1, 0].map(i => ({ ...FEED_EVENTS[i], key: i })))
 
   useEffect(() => {
     if (reduced) return
-    let next = 3
+    let next = 5
     const interval = setInterval(() => {
       setItems(prev => {
         const ev = FEED_EVENTS[next % FEED_EVENTS.length]
@@ -114,15 +113,15 @@ function useActivityFeed() {
         next += 1
         return added.slice(0, 5)
       })
-    }, 2800)
+    }, 3400)
     return () => clearInterval(interval)
   }, [reduced])
 
   return items
 }
 
-function CallPanel({ messages, aiSpeaking, booked }) {
-  const visible = messages.slice(-3)
+function CallPanel({ messages, typingSpeaker, aiSpeaking, booked }) {
+  const visible = messages.slice(typingSpeaker ? -2 : -3)
 
   return (
     <div className="flex flex-col rounded-2xl p-4 sm:p-5 h-full" style={{ background: 'rgba(255,255,255,0.65)', border: '1px solid rgba(15,17,41,0.06)' }}>
@@ -178,16 +177,16 @@ function CallPanel({ messages, aiSpeaking, booked }) {
       </div>
 
       {/* Transcript */}
-      <div className="flex flex-col gap-2 justify-end flex-1 min-h-[150px]">
+      <div className="flex flex-col gap-2 justify-end flex-1 min-h-[150px] overflow-hidden">
         <AnimatePresence initial={false} mode="popLayout">
           {visible.map(msg => (
             <motion.div
               key={`${msg.speaker}-${msg.text}`}
               layout="position"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8, transition: { duration: 0.15 } }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 14, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2 } }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               className={msg.speaker === 'ai' ? 'self-end' : 'self-start'}
             >
               <div
@@ -198,16 +197,42 @@ function CallPanel({ messages, aiSpeaking, booked }) {
                     : { background: 'rgba(15,17,41,0.05)', color: '#0F1129', border: '1px solid rgba(15,17,41,0.06)', borderBottomLeftRadius: 5, fontFamily: 'var(--font-inter), Inter, sans-serif' }
                 }
               >
-                {msg.shown}
-                {msg.shown.length < msg.text.length && (
-                  <span
-                    className="inline-block w-[2px] h-[12px] ml-[2px] align-middle animate-caret-blink rounded-full"
-                    style={{ background: msg.speaker === 'ai' ? 'rgba(255,255,255,0.8)' : 'rgba(15,17,41,0.5)' }}
-                  />
-                )}
+                {msg.text}
               </div>
             </motion.div>
           ))}
+
+          {typingSpeaker && (
+            <motion.div
+              key="typing"
+              layout="position"
+              initial={{ opacity: 0, y: 14, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+              className={typingSpeaker === 'ai' ? 'self-end' : 'self-start'}
+            >
+              <div
+                className="rounded-xl px-3 py-2.5 flex items-center gap-1"
+                style={
+                  typingSpeaker === 'ai'
+                    ? { background: 'linear-gradient(135deg, #3859a8, #2a4688)', borderBottomRightRadius: 5 }
+                    : { background: 'rgba(15,17,41,0.05)', border: '1px solid rgba(15,17,41,0.06)', borderBottomLeftRadius: 5 }
+                }
+              >
+                {[0, 1, 2].map(i => (
+                  <span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{
+                      background: typingSpeaker === 'ai' ? 'rgba(255,255,255,0.75)' : 'rgba(15,17,41,0.4)',
+                      animation: `typing-dot 1.2s ease-in-out ${i * 0.18}s infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>
@@ -232,10 +257,10 @@ function ActivityFeed({ items }) {
             <motion.li
               key={item.key}
               layout="position"
-              initial={{ opacity: 0, y: -14, scale: 0.97 }}
+              initial={{ opacity: 0, y: -12, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, transition: { duration: 0.18 } }}
-              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+              transition={{ type: 'spring', stiffness: 320, damping: 32 }}
               className="flex items-center gap-2.5 rounded-xl px-2.5 py-2"
               style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(15,17,41,0.05)' }}
             >
@@ -265,7 +290,7 @@ export function LiveConsole() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
-  const { messages, aiSpeaking, booked } = useConversationDemo()
+  const { messages, typingSpeaker, aiSpeaking, booked } = useConversationDemo()
   const feedItems = useActivityFeed()
 
   // Scroll-driven "docking" effect: the panel lifts, scales, and tilts flat
@@ -323,7 +348,7 @@ export function LiveConsole() {
               <div className="bg-dot-grid grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-4 p-4 sm:p-5">
                 {mounted && (
                   <>
-                    <CallPanel messages={messages} aiSpeaking={aiSpeaking} booked={booked} />
+                    <CallPanel messages={messages} typingSpeaker={typingSpeaker} aiSpeaking={aiSpeaking} booked={booked} />
                     <ActivityFeed items={feedItems} />
                   </>
                 )}

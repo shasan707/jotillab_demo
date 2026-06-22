@@ -7,14 +7,14 @@ import Logo from '@/components/ui/Logo'
 
 const SCRIPT = [
   { type: 'msg', role: 'ai', text: 'Good morning! Thank you for calling. How can I help?' },
-  { type: 'msg', role: 'caller', text: "Hi, I'd like to schedule a consultation for my business." },
+  { type: 'msg', role: 'caller', text: "Hi, I'd like to schedule a consultation for my business.", step: 1 },
   { type: 'msg', role: 'ai', text: "I'd be happy to help! What type of business are you in?" },
   { type: 'msg', role: 'caller', text: "We run a dental practice in downtown Lehi." },
-  { type: 'msg', role: 'ai', text: 'I have Thursday at 10 AM or Friday at 2 PM. Which works?' },
+  { type: 'msg', role: 'ai', text: 'I have Thursday at 10 AM or Friday at 2 PM. Which works?', step: 2 },
   { type: 'msg', role: 'caller', text: 'Thursday at 10 works great.' },
-  { type: 'action', id: 'calendar', icon: Calendar, label: 'Appointment booked', sublabel: 'Thu, 10:00 AM' },
+  { type: 'action', id: 'calendar', icon: Calendar, label: 'Appointment booked', sublabel: 'Thu, 10:00 AM', step: 3 },
   { type: 'msg', role: 'ai', text: "Perfect! I'll send you a confirmation text right now." },
-  { type: 'action', id: 'sms', icon: MessageSquare, label: 'SMS sent', sublabel: 'Confirmation delivered' },
+  { type: 'action', id: 'sms', icon: MessageSquare, label: 'SMS sent', sublabel: 'Confirmation delivered', step: 4 },
   { type: 'msg', role: 'ai', text: "I've also saved your contact in our system." },
   { type: 'action', id: 'crm', icon: UserPlus, label: 'Contact saved', sublabel: 'Added to CRM' },
   { type: 'msg', role: 'caller', text: 'Thank you so much!' },
@@ -222,7 +222,7 @@ function BlingAction({ action }) {
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
         </div>
         <span className="text-[9px] font-semibold" style={{ color: '#3859a8' }}>{action.label}</span>
-        <span className="text-[8px] text-gray-400">{action.sublabel}</span>
+        <span className="text-[9px] text-gray-400">{action.sublabel}</span>
       </motion.div>
     </motion.div>
   )
@@ -269,7 +269,7 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
           <p className="font-semibold text-[11px] text-white leading-tight">Sarah Mitchell</p>
           <div className="flex items-center gap-1">
             <Logo size={8} tone="on-dark" animate={false} />
-            <p className="text-[8px] text-white/60">JotilLabs AI Answering</p>
+            <p className="text-[9px] text-white/60">JotilLabs AI Answering</p>
           </div>
         </div>
         {/* Header waveform */}
@@ -392,7 +392,7 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
   )
 }
 
-export function ReceptionistScreen({ isActive, onAction }) {
+export function ReceptionistScreen({ isActive, onAction, onStep }) {
   const [phase, setPhase] = useState('ring')
   const [items, setItems] = useState([])
   const [speakingRole, setSpeakingRole] = useState(null)
@@ -423,7 +423,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
       setBlingAction(null)
 
       schedule(() => setPhase('connect'), 2200)
-      schedule(() => setPhase('active'), 2800)
+      schedule(() => { setPhase('active'); onStep?.(0) }, 2800)
 
       let t = 2800
       const speakDur = 1200
@@ -438,6 +438,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
           schedule(() => {
             setSpeakingRole(null)
             setItems((prev) => [...prev, msg])
+            if (msg.step != null) onStep?.(msg.step)
           }, t)
           t += gap
         } else if (step.type === 'action') {
@@ -446,6 +447,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
           schedule(() => {
             setBlingAction(action)
             if (onAction) onAction(action.id)
+            if (action.step != null) onStep?.(action.step)
           }, t)
           t += 900
           schedule(() => {
@@ -463,7 +465,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
     loopRef.current = timers
 
     return () => timers.forEach(clearTimeout)
-  }, [isActive, onAction])
+  }, [isActive, onAction, onStep])
 
   return (
     <AnimatePresence mode="wait">

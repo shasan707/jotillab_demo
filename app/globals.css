@@ -866,47 +866,61 @@ textarea:focus-visible {
   transform: scale(var(--s));
 }
 
-/* Natural unscaled dimensions per device type */
-[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.82; }
+/* Natural unscaled dimensions per device type. Scale is the ONLY size control
+   (the showcase no longer double-scales with `zoom`). Below lg the devices sit
+   in stacked cards with vertical room, so they scale up by width. At lg+ they
+   pin in a ~544px column AND inside a viewport-height sticky box, so the phone
+   (660px tall) is height-limited while the browser is width-limited. */
+/* Phone scale on small screens is kept so the WHOLE phone + caption fits
+   below the fixed 64px navbar on common phones (e.g. 0.78*660=515 + caption
+   ~70 + navbar 64 < 667). Otherwise the tall phone tucks under the navbar and
+   its top reads as cut off. */
+[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.78; }
 [data-device-frame][data-device-type="laptop"]  { --w: 720px; --h: 460px; --s: 0.42; }
 [data-device-frame][data-device-type="monitor"] { --w: 460px; --h: 330px; --s: 0.65; }
+/* Browser is wide (820px); on small phones it must FIT (no horizontal cut),
+   so it scales down to the viewport. 820*0.38=312 fits a 360px phone. */
 [data-device-frame][data-device-type="browser"] { --w: 820px; --h: 560px; --s: 0.38; }
 
 @media (min-width: 480px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 0.95; }
+  [data-device-frame][data-device-type="phone"]   { --s: 0.82; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.55; }
   [data-device-frame][data-device-type="monitor"] { --s: 0.85; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.5; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.50; }
 }
 
 @media (min-width: 640px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 1; }
+  [data-device-frame][data-device-type="phone"]   { --s: 0.9; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.78; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.7; }
-}
-
-@media (min-width: 768px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 1; }
-  [data-device-frame][data-device-type="laptop"]  { --s: 0.92; }
-  [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.78; }
-}
-
-@media (min-width: 1024px) {
-  /* lg+: ProductSlide switches to 2-column grid; each device cell is narrower */
-  [data-device-frame][data-device-type="phone"]   { --s: 1; }
-  [data-device-frame][data-device-type="laptop"]  { --s: 0.55; }
-  [data-device-frame][data-device-type="monitor"] { --s: 0.85; }
   [data-device-frame][data-device-type="browser"] { --s: 0.5; }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 768px) {
+  /* md: typically a tablet with a tall viewport, so the phone can grow */
   [data-device-frame][data-device-type="phone"]   { --s: 1; }
+  [data-device-frame][data-device-type="laptop"]  { --s: 0.92; }
+  [data-device-frame][data-device-type="monitor"] { --s: 1; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.56; }
+}
+
+@media (min-width: 1024px) {
+  /* lg+: 2-column rows (text + device side by side). The device is only
+     WIDTH-constrained by its ~543px column (never viewport-height pinned), so
+     it is sized to fit the column comfortably and is never clipped. */
+  [data-device-frame][data-device-type="phone"]   { --s: 1; }
+  [data-device-frame][data-device-type="laptop"]  { --s: 0.70; }
+  [data-device-frame][data-device-type="monitor"] { --s: 1; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.62; }
+}
+
+@media (min-width: 1280px) {
+  [data-device-frame][data-device-type="phone"]   { --s: 1.05; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.72; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.68; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.66; }
 }
+
 
 /* ── Marquee (testimonials) ──
    Track holds TWO copies of its content; translating by half the track

@@ -38,7 +38,7 @@ const BROWSER_URL = {
   avatar: 'app.jotillabs.com/avatar',
 }
 
-export function SlideDevice({ slug, deviceType, isActive, messengerProgressRef, spaceProgressRef }) {
+export function SlideDevice({ slug, deviceType, isActive, messengerProgressRef, spaceProgressRef, onStep }) {
   const Device = DEVICES[deviceType]
   const Screen = SCREENS[slug]
   const vibrate = deviceType === 'phone' && slug === 'receptionist'
@@ -93,6 +93,7 @@ export function SlideDevice({ slug, deviceType, isActive, messengerProgressRef, 
                   <Screen
                     isActive={isActive}
                     onAction={onAction}
+                    onStep={onStep}
                     progressRef={messengerProgressRef}
                   />
                 </div>
@@ -108,6 +109,7 @@ export function SlideDevice({ slug, deviceType, isActive, messengerProgressRef, 
                 <Screen
                   isActive={isActive}
                   onAction={onAction}
+                  onStep={onStep}
                   progressRef={spaceProgressRef}
                 />
               </Device>

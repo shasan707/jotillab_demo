@@ -40,7 +40,7 @@ const CONVERSATIONS = [
   },
 ]
 
-function ChatCard({ conversation, isActive, onCycleComplete }) {
+function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
   const ActionIcon = conversation.action.icon
   const [phase, setPhase] = useState('idle')
   const [currentRole, setCurrentRole] = useState(null)
@@ -64,10 +64,17 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
       return
     }
 
+    let taggedUser = false
+    let taggedAI = false
     const fullItems = [
-      ...conversation.messages.map((m) => ({ kind: 'msg', ...m })),
-      { kind: 'action' },
-      { kind: 'msg', role: 'ai', text: conversation.finalMsg },
+      ...conversation.messages.map((m) => {
+        const item = { kind: 'msg', ...m }
+        if (!taggedUser && m.role === 'user') { item.step = 0; taggedUser = true }
+        else if (!taggedAI && m.role === 'ai') { item.step = 1; taggedAI = true }
+        return item
+      }),
+      { kind: 'action', step: 2 },
+      { kind: 'msg', role: 'ai', text: conversation.finalMsg, step: 3 },
     ]
 
     const timers = []
@@ -118,16 +125,20 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
 
         now += 280
         const role = event.role
+        const msgStep = event.step
         t(() => {
           setSentItems((prev) => [...prev, { kind: 'msg', role, text }])
           setTypedText('')
           setPhase('idle')
           setCurrentRole(null)
+          if (msgStep != null) onStep?.(msgStep)
         }, now)
         now += 480
       } else if (event.kind === 'action') {
+        const actStep = event.step
         t(() => {
           setSentItems((prev) => [...prev, { kind: 'action' }])
+          if (actStep != null) onStep?.(actStep)
         }, now)
         now += 1300
       }
@@ -136,7 +147,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
     t(() => onCycleCompleteRef.current?.(), now + 2800)
 
     return () => timers.forEach(clearTimeout)
-  }, [isActive, conversation])
+  }, [isActive, conversation, onStep])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -300,7 +311,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
   )
 }
 
-export function MessengerScreen({ isActive }) {
+export function MessengerScreen({ isActive, onStep }) {
   const [convIdx, setConvIdx] = useState(0)
 
   return (
@@ -317,6 +328,7 @@ export function MessengerScreen({ isActive }) {
           key={convIdx}
           conversation={CONVERSATIONS[convIdx]}
           isActive={isActive}
+          onStep={onStep}
           onCycleComplete={() => setConvIdx((i) => (i + 1) % CONVERSATIONS.length)}
         />
       </div>
