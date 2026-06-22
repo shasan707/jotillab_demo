@@ -1,9 +1,8 @@
 import { SplineAura } from '@/components/sections/SplineAura'
 import { LiveConsole } from '@/components/sections/LiveConsole'
+import { ScrollProductShowcase } from '@/components/sections/ScrollProductShowcase'
 import { SolutionsBento } from '@/components/sections/SolutionsBento'
 import { HowItWorks } from '@/components/sections/HowItWorks'
-import { Stats } from '@/components/sections/Stats'
-import { Testimonials } from '@/components/sections/Testimonials'
 import { IntegrationStrip } from '@/components/sections/IntegrationStrip'
 import { CTASection } from '@/components/sections/CTASection'
 
@@ -18,10 +17,9 @@ export default function Home() {
     <>
       <SplineAura />
       <LiveConsole />
+      <ScrollProductShowcase />
       <SolutionsBento />
       <HowItWorks />
-      <Stats />
-      <Testimonials />
       <IntegrationStrip />
       <CTASection />
     </>

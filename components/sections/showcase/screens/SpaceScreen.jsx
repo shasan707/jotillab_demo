@@ -23,8 +23,8 @@ const TURN_1 = {
   ai: "Q4 totals: $847K revenue, up 23% YoY. Here's the breakdown by channel:",
   bars: [
     { label: 'Voice', value: 342, color: '#3859a8' },
-    { label: 'Email', value: 251, color: '#6366F1' },
-    { label: 'Web', value: 172, color: '#22D3EE' },
+    { label: 'Email', value: 251, color: '#7c3aed' },
+    { label: 'Web', value: 172, color: '#06b6d4' },
     { label: 'SMS', value: 82, color: '#10B981' },
   ],
 }

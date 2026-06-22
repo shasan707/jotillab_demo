@@ -7,7 +7,7 @@ export function SlideText({ product }) {
     <div className="slide-text max-w-[460px]">
       <div
         className="slide-badge inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-5"
-        style={{ background: 'rgba(56, 89, 168, 0.08)', color: '#3859a8' }}
+        style={{ background: 'rgba(124, 58, 237, 0.09)', color: '#7c3aed' }}
       >
         <Icon size={14} strokeWidth={2} />
         {badge}
@@ -30,7 +30,7 @@ export function SlideText({ product }) {
             key={i}
             className="slide-feature flex items-center gap-2.5 text-sm text-text-secondary"
           >
-            <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-primary" />
+            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'linear-gradient(135deg, #3B82F6, #7c3aed)' }} />
             {f}
           </li>
         ))}

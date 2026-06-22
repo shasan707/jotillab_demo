@@ -18,8 +18,8 @@ const LEADS = [
 
 const COLORS = {
   call: '#3859a8',
-  email: '#6366F1',
-  sms: '#22D3EE',
+  email: '#7c3aed',
+  sms: '#06b6d4',
   primary: '#3859a8',
 }
 

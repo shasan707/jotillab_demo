@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowRight, ArrowUpRight, Phone, MessageCircle, TrendingUp, LayoutGrid, GitBranch, UserCircle, Check } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Spotlight, useSpotlight } from '@/components/design/Spotlight'
+import { TiltCard } from '@/components/design'
 
 /* Asymmetric bento overview of all six solutions. Outcome-led copy,
    one large "anchor" tile (Receptionist) with a live micro-visual,
@@ -125,13 +126,14 @@ function BentoTile({ tile }) {
   const spot = useSpotlight()
 
   return (
-    <Link
-      href={`/products/${slug}`}
-      className="card-premium group relative flex h-full flex-col overflow-hidden no-underline"
-      style={{ padding: size === 'large' ? '32px' : '24px' }}
-      {...spot}
-    >
-      <Spotlight color={`${color}40`} size={size === 'large' ? 460 : 320} />
+    <TiltCard maxTilt={4} className="h-full rounded-[20px]">
+      <Link
+        href={`/products/${slug}`}
+        className="card-premium group relative flex h-full flex-col overflow-hidden no-underline"
+        style={{ padding: size === 'large' ? '32px' : '24px' }}
+        {...spot}
+      >
+        <Spotlight color={`${color}40`} size={size === 'large' ? 460 : 320} />
 
       {/* Icon + hover arrow */}
       <div className="flex items-start justify-between mb-4">
@@ -218,7 +220,8 @@ function BentoTile({ tile }) {
           </span>
         </div>
       )}
-    </Link>
+      </Link>
+    </TiltCard>
   )
 }
 
@@ -226,25 +229,27 @@ function CtaTile() {
   const spot = useSpotlight()
 
   return (
-    <Link
-      href="/products"
-      className="group relative flex h-full min-h-[150px] flex-col justify-between overflow-hidden rounded-[20px] p-7 no-underline"
-      style={{ background: 'linear-gradient(135deg, #3859a8 0%, #2a4688 55%, #22396E 100%)' }}
-      {...spot}
-    >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute rounded-full"
-        style={{ width: 280, height: 280, right: '-15%', top: '-40%', background: 'radial-gradient(circle, rgba(59,130,246,0.45) 0%, transparent 70%)', filter: 'blur(50px)' }}
-      />
-      <Spotlight color="rgba(120,160,255,0.40)" size={420} blend="screen" />
-      <p className="relative text-[15px] leading-relaxed max-w-[320px]" style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-inter), Inter, sans-serif' }}>
-        Not sure where to start? See how the pieces fit together.
-      </p>
-      <span className="relative inline-flex items-center gap-2 text-white font-semibold text-[15px]" style={{ fontFamily: 'var(--font-display)' }}>
-        Explore all solutions
-        <ArrowRight size={16} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-1" />
-      </span>
-    </Link>
+    <TiltCard maxTilt={4} className="h-full rounded-[20px]">
+      <Link
+        href="/products"
+        className="group relative flex h-full min-h-[150px] flex-col justify-between overflow-hidden rounded-[20px] p-7 no-underline"
+        style={{ background: 'linear-gradient(135deg, #3859a8 0%, #2a4688 55%, #22396E 100%)' }}
+        {...spot}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute rounded-full"
+          style={{ width: 280, height: 280, right: '-15%', top: '-40%', background: 'radial-gradient(circle, rgba(59,130,246,0.45) 0%, transparent 70%)', filter: 'blur(50px)' }}
+        />
+        <Spotlight color="rgba(120,160,255,0.40)" size={420} blend="screen" />
+        <p className="relative text-[15px] leading-relaxed max-w-[320px]" style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-inter), Inter, sans-serif' }}>
+          Not sure where to start? See how the pieces fit together.
+        </p>
+        <span className="relative inline-flex items-center gap-2 text-white font-semibold text-[15px]" style={{ fontFamily: 'var(--font-display)' }}>
+          Explore all solutions
+          <ArrowRight size={16} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-1" />
+        </span>
+      </Link>
+    </TiltCard>
   )
 }

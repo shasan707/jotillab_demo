@@ -30,7 +30,7 @@ function RingingPhase() {
       <div
         className="absolute bottom-0 left-0 right-0 h-[45%]"
         style={{
-          background: 'linear-gradient(180deg, transparent 0%, rgba(56,89,168,0.04) 30%, rgba(56,89,168,0.08) 60%, rgba(99,102,241,0.06) 100%)',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(56,89,168,0.04) 30%, rgba(56,89,168,0.08) 60%, rgba(124,58,237,0.06) 100%)',
         }}
       />
 
@@ -375,10 +375,10 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
             className="w-9 h-9 rounded-full flex items-center justify-center relative"
             style={{
               background: speakingRole === 'ai'
-                ? 'linear-gradient(135deg, #22D3EE, #3859a8, #6366F1)'
+                ? 'linear-gradient(135deg, #06b6d4, #3859a8, #7c3aed)'
                 : 'linear-gradient(135deg, #4a6fc2, #3859a8, #2a4688)',
               boxShadow: speakingRole === 'ai'
-                ? '0 0 16px rgba(34,211,238,0.5), 0 0 32px rgba(56,89,168,0.3), 0 0 48px rgba(99,102,241,0.2)'
+                ? '0 0 16px rgba(6,182,212,0.5), 0 0 32px rgba(56,89,168,0.3), 0 0 48px rgba(124,58,237,0.2)'
                 : '0 2px 8px rgba(56,89,168,0.25)',
               animation: speakingRole === 'ai' ? 'orb-pulse 1s ease-in-out infinite' : 'none',
               transition: 'background 0.4s, box-shadow 0.4s',

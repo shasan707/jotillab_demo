@@ -307,7 +307,7 @@ export function LiveConsole() {
                     <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(15,17,41,0.12)' }} />
                   </span>
                   <span className="text-[12px] font-semibold text-text-secondary" style={{ fontFamily: 'var(--font-display)' }}>
-                    JotilLabs Live Console
+                    JotilLabs Live Dashboard
                   </span>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] uppercase" style={{ background: 'rgba(22,163,74,0.10)', color: '#15803D', border: '1px solid rgba(22,163,74,0.18)' }}>
