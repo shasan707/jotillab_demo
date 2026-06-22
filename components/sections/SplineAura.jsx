@@ -1,9 +1,52 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+
+/* Cursor/touch "jelly" tilt for the hero orb. Pointer-based so it works with a
+   mouse, a finger, or a pen; rAF-throttled; springs back on leave; inert under
+   prefers-reduced-motion. Composes with the orb's own morph animation because
+   the tilt lives on a parent wrapper. */
+function useJellyTilt(max = 12) {
+  const ref = useRef(null)
+  const frame = useRef(null)
+
+  const onMove = useCallback((e) => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const rect = el.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width
+    const py = (e.clientY - rect.top) / rect.height
+    if (frame.current) cancelAnimationFrame(frame.current)
+    frame.current = requestAnimationFrame(() => {
+      const rx = (0.5 - py) * max * 2
+      const ry = (px - 0.5) * max * 2
+      el.style.transition = 'transform 0.1s ease-out'
+      el.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`
+    })
+  }, [max])
+
+  const reset = useCallback(() => {
+    const el = ref.current
+    if (!el) return
+    if (frame.current) cancelAnimationFrame(frame.current)
+    el.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)'
+    el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)'
+  }, [])
+
+  return {
+    ref,
+    handlers: {
+      onPointerMove: onMove,
+      onPointerLeave: reset,
+      onPointerUp: reset,
+      onPointerCancel: reset,
+    },
+  }
+}
 
 /* Full-screen landing hero. A Spline 3D scene fills the background; a soft
    white radial mask keeps the left column legible. The left column carries the
@@ -108,6 +151,7 @@ export function SplineAura() {
   }, [])
 
   const product = PRODUCTS[index]
+  const tilt = useJellyTilt(12)
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-white text-slate-900">
@@ -190,8 +234,13 @@ export function SplineAura() {
 
         {/* Right column — transparent glass orb cycling unique product icons.
             Shown on mobile too (below the copy), scaled down to fit. */}
-        <div className="flex items-center justify-center">
-          <div className="relative mx-auto flex h-[300px] w-[300px] max-w-full items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[460px] lg:w-[460px]">
+        <div className="flex items-center justify-center" style={{ perspective: '900px' }}>
+          <div
+            ref={tilt.ref}
+            {...tilt.handlers}
+            className="relative mx-auto flex h-[300px] w-[300px] max-w-full items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[460px] lg:w-[460px]"
+            style={{ transformStyle: 'preserve-3d', touchAction: 'pan-y' }}
+          >
             {/* Vibrant ambient glow (tracks the active product hue) */}
             <motion.div
               key={`glow-${product.iconKey}`}
