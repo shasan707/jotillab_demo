@@ -129,7 +129,7 @@ function BentoTile({ tile }) {
     <TiltCard maxTilt={4} className="h-full rounded-[20px]">
       <Link
         href={`/products/${slug}`}
-        className="card-premium group relative flex h-full flex-col overflow-hidden no-underline"
+        className="card-premium btn-shine group relative flex h-full flex-col overflow-hidden no-underline"
         style={{ padding: size === 'large' ? '32px' : '24px' }}
         {...spot}
       >

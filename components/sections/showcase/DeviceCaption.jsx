@@ -32,7 +32,7 @@ export function DeviceCaption({ steps, activeIndex, className = '' }) {
               animate={{ opacity: 1, y: 0 }}
               exit={reduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="block text-[15px] sm:text-base font-semibold text-text whitespace-nowrap"
+              className="block text-[17px] sm:text-lg font-semibold text-text whitespace-nowrap"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               {label}

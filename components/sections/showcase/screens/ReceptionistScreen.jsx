@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PhoneCall, PhoneOff, Calendar, MessageSquare, UserPlus, Sparkles, User } from 'lucide-react'
+import { PhoneCall, PhoneOff, Calendar, MessageSquare, UserPlus, Sparkles } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 
 const SCRIPT = [
@@ -49,13 +49,16 @@ function RingingPhase() {
           />
         ))}
         <div
-          className="w-[72px] h-[72px] rounded-full flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #e8edf5, #f0f2f8)',
-            boxShadow: '0 4px 20px rgba(56,89,168,0.1), inset 0 1px 0 rgba(255,255,255,0.8)',
-          }}
+          className="w-[72px] h-[72px] rounded-full overflow-hidden"
+          style={{ boxShadow: '0 6px 22px rgba(56,89,168,0.22), inset 0 1px 0 rgba(255,255,255,0.8)' }}
         >
-          <User size={30} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+          <img
+            src="/avatar-sarah.jpg"
+            alt="Sarah Mitchell"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: 'center 22%' }}
+            draggable={false}
+          />
         </div>
       </div>
 

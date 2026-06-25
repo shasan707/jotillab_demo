@@ -882,11 +882,9 @@ textarea:focus-visible {
    in stacked cards with vertical room, so they scale up by width. At lg+ they
    pin in a ~544px column AND inside a viewport-height sticky box, so the phone
    (660px tall) is height-limited while the browser is width-limited. */
-/* Phone scale on small screens is kept so the WHOLE phone + caption fits
-   below the fixed 64px navbar on common phones (e.g. 0.78*660=515 + caption
-   ~70 + navbar 64 < 667). Otherwise the tall phone tucks under the navbar and
-   its top reads as cut off. */
-[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.78; }
+/* Phone sits in a normal stacked row now, so it scales up toward the column
+   width for legibility (320*0.92=294 fits a 360px phone with padding). */
+[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.92; }
 [data-device-frame][data-device-type="laptop"]  { --w: 720px; --h: 460px; --s: 0.42; }
 [data-device-frame][data-device-type="monitor"] { --w: 460px; --h: 330px; --s: 0.65; }
 /* Browser is wide (820px); on small phones it must FIT (no horizontal cut),
@@ -894,10 +892,10 @@ textarea:focus-visible {
 [data-device-frame][data-device-type="browser"] { --w: 820px; --h: 560px; --s: 0.38; }
 
 @media (min-width: 480px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 0.82; }
+  [data-device-frame][data-device-type="phone"]   { --s: 0.96; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.55; }
   [data-device-frame][data-device-type="monitor"] { --s: 0.85; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.50; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.52; }
 }
 
 @media (min-width: 640px) {
