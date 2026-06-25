@@ -153,6 +153,19 @@ function HeroOrb() {
     return () => clearInterval(id)
   }, [])
 
+  // Drop the orb's backdrop-filter on phones — re-sampling a blurred backdrop
+  // every scroll frame is a top cause of hero scroll jank on mobile. The orb
+  // keeps its gradient fill, rim and shadows so it still reads as glass.
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  const glassBlur = isMobile ? 'none' : 'blur(4px) saturate(1.4) brightness(1.03)'
+
   const product = PRODUCTS[index]
   const tilt = useJellyTilt(12)
 
@@ -190,8 +203,8 @@ function HeroOrb() {
             style={{
               transformStyle: 'preserve-3d',
               background: 'linear-gradient(150deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
-              backdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
-              WebkitBackdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
+              backdropFilter: glassBlur,
+              WebkitBackdropFilter: glassBlur,
               border: '1px solid rgba(255,255,255,0.5)',
               boxShadow: `inset 0 2px 12px rgba(255,255,255,0.9), inset 0 -16px 36px rgba(56,89,168,0.22), inset 0 28px 54px rgba(255,255,255,0.16), 0 30px 64px -24px ${product.color}55, 0 8px 22px rgba(15,17,41,0.08)`,
             }}
@@ -289,8 +302,8 @@ export function SplineAura() {
             <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129' }}>
               Instant
             </span>
-            <span className="glitch-v9" data-text="Engagement." style={{ color: '#0f1129' }}>
-              Engagement.
+            <span className="glitch-v9" data-text="Engagement" style={{ color: '#0f1129' }}>
+              Engagement
             </span>
             <span
               style={{
@@ -310,7 +323,7 @@ export function SplineAura() {
                 color: 'transparent',
               }}
             >
-              Growth.
+              Growth
             </span>
           </h1>
 
