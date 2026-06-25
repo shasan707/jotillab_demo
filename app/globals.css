@@ -491,8 +491,8 @@ h1, h2, h3, h4, h5, h6 {
      the hero gets the same shadow, including on mobile — and it is far cheaper
      to paint while scrolling than a drop-shadow filter. */
   text-shadow:
-    0 1px 1px rgba(15, 17, 41, 0.14),
-    0 2px 4px rgba(15, 17, 41, 0.10);
+    0 1px 1px rgba(15, 17, 41, 0.30),
+    0 3px 6px rgba(15, 17, 41, 0.20);
 }
 
 /* Slow drifting color wash for the solutions bento tiles (per-tile hue via
