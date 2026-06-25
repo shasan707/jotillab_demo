@@ -1,10 +1,28 @@
+import dynamic from 'next/dynamic'
 import { SplineAura } from '@/components/sections/SplineAura'
-import { LiveConsole } from '@/components/sections/LiveConsole'
-import { ScrollProductShowcase } from '@/components/sections/ScrollProductShowcase'
-import { SolutionsBento } from '@/components/sections/SolutionsBento'
-import { HowItWorks } from '@/components/sections/HowItWorks'
-import { IntegrationStrip } from '@/components/sections/IntegrationStrip'
-import { CTASection } from '@/components/sections/CTASection'
+
+// Hero (SplineAura) stays in the main bundle for instant first paint. Every
+// section below the fold is code-split into its own chunk so the homepage's
+// initial JS/hydration only covers the hero. These still server-render (no
+// ssr:false), so the HTML and SEO are unchanged — only the client JS is lazy.
+const ScrollProductShowcase = dynamic(() =>
+  import('@/components/sections/ScrollProductShowcase').then((m) => m.ScrollProductShowcase),
+)
+const SolutionsBento = dynamic(() =>
+  import('@/components/sections/SolutionsBento').then((m) => m.SolutionsBento),
+)
+const HowItWorks = dynamic(() =>
+  import('@/components/sections/HowItWorks').then((m) => m.HowItWorks),
+)
+const IntegrationStrip = dynamic(() =>
+  import('@/components/sections/IntegrationStrip').then((m) => m.IntegrationStrip),
+)
+const LiveConsole = dynamic(() =>
+  import('@/components/sections/LiveConsole').then((m) => m.LiveConsole),
+)
+const CTASection = dynamic(() =>
+  import('@/components/sections/CTASection').then((m) => m.CTASection),
+)
 
 export const metadata = {
   title: 'JotilLabs - AI Voice, Chat & Automation Platform',

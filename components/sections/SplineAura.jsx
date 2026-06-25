@@ -142,7 +142,10 @@ function ProductIcon({ iconKey, color, c2 }) {
   )
 }
 
-export function SplineAura() {
+/* Right column: transparent glass orb cycling unique product icons. Owns its
+   own cycle state + tilt so the 3.2s interval only re-renders THIS subtree, not
+   the whole hero (headline/CTAs stay static between cycles). */
+function HeroOrb() {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -154,16 +157,112 @@ export function SplineAura() {
   const tilt = useJellyTilt(12)
 
   return (
+    <div className="flex items-center justify-center" style={{ perspective: '900px' }}>
+      <div
+        ref={tilt.ref}
+        {...tilt.handlers}
+        className="relative mx-auto flex h-[300px] w-[300px] max-w-full items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[460px] lg:w-[460px]"
+        style={{ transformStyle: 'preserve-3d', touchAction: 'pan-y' }}
+      >
+        {/* Vibrant ambient glow (tracks the active product hue) */}
+        <motion.div
+          key={`glow-${product.iconKey}`}
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{ background: `radial-gradient(circle at center, ${product.color}45, transparent 62%)`, filter: 'blur(46px)' }}
+          animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.85, 0.5] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Transparent glass morphing orb */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={product.name}
+            initial={{ scale: 0.8, opacity: 0, rotate: -6 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0, borderRadius: BLOB_MORPH }}
+            exit={{ scale: 0.8, opacity: 0, rotate: 6 }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+              borderRadius: { duration: 7, repeat: Infinity },
+            }}
+            className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-3 px-6 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
+            style={{
+              transformStyle: 'preserve-3d',
+              background: 'linear-gradient(150deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
+              backdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
+              WebkitBackdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
+              border: '1px solid rgba(255,255,255,0.5)',
+              boxShadow: `inset 0 2px 12px rgba(255,255,255,0.9), inset 0 -16px 36px rgba(56,89,168,0.22), inset 0 28px 54px rgba(255,255,255,0.16), 0 30px 64px -24px ${product.color}55, 0 8px 22px rgba(15,17,41,0.08)`,
+            }}
+          >
+            {/* Hue-tinted refraction in the lower body of the droplet */}
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: `radial-gradient(120% 120% at 70% 80%, ${product.color}24, transparent 60%)` }} />
+            {/* Bright glossy specular highlight (top-left) */}
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(42% 34% at 30% 20%, rgba(255,255,255,0.92), transparent 60%)', mixBlendMode: 'screen', opacity: 0.75 }} />
+            {/* Slow caustic shimmer for the water feel */}
+            <motion.span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(30% 26% at 72% 72%, rgba(186,230,253,0.7), transparent 60%)', mixBlendMode: 'screen' }} animate={{ opacity: [0.25, 0.6, 0.25] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} />
+            {/* Fluid vibrant rim (glass edge) */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                borderRadius: 'inherit',
+                padding: '2px',
+                background: `linear-gradient(135deg, rgba(255,255,255,0.9), ${product.color}, ${product.c2})`,
+                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                WebkitMaskComposite: 'xor',
+                maskComposite: 'exclude',
+                opacity: 0.9,
+              }}
+            />
+
+            {/* Content floats inside the glass chamber at varying depths (3D) */}
+            <div style={{ transform: 'translateZ(55px)' }}>
+              <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
+            </div>
+            <span className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)' }}>
+              {product.name}
+            </span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
+              {product.tag}
+            </span>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+export function SplineAura() {
+  // Defer the heavy Spline WebGL scene until the browser is idle (i.e. after
+  // hydration/first paint), so it no longer competes with React for the main
+  // thread on refresh. The white veil below is the placeholder, so the visible
+  // hero is unchanged for the first frames.
+  const [showSpline, setShowSpline] = useState(false)
+  useEffect(() => {
+    const cb = () => setShowSpline(true)
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(cb, { timeout: 1500 })
+      return () => window.cancelIdleCallback?.(id)
+    }
+    const id = setTimeout(cb, 600)
+    return () => clearTimeout(id)
+  }, [])
+
+  return (
     <section className="relative min-h-screen w-full overflow-hidden bg-white text-slate-900">
-      {/* Spline 3D scene — the ONLY hero background */}
-      <iframe
-        src="https://my.spline.design/herolightcopy-HWuYMA6IdNGk0VGuyvrItNGB"
-        title="3D background"
-        aria-hidden="true"
-        loading="lazy"
-        className="absolute inset-0 z-0 h-full w-full border-0"
-        style={{ pointerEvents: 'none' }}
-      />
+      {/* Spline 3D scene — the ONLY hero background (mounted after idle) */}
+      {showSpline && (
+        <iframe
+          src="https://my.spline.design/herolightcopy-HWuYMA6IdNGk0VGuyvrItNGB"
+          title="3D background"
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 z-0 h-full w-full border-0"
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
 
       {/* Soft veil behind the headline for legibility */}
       <div
@@ -243,81 +342,9 @@ export function SplineAura() {
         </div>
 
         {/* Right column — transparent glass orb cycling unique product icons.
-            Shown on mobile too (below the copy), scaled down to fit. */}
-        <div className="flex items-center justify-center" style={{ perspective: '900px' }}>
-          <div
-            ref={tilt.ref}
-            {...tilt.handlers}
-            className="relative mx-auto flex h-[300px] w-[300px] max-w-full items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[460px] lg:w-[460px]"
-            style={{ transformStyle: 'preserve-3d', touchAction: 'pan-y' }}
-          >
-            {/* Vibrant ambient glow (tracks the active product hue) */}
-            <motion.div
-              key={`glow-${product.iconKey}`}
-              aria-hidden="true"
-              className="absolute inset-0"
-              style={{ background: `radial-gradient(circle at center, ${product.color}45, transparent 62%)`, filter: 'blur(46px)' }}
-              animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.85, 0.5] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-            />
-
-            {/* Transparent glass morphing orb */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={product.name}
-                initial={{ scale: 0.8, opacity: 0, rotate: -6 }}
-                animate={{ scale: 1, opacity: 1, rotate: 0, borderRadius: BLOB_MORPH }}
-                exit={{ scale: 0.8, opacity: 0, rotate: 6 }}
-                transition={{
-                  duration: 0.7,
-                  ease: [0.22, 1, 0.36, 1],
-                  borderRadius: { duration: 7, repeat: Infinity },
-                }}
-                className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-3 px-6 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  background: 'linear-gradient(150deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
-                  backdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
-                  WebkitBackdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
-                  border: '1px solid rgba(255,255,255,0.5)',
-                  boxShadow: `inset 0 2px 12px rgba(255,255,255,0.9), inset 0 -16px 36px rgba(56,89,168,0.22), inset 0 28px 54px rgba(255,255,255,0.16), 0 30px 64px -24px ${product.color}55, 0 8px 22px rgba(15,17,41,0.08)`,
-                }}
-              >
-                {/* Hue-tinted refraction in the lower body of the droplet */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: `radial-gradient(120% 120% at 70% 80%, ${product.color}24, transparent 60%)` }} />
-                {/* Bright glossy specular highlight (top-left) */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(42% 34% at 30% 20%, rgba(255,255,255,0.92), transparent 60%)', mixBlendMode: 'screen', opacity: 0.75 }} />
-                {/* Slow caustic shimmer for the water feel */}
-                <motion.span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(30% 26% at 72% 72%, rgba(186,230,253,0.7), transparent 60%)', mixBlendMode: 'screen' }} animate={{ opacity: [0.25, 0.6, 0.25] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} />
-                {/* Fluid vibrant rim (glass edge) */}
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    borderRadius: 'inherit',
-                    padding: '2px',
-                    background: `linear-gradient(135deg, rgba(255,255,255,0.9), ${product.color}, ${product.c2})`,
-                    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    WebkitMaskComposite: 'xor',
-                    maskComposite: 'exclude',
-                    opacity: 0.9,
-                  }}
-                />
-
-                {/* Content floats inside the glass chamber at varying depths (3D) */}
-                <div style={{ transform: 'translateZ(55px)' }}>
-                  <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
-                </div>
-                <span className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)' }}>
-                  {product.name}
-                </span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
-                  {product.tag}
-                </span>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+            Shown on mobile too (below the copy), scaled down to fit. Isolated
+            into HeroOrb so its 3.2s cycle doesn't re-render the headline/CTAs. */}
+        <HeroOrb />
       </div>
     </section>
   )

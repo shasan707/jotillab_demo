@@ -6,8 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/layout/JsonLd'
-import { AIWidget } from '@/components/widgets/AIWidget'
-import { ScrollToTop } from '@/components/layout/ScrollToTop'
+import { DeferredWidgets } from '@/components/layout/DeferredWidgets'
 import { BrandBackgroundGate, SmoothScroll } from '@/components/design'
 
 const montserratAlternates = Montserrat_Alternates({
@@ -145,8 +144,7 @@ export default function RootLayout({ children }) {
           <main id="main-content" className="relative z-10">{children}</main>
           <Footer />
         </SmoothScroll>
-        <ScrollToTop />
-        <AIWidget />
+        <DeferredWidgets />
         <Analytics />
         <SpeedInsights />
       </body>
