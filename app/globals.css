@@ -166,6 +166,18 @@
   animation: atmosphere-drift-3 36s ease-in-out infinite;
 }
 
+/* On phones the full-screen blurred aurora layers are expensive to recomposite
+   every frame (and largely hidden behind opaque sections anyway). Freeze the
+   drift on small screens — a still frame looks identical, only the slow motion
+   is dropped, which keeps the GPU cool and the scroll smooth. */
+@media (max-width: 767px) {
+  .atmosphere-drift-1,
+  .atmosphere-drift-2,
+  .atmosphere-drift-3 {
+    animation: none;
+  }
+}
+
 @keyframes ring-pulse {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
   50% { transform: translate(-50%, -50%) scale(1.03); }

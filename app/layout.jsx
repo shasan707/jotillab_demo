@@ -46,11 +46,14 @@ const russoOne = Russo_One({
 })
 
 // Professional neutral display used for homepage section headings (not the hero).
+// Headings only ever render bold (700) and extrabold (800), so we load exactly
+// those two weights — no unused files, and extrabold renders natively instead
+// of being synthesized from 900.
 const roboto = Roboto({
   subsets: ['latin'],
   variable: '--font-roboto',
   display: 'swap',
-  weight: ['400', '500', '700', '900'],
+  weight: ['700', '800'],
 })
 
 export const metadata = {
