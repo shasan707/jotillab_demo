@@ -397,12 +397,47 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 768px) {
+  /* Touch devices never fire :hover, so the resting card has to carry the
+     depth on its own. Use a lighter blur (cooler GPU) but a more present
+     drop shadow so cards don't read flat on mobile. */
   .card,
   .card-premium {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow:
+      0 10px 26px rgba(15, 17, 41, 0.09),
+      0 2px 8px rgba(56, 89, 168, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
+}
+
+/* ── Homepage professional headings (everything except the hero) ──
+   The hero keeps its display look; the rest of the homepage uses a clean,
+   neutral Roboto stack with a single professional blue accent instead of the
+   multi-stop gradient. !important is required to win over the per-heading
+   inline font-family declarations. */
+.home-pro-headings h1,
+.home-pro-headings h2,
+.home-pro-headings h3,
+.home-pro-headings h1 em,
+.home-pro-headings h2 em,
+.home-pro-headings h3 em {
+  font-family: var(--font-roboto), Roboto, Arial, sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+.home-pro-headings h2,
+.home-pro-headings h3 {
+  color: #0f1129;
+}
+
+/* Neutralise the rainbow gradient accent into one refined royal-blue. */
+.home-pro-headings .text-gradient {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #3859a8 !important;
+  color: #3859a8 !important;
 }
 
 .card-premium::before {
@@ -444,6 +479,13 @@ h1, h2, h3, h4, h5, h6 {
   filter:
     drop-shadow(0 5px 2px rgba(15, 17, 41, 0.42))
     drop-shadow(0 11px 6px rgba(15, 17, 41, 0.22));
+}
+
+/* Slow drifting color wash for the solutions bento tiles (per-tile hue via
+   inline background; this only animates the gradient position). */
+@keyframes bento-wash {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .btn-gradient {
@@ -902,7 +944,8 @@ textarea:focus-visible {
   [data-device-frame][data-device-type="phone"]   { --s: 0.9; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.78; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.5; }
+  /* browser sits in a full-width row -> it can grow for legible text */
+  [data-device-frame][data-device-type="browser"] { --s: 0.68; }
 }
 
 @media (min-width: 768px) {
@@ -910,7 +953,7 @@ textarea:focus-visible {
   [data-device-frame][data-device-type="phone"]   { --s: 1; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.92; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.56; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.82; }
 }
 
 @media (min-width: 1024px) {
@@ -920,14 +963,16 @@ textarea:focus-visible {
   [data-device-frame][data-device-type="phone"]   { --s: 1; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.70; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.62; }
+  /* browser sits beside the text in the WIDER column, so it renders large
+     enough that its in-screen text reads clearly */
+  [data-device-frame][data-device-type="browser"] { --s: 0.65; }
 }
 
 @media (min-width: 1280px) {
   [data-device-frame][data-device-type="phone"]   { --s: 1.05; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.72; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.66; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.83; }
 }
 
 

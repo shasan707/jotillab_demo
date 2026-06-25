@@ -307,22 +307,30 @@ export function LiveConsole() {
   const opacity = useTransform(scrollYProgress, [0, 0.55], [0.35, 1])
 
   return (
-    <section ref={sectionRef} className="relative py-16 sm:py-20">
+    <section ref={sectionRef} className="relative bg-white py-16 sm:py-20">
       <div className="max-w-5xl mx-auto px-6" style={{ perspective: 1300 }}>
         <motion.div
           style={reduced ? undefined : { y, scale, rotateX, opacity, transformOrigin: 'center top' }}
         >
-          <TiltCard maxTilt={1.5} className="rounded-[24px]">
+          <TiltCard maxTilt={1.5} className="rounded-[26px]">
+            {/* Premium hardware-style gradient bezel */}
             <div
-              className="rounded-[24px] overflow-hidden"
+              className="rounded-[26px] p-[3px]"
               style={{
-                background: 'rgba(255,255,255,0.72)',
-                backdropFilter: 'blur(24px) saturate(1.6)',
-                WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
-                border: '1px solid rgba(255,255,255,0.8)',
-                boxShadow: '0 32px 90px rgba(56, 89, 168,0.16), 0 8px 28px rgba(15,17,41,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
+                background:
+                  'linear-gradient(150deg, rgba(255,255,255,0.95) 0%, rgba(56,89,168,0.55) 30%, rgba(124,58,237,0.45) 58%, rgba(6,182,212,0.45) 80%, rgba(255,255,255,0.7) 100%)',
+                boxShadow: '0 30px 70px rgba(56,89,168,0.18), 0 8px 26px rgba(15,17,41,0.08)',
               }}
             >
+              <div
+                className="rounded-[23px] overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.45)',
+                  backdropFilter: 'blur(10px) saturate(1.4)',
+                  WebkitBackdropFilter: 'blur(10px) saturate(1.4)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)',
+                }}
+              >
               {/* Chrome bar */}
               <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid rgba(15,17,41,0.06)', background: 'rgba(255,255,255,0.5)' }}>
                 <div className="flex items-center gap-3">
@@ -366,6 +374,7 @@ export function LiveConsole() {
                     </p>
                   </div>
                 ))}
+              </div>
               </div>
             </div>
           </TiltCard>

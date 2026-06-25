@@ -1,5 +1,5 @@
 import './globals.css'
-import { Montserrat_Alternates, Inter, JetBrains_Mono, Fraunces, Russo_One } from 'next/font/google'
+import { Montserrat_Alternates, Inter, JetBrains_Mono, Fraunces, Russo_One, Roboto } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -44,6 +44,14 @@ const russoOne = Russo_One({
   variable: '--font-russo',
   display: 'swap',
   weight: '400',
+})
+
+// Professional neutral display used for homepage section headings (not the hero).
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  display: 'swap',
+  weight: ['400', '500', '700', '900'],
 })
 
 export const metadata = {
@@ -105,7 +113,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${montserratAlternates.variable} ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${russoOne.variable}`}
+      className={`${montserratAlternates.variable} ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${russoOne.variable} ${roboto.variable}`}
     >
       <head>
         <OrganizationJsonLd />

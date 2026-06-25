@@ -209,7 +209,7 @@ function CallingView({ activeIdx, finished }) {
       </div>
 
       <div
-        className="rounded-xl py-5 px-4 flex flex-col items-center gap-3"
+        className="relative overflow-hidden rounded-xl py-5 px-4 flex flex-col items-center gap-3"
         style={{
           background: `linear-gradient(160deg, ${COLORS.call}08, ${COLORS.call}18)`,
           border: `1px solid ${COLORS.call}25`,

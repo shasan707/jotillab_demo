@@ -135,11 +135,24 @@ function BentoTile({ tile }) {
       >
         <Spotlight color={`${color}40`} size={size === 'large' ? 460 : 320} />
 
+      {/* Static color wash in the tile's hue (lightweight — no repaint loop) */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${color}16, transparent 45%, ${color}10 85%)`,
+          opacity: 0.8,
+        }}
+      />
+
       {/* Icon + hover arrow */}
-      <div className="flex items-start justify-between mb-4">
+      <div className="relative flex items-start justify-between mb-4">
         <span
           className="w-11 h-11 rounded-[12px] flex items-center justify-center"
-          style={{ background: `${color}12`, border: `1px solid ${color}20` }}
+          style={{
+            background: `linear-gradient(135deg, ${color}26, ${color}0a)`,
+            border: `1px solid ${color}2b`,
+          }}
         >
           <Icon size={20} strokeWidth={1.75} style={{ color }} />
         </span>

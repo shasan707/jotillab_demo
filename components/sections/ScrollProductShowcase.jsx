@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { PRODUCT_SLIDES, PRODUCT_STEPS } from './showcase/data'
-import { SlideText } from './showcase/SlideText'
+import { SlideBadge, SlideText } from './showcase/SlideText'
 import { SlideDevice } from './showcase/SlideDevice'
 import { DeviceCaption } from './showcase/DeviceCaption'
 import { FlowCard } from './showcase/FlowCard'
@@ -40,40 +40,72 @@ function ShowcaseRow({ product, flip }) {
   // Drive the in-device demo only while the row is on screen.
   const inView = useInView(ref, { margin: '-20% 0px -20% 0px' })
 
+  // Horizontal slide-in only on desktop (≥lg). On phones a 64px sideways
+  // travel pushes the device past its column edge before it settles, so the
+  // mockup appears to cross its boundary — there we reveal with fade + rise
+  // only (no x), which keeps every device fully inside its bounds.
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  const dx = isDesktop ? 64 : 0
+
   // whileInView reveal (IntersectionObserver-based, so it works with the site's
-  // Lenis smooth scroll). Columns slide in from opposite sides as you scroll to
-  // the row, and re-trigger each time it re-enters. Transform-only + in natural
-  // flow → no clipping on any device.
+  // Lenis smooth scroll). The centered header rises in; the device and feature
+  // columns slide in from opposite sides on desktop (fade + rise only on mobile
+  // so nothing crosses its bounds). Re-triggers each time the row re-enters.
   const spring = { type: 'spring', stiffness: 95, damping: 18 }
-  const viewport = { amount: 0.35, margin: '-8% 0px -8% 0px' }
-  const textMotion = reduced ? {} : {
-    initial: { opacity: 0, x: flip ? 64 : -64, y: 20 },
-    whileInView: { opacity: 1, x: 0, y: 0 },
+  const viewport = { amount: 0.3, margin: '-8% 0px -8% 0px' }
+  const badgeMotion = reduced ? {} : {
+    initial: { opacity: 0, y: 18 },
+    whileInView: { opacity: 1, y: 0 },
     viewport,
     transition: spring,
   }
+  const textMotion = reduced ? {} : {
+    initial: { opacity: 0, x: flip ? dx : -dx, y: 20 },
+    whileInView: { opacity: 1, x: 0, y: 0 },
+    viewport,
+    transition: { ...spring, delay: 0.06 },
+  }
   const deviceMotion = reduced ? {} : {
-    initial: { opacity: 0, x: flip ? -64 : 64, y: 20, scale: 0.96 },
+    initial: { opacity: 0, x: flip ? -dx : dx, y: 24, scale: 0.96 },
     whileInView: { opacity: 1, x: 0, y: 0, scale: 1 },
     viewport,
-    transition: { ...spring, delay: 0.08 },
+    transition: { ...spring, delay: 0.1 },
   }
 
+  // Only the product-name badge is centered, on its own row. Below it the copy
+  // sits beside the device (side-by-side, like before). The device keeps the
+  // wider share of the row so its in-screen text stays readable; the device
+  // side alternates per row.
   return (
-    <div ref={ref} className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-      {/* Copy */}
-      <motion.div className={flip ? 'lg:order-2' : 'lg:order-1'} {...textMotion}>
-        <SlideText product={product} />
+    <div ref={ref} className="flex flex-col gap-7 lg:gap-9">
+      <motion.div {...badgeMotion}>
+        <SlideBadge product={product} />
       </motion.div>
 
-      {/* Device + live caption */}
-      <motion.div
-        className={`flex min-w-0 flex-col items-center gap-5 ${flip ? 'lg:order-1' : 'lg:order-2'}`}
-        {...deviceMotion}
+      <div
+        className={`grid grid-cols-1 items-center gap-10 lg:gap-12 ${flip ? 'lg:grid-cols-[1.18fr_0.82fr]' : 'lg:grid-cols-[0.82fr_1.18fr]'}`}
       >
-        <SlideDevice slug={product.slug} deviceType={product.deviceType} isActive={inView} onStep={setStep} />
-        <DeviceCaption steps={PRODUCT_STEPS[product.slug]} activeIndex={step} />
-      </motion.div>
+        {/* Copy */}
+        <motion.div className={flip ? 'lg:order-2' : 'lg:order-1'} {...textMotion}>
+          <SlideText product={product} />
+        </motion.div>
+
+        {/* Device + live caption */}
+        <motion.div
+          className={`flex min-w-0 flex-col items-center gap-5 ${flip ? 'lg:order-1' : 'lg:order-2'}`}
+          {...deviceMotion}
+        >
+          <SlideDevice slug={product.slug} deviceType={product.deviceType} isActive={inView} onStep={setStep} />
+          <DeviceCaption steps={PRODUCT_STEPS[product.slug]} activeIndex={step} />
+        </motion.div>
+      </div>
     </div>
   )
 }
@@ -83,7 +115,7 @@ export function ScrollProductShowcase() {
     <section className="bg-[#F4F6FB] overflow-x-clip">
       <SectionHeading />
 
-      <div className="mx-auto flex max-w-[1150px] flex-col gap-24 px-6 pb-12 lg:gap-32">
+      <div className="mx-auto flex max-w-[1300px] flex-col gap-24 px-6 pb-12 lg:gap-32">
         {PRODUCT_SLIDES.map((product, i) => (
           <ShowcaseRow key={product.slug} product={product} flip={i % 2 === 1} />
         ))}

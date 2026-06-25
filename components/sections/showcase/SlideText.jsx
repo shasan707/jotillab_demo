@@ -1,18 +1,31 @@
 import Link from 'next/link'
 
+/* Centered product-name pill, shown on its own row above the side-by-side
+   text + device block. */
+export function SlideBadge({ product }) {
+  const { icon: Icon, badge } = product
+
+  return (
+    <div className="flex justify-center">
+      <div
+        className="slide-badge inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold tracking-wide"
+        style={{ background: 'rgba(124, 58, 237, 0.09)', color: '#7c3aed' }}
+      >
+        <Icon size={16} strokeWidth={2} />
+        {badge}
+      </div>
+    </div>
+  )
+}
+
+/* The copy that sits beside the device (left-aligned, like before) — title,
+   description, outcome bullets, and CTA. The product-name badge lives in
+   SlideBadge above the row, so it is not repeated here. */
 export function SlideText({ product }) {
-  const { slug, icon: Icon, badge, title, desc, features } = product
+  const { slug, title, desc, features } = product
 
   return (
     <div className="slide-text max-w-[460px]">
-      <div
-        className="slide-badge inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-5"
-        style={{ background: 'rgba(124, 58, 237, 0.09)', color: '#7c3aed' }}
-      >
-        <Icon size={14} strokeWidth={2} />
-        {badge}
-      </div>
-
       <h2
         className="slide-heading headline-shadow text-[clamp(1.75rem,3vw,2.625rem)] font-bold leading-[1.15] tracking-[-0.03em] text-text mb-4"
         style={{ fontFamily: 'var(--font-display)' }}
@@ -30,7 +43,10 @@ export function SlideText({ product }) {
             key={i}
             className="slide-feature flex items-center gap-2.5 text-sm text-text-secondary"
           >
-            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: 'linear-gradient(135deg, #3B82F6, #7c3aed)' }} />
+            <span
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #7c3aed)' }}
+            />
             {f}
           </li>
         ))}

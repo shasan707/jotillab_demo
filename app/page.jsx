@@ -16,12 +16,16 @@ export default function Home() {
   return (
     <>
       <SplineAura />
-      <LiveConsole />
-      <ScrollProductShowcase />
-      <SolutionsBento />
-      <HowItWorks />
-      <IntegrationStrip />
-      <CTASection />
+      {/* Everything below the hero uses the professional Roboto heading
+          treatment (see .home-pro-headings in globals.css). */}
+      <div className="home-pro-headings">
+        <ScrollProductShowcase />
+        <SolutionsBento />
+        <HowItWorks />
+        <IntegrationStrip />
+        <LiveConsole />
+        <CTASection />
+      </div>
     </>
   )
 }
