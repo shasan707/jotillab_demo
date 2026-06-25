@@ -14,7 +14,7 @@ export function SlideText({ product }) {
       </div>
 
       <h2
-        className="slide-heading text-[clamp(1.75rem,3vw,2.625rem)] font-bold leading-[1.15] tracking-[-0.03em] text-text mb-4"
+        className="slide-heading headline-shadow text-[clamp(1.75rem,3vw,2.625rem)] font-bold leading-[1.15] tracking-[-0.03em] text-text mb-4"
         style={{ fontFamily: 'var(--font-display)' }}
       >
         {title}

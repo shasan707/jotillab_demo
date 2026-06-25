@@ -435,6 +435,16 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
+/* Depth shadow for big, bold headline words. Uses filter:drop-shadow so it
+   works on solid AND gradient-clipped text (text-shadow can't shadow gradient
+   text). Apply to large headings site-wide. */
+.headline-shadow {
+  filter:
+    drop-shadow(0 3px 1px rgba(15, 17, 41, 0.50))
+    drop-shadow(0 8px 10px rgba(15, 17, 41, 0.38))
+    drop-shadow(0 18px 30px rgba(15, 17, 41, 0.24));
+}
+
 .btn-gradient {
   background: linear-gradient(135deg, #3B82F6 0%, #6d28d9 55%, #7c3aed 100%);
 }

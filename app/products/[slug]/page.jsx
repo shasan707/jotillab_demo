@@ -107,7 +107,7 @@ export default async function ProductPage({ params }) {
             <AnimatedSection>
               <Badge variant="blue" className="mb-5">{product.badge}</Badge>
               <h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
               >
                 <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
@@ -160,7 +160,7 @@ export default async function ProductPage({ params }) {
               <AnimatedSection>
                 <Badge variant="blue" className="mb-5">{product.badge}</Badge>
                 <h1
-                  className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                  className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
                   style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
                 >
                   <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
@@ -223,7 +223,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What you get</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               What&apos;s included
@@ -279,7 +279,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Why it works</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Built for results
@@ -318,7 +318,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Pricing</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Simple, transparent pricing

@@ -71,7 +71,7 @@ export function SolutionsBento() {
         <AnimatedSection className="text-center mb-14 max-w-2xl mx-auto">
           <p className="badge mx-auto mb-4 w-fit">Solutions</p>
           <h2
-            className="text-[clamp(2.05rem,4vw,3.1rem)] font-extrabold tracking-[-0.045em] text-text mb-4"
+            className="headline-shadow text-[clamp(2.05rem,4vw,3.1rem)] font-extrabold tracking-[-0.045em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Six ways to{' '}

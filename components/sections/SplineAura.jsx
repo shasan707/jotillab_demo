@@ -155,7 +155,7 @@ export function SplineAura() {
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-white text-slate-900">
-      {/* Spline 3D background */}
+      {/* Spline 3D scene — the ONLY hero background */}
       <iframe
         src="https://my.spline.design/herolightcopy-HWuYMA6IdNGk0VGuyvrItNGB"
         title="3D background"
@@ -165,7 +165,7 @@ export function SplineAura() {
         style={{ pointerEvents: 'none' }}
       />
 
-      {/* Legibility mask */}
+      {/* Soft veil behind the headline for legibility */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-[1]"
@@ -184,14 +184,14 @@ export function SplineAura() {
           </div>
 
           <h1
-            className="flex flex-col uppercase leading-[0.92] text-6xl sm:text-7xl lg:text-8xl"
+            className="headline-shadow flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
             style={{ fontFamily: 'var(--font-russo), sans-serif', letterSpacing: '-0.01em' }}
           >
-            <span className="glitch-v9" data-text="Never Miss a" style={{ color: '#0f1129' }}>
-              Never Miss a
+            <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129' }}>
+              Instant
             </span>
-            <span className="glitch-v9" data-text="Customer" style={{ color: '#0f1129' }}>
-              Customer
+            <span className="glitch-v9" data-text="Engagement." style={{ color: '#0f1129' }}>
+              Engagement.
             </span>
             <span
               style={{
@@ -201,14 +201,24 @@ export function SplineAura() {
                 color: 'transparent',
               }}
             >
-              Again.
+              Autonomous
+            </span>
+            <span
+              style={{
+                background: 'linear-gradient(90deg, #3B82F6, #7c3aed, #06b6d4)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Growth.
             </span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-            Every call answered. Every lead followed up. Every conversation handled.
-            Your AI teammate works around the clock so your team can focus on closing
-            deals and growing your business.
+            Revolutionize how your business communicates. By combining precision AI
+            with human-level conversation flow, we ensure no lead is ever left waiting,
+            no question goes unanswered, and no deal falls through.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -255,41 +265,53 @@ export function SplineAura() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={product.name}
-                initial={{ scale: 0.7, opacity: 0, rotate: -8 }}
+                initial={{ scale: 0.8, opacity: 0, rotate: -6 }}
                 animate={{ scale: 1, opacity: 1, rotate: 0, borderRadius: BLOB_MORPH }}
-                exit={{ scale: 0.7, opacity: 0, rotate: 8 }}
+                exit={{ scale: 0.8, opacity: 0, rotate: 6 }}
                 transition={{
                   duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
-                  borderRadius: { duration: 6, repeat: Infinity },
+                  borderRadius: { duration: 7, repeat: Infinity },
                 }}
                 className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-3 px-6 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
                 style={{
-                  background: 'linear-gradient(150deg, rgba(255,255,255,0.62), rgba(255,255,255,0.30))',
-                  backdropFilter: 'blur(16px) saturate(1.3)',
-                  WebkitBackdropFilter: 'blur(16px) saturate(1.3)',
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.8), 0 26px 64px -24px ${product.color}99`,
+                  transformStyle: 'preserve-3d',
+                  background: 'linear-gradient(150deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
+                  backdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
+                  WebkitBackdropFilter: 'blur(4px) saturate(1.4) brightness(1.03)',
+                  border: '1px solid rgba(255,255,255,0.5)',
+                  boxShadow: `inset 0 2px 12px rgba(255,255,255,0.9), inset 0 -16px 36px rgba(56,89,168,0.22), inset 0 28px 54px rgba(255,255,255,0.16), 0 30px 64px -24px ${product.color}55, 0 8px 22px rgba(15,17,41,0.08)`,
                 }}
               >
-                {/* Morphing vibrant gradient ring border (follows the blob shape) */}
+                {/* Hue-tinted refraction in the lower body of the droplet */}
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: `radial-gradient(120% 120% at 70% 80%, ${product.color}24, transparent 60%)` }} />
+                {/* Bright glossy specular highlight (top-left) */}
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(42% 34% at 30% 20%, rgba(255,255,255,0.92), transparent 60%)', mixBlendMode: 'screen', opacity: 0.75 }} />
+                {/* Slow caustic shimmer for the water feel */}
+                <motion.span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ borderRadius: 'inherit', background: 'radial-gradient(30% 26% at 72% 72%, rgba(186,230,253,0.7), transparent 60%)', mixBlendMode: 'screen' }} animate={{ opacity: [0.25, 0.6, 0.25] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} />
+                {/* Fluid vibrant rim (glass edge) */}
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0"
                   style={{
                     borderRadius: 'inherit',
-                    padding: '2.5px',
-                    background: `linear-gradient(135deg, ${product.color}, ${product.c2})`,
+                    padding: '2px',
+                    background: `linear-gradient(135deg, rgba(255,255,255,0.9), ${product.color}, ${product.c2})`,
                     WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                     WebkitMaskComposite: 'xor',
                     maskComposite: 'exclude',
+                    opacity: 0.9,
                   }}
                 />
 
-                <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
-                <span className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: '#0f1129' }}>
+                {/* Content floats inside the glass chamber at varying depths (3D) */}
+                <div style={{ transform: 'translateZ(55px)' }}>
+                  <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
+                </div>
+                <span className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)' }}>
                   {product.name}
                 </span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: product.color }}>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
                   {product.tag}
                 </span>
               </motion.div>

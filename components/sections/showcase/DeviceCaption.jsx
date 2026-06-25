@@ -4,9 +4,9 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 
 /* "What's happening now" caption shown beside/under the showcase device.
    Renders the active step label large and legible (so the audience can follow
-   the animation even when the in-device text is small), plus a progress-dots
-   row. Rendered OUTSIDE the device frame so it is never shrunk by the device
-   scale. Reduced-motion: opacity-only crossfade. */
+   the animation even when the in-device text is small). Rendered OUTSIDE the
+   device frame so it is never shrunk by the device scale. Reduced-motion:
+   opacity-only crossfade. */
 export function DeviceCaption({ steps, activeIndex, className = '' }) {
   const reduced = useReducedMotion()
   if (!steps || steps.length === 0) return null
@@ -39,20 +39,6 @@ export function DeviceCaption({ steps, activeIndex, className = '' }) {
             </motion.span>
           </AnimatePresence>
         </span>
-      </div>
-
-      {/* Progress segments */}
-      <div className="flex items-center gap-1.5">
-        {steps.map((_, i) => (
-          <span
-            key={i}
-            className="h-1.5 rounded-full transition-all duration-300"
-            style={{
-              width: i === idx ? 22 : 8,
-              background: i === idx ? 'linear-gradient(135deg, #3B82F6, #7c3aed)' : 'rgba(56,89,168,0.18)',
-            }}
-          />
-        ))}
       </div>
     </div>
   )

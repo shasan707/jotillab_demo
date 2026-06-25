@@ -102,7 +102,7 @@ export function IntegrationStrip() {
         <AnimatedSection className="text-center mb-14">
           <p className="badge mx-auto mb-4 w-fit">Integrations</p>
           <h2
-            className="text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
+            className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Works with{' '}
