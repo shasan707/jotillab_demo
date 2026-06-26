@@ -444,12 +444,17 @@ h1, h2, h3, h4, h5, h6 {
   color: #0f1129;
 }
 
-/* Neutralise the rainbow gradient accent into one refined royal-blue. */
+/* Neutralise the rainbow gradient accent into one refined royal-blue, and give
+   it a matching blue directional cast so the accent word carries the same
+   "as per text color" shadow as the rest of the headline. */
 .home-pro-headings .text-gradient {
   background: none !important;
   background-image: none !important;
   -webkit-text-fill-color: #3859a8 !important;
   color: #3859a8 !important;
+  text-shadow:
+    2px 3px 0 rgba(56, 89, 168, 0.20),
+    4px 6px 9px rgba(59, 130, 246, 0.13);
 }
 
 .card-premium::before {
@@ -486,13 +491,13 @@ h1, h2, h3, h4, h5, h6 {
    works on solid AND gradient-clipped text (text-shadow can't shadow gradient
    text). Apply to large headings site-wide. */
 .headline-shadow {
-  /* Light, subtle cast below the text. text-shadow (not filter: drop-shadow)
-     renders identically on solid AND gradient-clipped text — so every word in
-     the hero gets the same shadow, including on mobile — and it is far cheaper
-     to paint while scrolling than a drop-shadow filter. */
+  /* Light directional "long shadow": a short hard offset (the colored
+     extrusion) plus a soft blur for depth, cast down-right. Low opacity so it
+     stays subtle on the smaller section headings. The hero sets its own,
+     larger, per-word tinted version inline. */
   text-shadow:
-    0 1px 2px rgba(15, 17, 41, 0.22),
-    0 2px 5px rgba(15, 17, 41, 0.13);
+    2px 3px 0 rgba(15, 17, 41, 0.14),
+    4px 6px 9px rgba(15, 17, 41, 0.10);
 }
 
 /* Slow drifting color wash for the solutions bento tiles (per-tile hue via

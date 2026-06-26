@@ -106,6 +106,10 @@ export function CTASection() {
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2rem, 4.5vw, 3.25rem)',
               lineHeight: 1.1,
+              // dark cast is invisible on navy, so use a light blue-purple
+              // directional cast to match the rest of the site's bold headlines
+              textShadow:
+                '2px 3px 0 rgba(59,130,246,0.30), 4px 6px 12px rgba(124,58,237,0.20)',
             }}
           >
             Stop losing customers{'\u00A0'}
