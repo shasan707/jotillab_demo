@@ -70,6 +70,15 @@ const BLOB_MORPH = [
   '32% 68% 70% 30% / 30% 30% 70% 70%',
 ]
 
+// Light directional "long shadow" cast, tinted per word to its own color: a
+// short hard offset (the colored extrusion) plus a soft blur for depth. Kept at
+// low opacity so it reads as a subtle, refined cast rather than a heavy block.
+// Solid words use text-shadow; the gradient words use a drop-shadow FILTER,
+// because text-shadow does not render on background-clip:text gradient text.
+const HEADLINE_SHADOW_DARK = '3px 4px 0 rgba(15,17,41,0.16), 6px 9px 14px rgba(15,17,41,0.10)'
+const HEADLINE_FILTER_COLOR =
+  'drop-shadow(3px 4px 0 rgba(124,58,237,0.26)) drop-shadow(6px 9px 7px rgba(59,130,246,0.16))'
+
 /* Unique, hand-built SVG glyphs — one per product. Stroked with a per-icon
    gradient (color -> c2). Not from any icon library. */
 function ProductIcon({ iconKey, color, c2 }) {
@@ -296,13 +305,13 @@ export function SplineAura() {
           </div>
 
           <h1
-            className="headline-shadow flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
+            className="flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
             style={{ fontFamily: 'var(--font-russo), sans-serif', letterSpacing: '-0.01em' }}
           >
-            <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129' }}>
+            <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
               Instant
             </span>
-            <span className="glitch-v9" data-text="Engagement" style={{ color: '#0f1129' }}>
+            <span className="glitch-v9" data-text="Engagement" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
               Engagement
             </span>
             <span
@@ -311,6 +320,7 @@ export function SplineAura() {
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
+                filter: HEADLINE_FILTER_COLOR,
               }}
             >
               Autonomous
@@ -321,6 +331,7 @@ export function SplineAura() {
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
+                filter: HEADLINE_FILTER_COLOR,
               }}
             >
               Growth
