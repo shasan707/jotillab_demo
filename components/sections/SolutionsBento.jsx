@@ -64,7 +64,7 @@ const TILES = [
 
 export function SolutionsBento() {
   return (
-    <section className="py-24 bg-white relative">
+    <section className="cv-auto py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Heading */}

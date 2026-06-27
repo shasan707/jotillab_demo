@@ -33,10 +33,11 @@ function IntegrationPill({ label }) {
     <div
       className="flex items-center gap-2.5 px-4 py-2.5 rounded-full shrink-0 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
       style={{
-        background: 'rgba(255,255,255,0.55)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.60)',
+        // Solid chip (was translucent + blur) — over the light section the blur
+        // was invisible anyway, and ~40 of these in the marquee were the bulk of
+        // the page's backdrop-filter cost during scroll.
+        background: '#ffffff',
+        border: '1px solid rgba(15,17,41,0.06)',
         boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
       }}
     >
@@ -95,7 +96,7 @@ export function IntegrationStrip() {
   const row2 = INTEGRATIONS.slice(10, 20)
 
   return (
-    <section className="py-24 bg-white">
+    <section className="cv-auto py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Heading */}

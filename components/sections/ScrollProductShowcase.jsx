@@ -84,7 +84,7 @@ function ShowcaseRow({ product, flip }) {
   // wider share of the row so its in-screen text stays readable; the device
   // side alternates per row.
   return (
-    <div ref={ref} className="flex flex-col gap-7 lg:gap-9">
+    <div ref={ref} className="cv-auto flex flex-col gap-7 lg:gap-9">
       <motion.div {...badgeMotion}>
         <SlideBadge product={product} />
       </motion.div>

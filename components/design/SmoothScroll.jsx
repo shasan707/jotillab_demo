@@ -16,6 +16,14 @@ export function SmoothScroll({ children }) {
     ).matches
     if (reduced) return
 
+    // Phones/touch use native scrolling — skip Lenis entirely so there's no
+    // per-frame page transform competing with paint while scrolling. GSAP
+    // ScrollTrigger falls back to native scroll events automatically.
+    const isTouch =
+      window.matchMedia('(max-width: 767px)').matches ||
+      window.matchMedia('(hover: none)').matches
+    if (isTouch) return
+
     const lenis = new Lenis({
       lerp: 0.1,
       duration: 1.2,

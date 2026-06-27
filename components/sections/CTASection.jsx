@@ -9,7 +9,7 @@ import { SerifAccent } from '@/components/design'
 export function CTASection() {
   return (
     <section
-      className="surface-navy relative py-24 overflow-hidden"
+      className="cv-auto surface-navy relative py-24 overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #3859a8 0%, #2a4688 45%, #0f1129 100%)',
       }}

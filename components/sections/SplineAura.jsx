@@ -257,34 +257,17 @@ function HeroOrb() {
 }
 
 export function SplineAura() {
-  // Defer the heavy Spline WebGL scene until the browser is idle (i.e. after
-  // hydration/first paint), so it no longer competes with React for the main
-  // thread on refresh. The white veil below is the placeholder, so the visible
-  // hero is unchanged for the first frames.
-  const [showSpline, setShowSpline] = useState(false)
-  useEffect(() => {
-    const cb = () => setShowSpline(true)
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const id = window.requestIdleCallback(cb, { timeout: 1500 })
-      return () => window.cancelIdleCallback?.(id)
-    }
-    const id = setTimeout(cb, 600)
-    return () => clearTimeout(id)
-  }, [])
-
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-white text-slate-900">
-      {/* Spline 3D scene — the ONLY hero background (mounted after idle) */}
-      {showSpline && (
-        <iframe
-          src="https://my.spline.design/herolightcopy-HWuYMA6IdNGk0VGuyvrItNGB"
-          title="3D background"
-          aria-hidden="true"
-          loading="lazy"
-          className="absolute inset-0 z-0 h-full w-full border-0"
-          style={{ pointerEvents: 'none' }}
-        />
-      )}
+      {/* Hero scene background. This is a static capture of the original Spline
+          3D "herolight" scene — visually identical, but a ~36KB cached image
+          instead of a live WebGL iframe, so it costs effectively nothing to
+          render or scroll on any device. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/hero-bg.jpg)' }}
+      />
 
       {/* Soft veil behind the headline for legibility */}
       <div

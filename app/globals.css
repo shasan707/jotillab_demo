@@ -490,6 +490,16 @@ h1, h2, h3, h4, h5, h6 {
 /* Depth shadow for big, bold headline words. Uses filter:drop-shadow so it
    works on solid AND gradient-clipped text (text-shadow can't shadow gradient
    text). Apply to large headings site-wide. */
+/* Skip paint/layout/compositing AND pause animations for these blocks while
+   they are off-screen. `auto` in contain-intrinsic-size makes the browser
+   remember each block's real rendered height, so the scrollbar doesn't jump.
+   Do NOT put this on scroll-driven sections (e.g. the Live Console) — it breaks
+   their scroll measurement. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
 .headline-shadow {
   /* Light directional "long shadow": a short hard offset (the colored
      extrusion) plus a soft blur for depth, cast down-right. Low opacity so it

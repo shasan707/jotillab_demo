@@ -11,10 +11,8 @@ export function BrowserMockup({ children, glass = false, url = 'app.jotillabs.co
             ? '1px solid rgba(255,255,255,0.55)'
             : '1px solid rgba(0,0,0,0.06)',
           background: glass
-            ? 'linear-gradient(160deg, rgba(255,255,255,0.88) 0%, rgba(240,240,245,0.7) 50%, rgba(255,255,255,0.82) 100%)'
+            ? 'linear-gradient(160deg, #ffffff 0%, #f1f1f6 50%, #fbfbff 100%)'
             : '#ffffff',
-          backdropFilter: glass ? 'blur(20px) saturate(1.2)' : undefined,
-          WebkitBackdropFilter: glass ? 'blur(20px) saturate(1.2)' : undefined,
           boxShadow: glass
             ? [
                 'inset 0 1px 0 rgba(255,255,255,0.85)',
@@ -35,10 +33,8 @@ export function BrowserMockup({ children, glass = false, url = 'app.jotillabs.co
           className="flex items-center gap-3 px-5 py-3 border-b border-black/5"
           style={{
             background: glass
-              ? 'rgba(250, 250, 252, 0.75)'
+              ? '#fafafc'
               : 'linear-gradient(180deg, #f8f8fa, #eeeef2)',
-            backdropFilter: glass ? 'blur(12px)' : undefined,
-            WebkitBackdropFilter: glass ? 'blur(12px)' : undefined,
           }}
         >
           {/* Traffic-light dots */}
