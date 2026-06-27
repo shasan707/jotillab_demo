@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const NOISE_SVG = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E`
 
@@ -17,6 +17,15 @@ export function BrandBackground({ variant = 'quiet' }) {
   const isHero = variant === 'hero'
   const intensity = isHero ? 0.72 : 0.42
   const rootRef = useRef(null)
+
+  // Start fully transparent and fade in after mount, so on a refresh the page
+  // content paints first — without this the fixed aurora paints a full-screen
+  // violet wash before the hero/sections cover it (a visible violet flash).
+  const [shown, setShown] = useState(false)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setShown(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   useEffect(() => {
     const root = rootRef.current
@@ -55,7 +64,7 @@ export function BrandBackground({ variant = 'quiet' }) {
       ref={rootRef}
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-      style={{ '--px': 0, '--py': 0 }}
+      style={{ '--px': 0, '--py': 0, opacity: shown ? 1 : 0, transition: 'opacity 0.6s ease-out' }}
     >
       {/* Layer 1: royal-blue + violet, top-left biased */}
       <div style={parallax(36)}>
