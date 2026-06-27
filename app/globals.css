@@ -424,24 +424,20 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* ── Homepage professional headings (everything except the hero) ──
-   The hero keeps its display look; the rest of the homepage uses a clean,
-   neutral Roboto stack with a single professional blue accent instead of the
-   multi-stop gradient. !important is required to win over the per-heading
-   inline font-family declarations. */
-.home-pro-headings h1,
-.home-pro-headings h2,
-.home-pro-headings h3,
-.home-pro-headings h1 em,
-.home-pro-headings h2 em,
-.home-pro-headings h3 em {
+/* ── Consistent heading typography (site-wide) ──
+   Every heading uses Roboto for one consistent type system, EXCEPT the hero
+   display headline (.hero-display, which keeps Russo One). Serif accents
+   (Fraunces <em>) are intentionally left untouched so they render the same on
+   every page. !important is required to win over the per-heading inline
+   font-family declarations scattered across components. */
+h1:not(.hero-display),
+h2:not(.hero-display),
+h3:not(.hero-display),
+h4,
+h5,
+h6 {
   font-family: var(--font-roboto), Roboto, Arial, sans-serif !important;
   letter-spacing: -0.02em;
-}
-
-.home-pro-headings h2,
-.home-pro-headings h3 {
-  color: #0f1129;
 }
 
 /* Neutralise the rainbow gradient accent into one refined royal-blue, and give

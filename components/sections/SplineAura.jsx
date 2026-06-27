@@ -288,7 +288,7 @@ export function SplineAura() {
           </div>
 
           <h1
-            className="flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
+            className="hero-display flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
             style={{ fontFamily: 'var(--font-russo), sans-serif', letterSpacing: '-0.01em' }}
           >
             <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
