@@ -440,17 +440,17 @@ h6 {
   letter-spacing: -0.02em;
 }
 
-/* Neutralise the rainbow gradient accent into one refined royal-blue, and give
-   it a matching blue directional cast so the accent word carries the same
-   "as per text color" shadow as the rest of the headline. */
+/* Neutralise the rainbow gradient accent into one refined royal-blue. The
+   accent carries the SAME subtle dark directional cast as every other heading
+   (see .headline-shadow) so the shadow is consistent across the whole site. */
 .home-pro-headings .text-gradient {
   background: none !important;
   background-image: none !important;
   -webkit-text-fill-color: #3859a8 !important;
   color: #3859a8 !important;
   text-shadow:
-    2px 3px 0 rgba(56, 89, 168, 0.20),
-    4px 6px 9px rgba(59, 130, 246, 0.13);
+    2px 3px 0 rgba(15, 17, 41, 0.14),
+    4px 6px 9px rgba(15, 17, 41, 0.10);
 }
 
 .card-premium::before {

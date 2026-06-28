@@ -70,14 +70,13 @@ const BLOB_MORPH = [
   '32% 68% 70% 30% / 30% 30% 70% 70%',
 ]
 
-// Light directional "long shadow" cast, tinted per word to its own color: a
-// short hard offset (the colored extrusion) plus a soft blur for depth. Kept at
-// low opacity so it reads as a subtle, refined cast rather than a heavy block.
+// Subtle dark directional cast — the SAME spec as .headline-shadow so the hero
+// matches every other bold heading on the site (consistent shadow everywhere).
 // Solid words use text-shadow; the gradient words use a drop-shadow FILTER,
 // because text-shadow does not render on background-clip:text gradient text.
-const HEADLINE_SHADOW_DARK = '3px 4px 0 rgba(15,17,41,0.16), 6px 9px 14px rgba(15,17,41,0.10)'
-const HEADLINE_FILTER_COLOR =
-  'drop-shadow(3px 4px 0 rgba(124,58,237,0.26)) drop-shadow(6px 9px 7px rgba(59,130,246,0.16))'
+const HEADLINE_SHADOW_DARK = '2px 3px 0 rgba(15,17,41,0.14), 4px 6px 9px rgba(15,17,41,0.10)'
+const HEADLINE_FILTER_DARK =
+  'drop-shadow(2px 3px 0 rgba(15,17,41,0.14)) drop-shadow(4px 6px 7px rgba(15,17,41,0.10))'
 
 /* Unique, hand-built SVG glyphs — one per product. Stroked with a per-icon
    gradient (color -> c2). Not from any icon library. */
@@ -303,7 +302,7 @@ export function SplineAura() {
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
-                filter: HEADLINE_FILTER_COLOR,
+                filter: HEADLINE_FILTER_DARK,
               }}
             >
               Autonomous
@@ -314,7 +313,7 @@ export function SplineAura() {
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
-                filter: HEADLINE_FILTER_COLOR,
+                filter: HEADLINE_FILTER_DARK,
               }}
             >
               Growth

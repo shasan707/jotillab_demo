@@ -8,27 +8,11 @@ import { AtmosphericDivider } from '@/components/design'
 import { Button } from '@/components/ui/Button'
 import { IconBox } from '@/components/ui/IconBox'
 import { PricingCard } from '@/components/pricing/PricingCard'
-import {
-  ReceptionistLogo,
-  MessengerLogo,
-  OutreachLogo,
-  SpaceLogo,
-  FlowLogo,
-  AvatarLogo,
-} from '@/components/ui/ProductLogos'
 import { DemoVisualization } from '@/components/product/DemoVisualization'
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
+import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
 import { getBrandLogo } from '@/components/ui/BrandLogos'
-
-const LOGO_MAP = {
-  receptionist: ReceptionistLogo,
-  messenger: MessengerLogo,
-  outreach: OutreachLogo,
-  space: SpaceLogo,
-  flow: FlowLogo,
-  avatar: AvatarLogo,
-}
 
 /* ─── Static generation ─── */
 
@@ -65,8 +49,6 @@ export default async function ProductPage({ params }) {
   const product = getProductBySlug(slug)
 
   if (!product) notFound()
-
-  const Logo = LOGO_MAP[slug]
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -189,27 +171,9 @@ export default async function ProductPage({ params }) {
                 </div>
               </AnimatedSection>
 
-              {/* Right column - Product visual / placeholder */}
+              {/* Right column - interactive animated live preview */}
               <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
-                <div
-                  className="relative w-full max-w-md aspect-[4/3] rounded-3xl flex flex-col items-center justify-center gap-4 overflow-hidden"
-                  style={{
-                    background: 'rgba(255,255,255,0.30)',
-                    backdropFilter: 'blur(12px)',
-                    WebkitBackdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(56, 89, 168,0.1)',
-                    boxShadow: '0 16px 48px rgba(56, 89, 168,0.08), 0 4px 16px rgba(0,0,0,0.04)',
-                  }}
-                >
-                  {Logo && <Logo size={80} />}
-                  <p className="text-sm font-medium text-text-secondary">Product demo coming soon</p>
-                  <div
-                    className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm border border-black/5 shadow-sm rounded-xl px-3 py-1.5 flex items-center gap-2"
-                  >
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-[11px] font-medium text-text-secondary">Live preview</span>
-                  </div>
-                </div>
+                <ProductHeroPreview slug={slug} productName={product.name} />
               </AnimatedSection>
             </div>
           </div>
@@ -416,7 +380,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Get Started</p>
             <h2
-              className="text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4"
+              className="headline-shadow text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Ready to try{' '}
