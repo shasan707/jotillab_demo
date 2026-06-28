@@ -19,6 +19,7 @@ import {
 import { DemoVisualization } from '@/components/product/DemoVisualization'
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
+import { getBrandLogo } from '@/components/ui/BrandLogos'
 
 const LOGO_MAP = {
   receptionist: ReceptionistLogo,
@@ -432,28 +433,63 @@ export default async function ProductPage({ params }) {
                 Explore the Platform
               </Button>
             </div>
-
-            {/* Integration logos row */}
-            {product.integrations?.length > 0 && (
-              <div className="mt-10 pt-8 border-t border-black/5">
-                <p className="text-xs font-medium text-text-secondary mb-3 uppercase tracking-wider">
-                  Integrates with
-                </p>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  {product.integrations.map((name) => (
-                    <span
-                      key={name}
-                      className="text-xs font-medium text-text-secondary bg-white border border-black/5 rounded-full px-3 py-1"
-                    >
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </AnimatedSection>
         </div>
       </section>
+
+      {/* ─── 8. Integrations — interactive logo grid (before footer) ─── */}
+      {product.integrations?.length > 0 && (
+        <>
+          <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
+          <section className="cv-auto py-20 px-4 surface-sunken">
+            <div className="max-w-5xl mx-auto">
+              <AnimatedSection className="text-center mb-12">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
+                  Integrations
+                </p>
+                <h2
+                  className="headline-shadow text-3xl font-bold text-text tracking-tight"
+                  style={{ fontFamily: 'var(--font-display)' }}
+                >
+                  Works with the tools you already use
+                </h2>
+                <p className="text-text-secondary mt-3 max-w-md mx-auto">
+                  {product.name} plugs into your existing stack in minutes. No ripping and replacing.
+                </p>
+              </AnimatedSection>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                {product.integrations.map((name, i) => {
+                  const Logo = getBrandLogo(name)
+                  return (
+                    <AnimatedSection key={name} delay={i * 0.06}>
+                      <div className="group relative flex h-full flex-col items-center justify-center gap-3 rounded-2xl bg-white border border-black/5 px-4 py-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_18px_44px_rgba(56,89,168,0.14)]">
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                          style={{ background: 'radial-gradient(120% 80% at 50% 0%, rgba(59,130,246,0.07), transparent 60%)' }}
+                        />
+                        <span className="relative flex h-10 w-10 items-center justify-center transition-transform duration-300 group-hover:scale-110 [&_svg]:h-9 [&_svg]:w-9">
+                          {Logo ? <Logo /> : <LucideIcons.Plug className="h-7 w-7 text-primary" strokeWidth={1.5} />}
+                        </span>
+                        <span className="relative text-sm font-medium text-text-secondary transition-colors group-hover:text-text">
+                          {name}
+                        </span>
+                      </div>
+                    </AnimatedSection>
+                  )
+                })}
+              </div>
+
+              <AnimatedSection delay={0.3}>
+                <p className="text-center text-sm text-text-secondary mt-8">
+                  Plus any REST API, webhook, or custom integration your business needs.
+                </p>
+              </AnimatedSection>
+            </div>
+          </section>
+        </>
+      )}
     </>
   )
 }
