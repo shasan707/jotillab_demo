@@ -287,14 +287,14 @@ export function SplineAura() {
           </div>
 
           <h1
-            className="hero-display flex flex-col uppercase leading-[0.98] text-[clamp(2rem,4.8vw,3.5rem)]"
+            className="hero-display flex flex-col uppercase leading-[0.95] text-5xl sm:text-6xl lg:text-7xl"
             style={{ fontFamily: 'var(--font-russo), sans-serif', letterSpacing: '-0.01em' }}
           >
-            <span className="glitch-v9" data-text="One AI Platform" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
-              One AI Platform
+            <span className="glitch-v9" data-text="Instant" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
+              Instant
             </span>
-            <span className="glitch-v9" data-text="for Every Customer" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
-              for Every Customer
+            <span className="glitch-v9" data-text="Engagement" style={{ color: '#0f1129', textShadow: HEADLINE_SHADOW_DARK }}>
+              Engagement
             </span>
             <span
               style={{
@@ -305,7 +305,18 @@ export function SplineAura() {
                 filter: HEADLINE_FILTER_DARK,
               }}
             >
-              Conversation.
+              Autonomous
+            </span>
+            <span
+              style={{
+                background: 'linear-gradient(90deg, #3B82F6, #7c3aed, #06b6d4)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+                filter: HEADLINE_FILTER_DARK,
+              }}
+            >
+              Growth
             </span>
           </h1>
 

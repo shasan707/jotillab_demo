@@ -18,7 +18,7 @@ export const PRODUCT_SLIDES = [
     slug: 'messenger',
     icon: MessageCircle,
     badge: 'JotilMessenger',
-    title: 'Instant replies on every channel. Always.',
+    title: 'One inbox. Every channel. Instant replies.',
     desc: 'Text, web chat, WhatsApp, or Teams. Your AI responds in seconds, handles FAQs, collects information, and hands off complex conversations to your team with full context.',
     features: [
       'Responds in under 3 seconds',
@@ -31,7 +31,7 @@ export const PRODUCT_SLIDES = [
     slug: 'outreach',
     icon: TrendingUp,
     badge: 'JotilOutreach',
-    title: 'Reach every lead before your competitors do.',
+    title: 'Be the first to follow up. Every time.',
     desc: 'Automated multi-channel campaigns that call, text, and email your leads within minutes. AI handles the conversation, qualifies interest, and books meetings while your team sleeps.',
     features: [
       'Voice + SMS + email in one sequence',
@@ -44,7 +44,7 @@ export const PRODUCT_SLIDES = [
     slug: 'space',
     icon: LayoutGrid,
     badge: 'JotilSpace',
-    title: 'Your AI command center.',
+    title: 'Where every channel and model comes together.',
     desc: 'One workspace where every conversation, every lead, and every AI model lives. Compare models, track performance, and optimize your AI across all channels.',
     features: [
       'Side-by-side AI model comparison',
@@ -57,7 +57,7 @@ export const PRODUCT_SLIDES = [
     slug: 'avatar',
     icon: UserCircle,
     badge: 'JotilAvatar',
-    title: 'Meet your customers face to face.',
+    title: 'Greet every visitor, in person, virtually.',
     desc: 'A lifelike digital assistant that greets visitors on your website with real conversation, real expressions, and real personality. Your always-on brand ambassador.',
     features: [
       'Lifelike video presence on your website',

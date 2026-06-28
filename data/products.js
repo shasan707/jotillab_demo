@@ -162,7 +162,7 @@ export const products = [
     icon: 'MessageCircle',
     iconColor: '#3B82F6',
     oneLiner: 'Conversational AI across web chat, WhatsApp, SMS, Teams.',
-    tagline: 'One inbox. Every channel. Instant replies.',
+    tagline: 'One inbox. Every channel. Every customer.',
     badge: 'Inbound Text',
     description:
       'AI chatbot and SMS agent that engages customers across web chat, WhatsApp, SMS, and more. Qualifying leads and answering questions 24/7.',
@@ -269,7 +269,7 @@ export const products = [
     icon: 'TrendingUp',
     iconColor: '#3B82F6',
     oneLiner: 'Automated outbound calls and SMS campaigns at scale.',
-    tagline: 'Be the first to follow up. Every time.',
+    tagline: 'Reach more. Book more. Grow faster.',
     badge: 'Outbound',
     description:
       'Automated outbound calls and SMS campaigns that sound natural, adapt to conversations, and drive results. All at scale.',
@@ -382,7 +382,7 @@ export const products = [
     icon: 'LayoutGrid',
     iconColor: '#3859a8',
     oneLiner: "Your team's AI workspace. Multiple AI models, one interface.",
-    tagline: 'Where every channel and model comes together.',
+    tagline: 'One workspace. Every AI. Every workflow.',
     badge: 'Multi-AI Platform',
     description:
       'A unified workspace where your team manages customer relationships, tickets, and calendars. All powered by AI.',
@@ -571,7 +571,7 @@ export const products = [
     icon: 'UserCircle',
     iconColor: '#3B82F6',
     oneLiner: 'Meet customers face to face with AI',
-    tagline: 'Greet every visitor, in person, virtually.',
+    tagline: 'See your brand. Hear your brand. Talk to your brand.',
     badge: 'AI Avatar',
     description:
       'Lifelike AI avatars that represent your brand in video calls, website interactions, and customer-facing touchpoints. Delivering a personal, visual AI experience.',

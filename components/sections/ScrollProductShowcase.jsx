@@ -26,8 +26,8 @@ function SectionHeading() {
         className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold tracking-[-0.03em] text-text max-w-2xl mx-auto"
         style={{ fontFamily: 'var(--font-display)' }}
       >
-        One platform.{' '}
-        <span className="text-gradient">Every customer touchpoint.</span>
+        One AI Platform for Every Customer{' '}
+        <span className="text-gradient">Conversation.</span>
       </h2>
     </AnimatedSection>
   )
