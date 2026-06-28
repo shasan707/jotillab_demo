@@ -166,6 +166,19 @@
   animation: atmosphere-drift-3 36s ease-in-out infinite;
 }
 
+/* Lightweight hero "wave" motion: a slow GPU-only drift of the static scene
+   image so the wave gently flows — no WebGL, no blur, transform-only. The base
+   scale hides the edges as it translates. */
+@keyframes hero-bg-wave {
+  0%, 100% { transform: scale(1.08) translate3d(0, 0, 0); }
+  50% { transform: scale(1.08) translate3d(-2%, -1.3%, 0); }
+}
+.hero-bg-wave {
+  transform: scale(1.08);
+  animation: hero-bg-wave 22s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* On phones the full-screen blurred aurora layers are expensive to recomposite
    every frame (and largely hidden behind opaque sections anyway). Freeze the
    drift on small screens — a still frame looks identical, only the slow motion

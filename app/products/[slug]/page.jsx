@@ -188,7 +188,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What you get</p>
             <h2
-              className="headline-shadow text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               What&apos;s included
@@ -244,7 +244,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Why it works</p>
             <h2
-              className="headline-shadow text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Built for results
@@ -283,7 +283,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Pricing</p>
             <h2
-              className="headline-shadow text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Simple, transparent pricing
@@ -380,7 +380,7 @@ export default async function ProductPage({ params }) {
           <AnimatedSection>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Get Started</p>
             <h2
-              className="headline-shadow text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold text-text tracking-tight mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Ready to try{' '}
@@ -412,7 +412,7 @@ export default async function ProductPage({ params }) {
                   Integrations
                 </p>
                 <h2
-                  className="headline-shadow text-3xl font-bold text-text tracking-tight"
+                  className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   Works with the tools you already use

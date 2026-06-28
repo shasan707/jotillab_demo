@@ -14,7 +14,7 @@ export function FAQAccordion({ faq }) {
         <AnimatedSection className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">FAQ</p>
           <h2
-            className="text-3xl font-bold text-text tracking-tight"
+            className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Common questions

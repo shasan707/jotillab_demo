@@ -914,7 +914,7 @@ export function DemoVisualization({ slug }) {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Live Preview</p>
-          <h2 className="text-3xl font-bold text-text tracking-tight" style={headingFont}>
+          <h2 className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight" style={headingFont}>
             See it in action
           </h2>
           <p className="text-text-secondary mt-3 max-w-md mx-auto">

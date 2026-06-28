@@ -23,7 +23,7 @@ function SectionHeading() {
         What Changes for Your Business
       </p>
       <h2
-        className="headline-shadow text-[clamp(1.75rem,4vw,3rem)] font-bold tracking-[-0.03em] text-text max-w-2xl mx-auto"
+        className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold tracking-[-0.03em] text-text max-w-2xl mx-auto"
         style={{ fontFamily: 'var(--font-display)' }}
       >
         One platform.{' '}

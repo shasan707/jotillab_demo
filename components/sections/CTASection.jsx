@@ -104,7 +104,7 @@ export function CTASection() {
             className="text-white font-extrabold tracking-[-0.04em] mb-6"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2rem, 4.5vw, 3.25rem)',
+              fontSize: 'clamp(1.9rem, 3.5vw, 2.75rem)',
               lineHeight: 1.1,
               // Same subtle directional cast as every other heading, tuned dark
               // so it reads on the navy band (a dark-navy shadow would vanish).

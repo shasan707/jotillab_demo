@@ -264,7 +264,7 @@ export function SplineAura() {
           render or scroll on any device. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="hero-bg-wave absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(/hero-bg.jpg)' }}
       />
 
