@@ -83,8 +83,13 @@ function ShowcaseRow({ product, flip }) {
   // sits beside the device (side-by-side, like before). The device keeps the
   // wider share of the row so its in-screen text stays readable; the device
   // side alternates per row.
+  // Each product is its own white "card" on the section's cool background, so
+  // the products read as clearly separated blocks instead of one long strip.
   return (
-    <div ref={ref} className="cv-auto flex flex-col gap-7 lg:gap-9">
+    <div
+      ref={ref}
+      className="cv-auto flex flex-col gap-7 rounded-[28px] border border-black/[0.06] bg-white px-6 py-10 shadow-[0_12px_44px_rgba(15,17,41,0.06)] sm:px-10 sm:py-12 lg:gap-9 lg:px-14 lg:py-14"
+    >
       <motion.div {...badgeMotion}>
         <SlideBadge product={product} />
       </motion.div>
@@ -115,7 +120,7 @@ export function ScrollProductShowcase() {
     <section className="bg-[#E9EEF7] overflow-x-clip">
       <SectionHeading />
 
-      <div className="mx-auto flex max-w-[1300px] flex-col gap-24 px-6 pb-12 lg:gap-32">
+      <div className="mx-auto flex max-w-[1300px] flex-col gap-10 px-6 pb-12 lg:gap-14">
         {PRODUCT_SLIDES.map((product, i) => (
           <ShowcaseRow key={product.slug} product={product} flip={i % 2 === 1} />
         ))}
