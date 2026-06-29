@@ -112,7 +112,7 @@ function ShowcaseRow({ product, flip }) {
 
 export function ScrollProductShowcase() {
   return (
-    <section className="bg-[#F4F6FB] overflow-x-clip">
+    <section className="bg-[#E9EEF7] overflow-x-clip">
       <SectionHeading />
 
       <div className="mx-auto flex max-w-[1300px] flex-col gap-24 px-6 pb-12 lg:gap-32">

@@ -307,7 +307,7 @@ export function LiveConsole() {
   const opacity = useTransform(scrollYProgress, [0, 0.55], [0.35, 1])
 
   return (
-    <section ref={sectionRef} className="relative bg-[#F4F6FB] py-16 sm:py-20">
+    <section ref={sectionRef} className="relative bg-[#E9EEF7] py-16 sm:py-20">
       <div className="max-w-5xl mx-auto px-6" style={{ perspective: 1300 }}>
         <motion.div
           style={reduced ? undefined : { y, scale, rotateX, opacity, transformOrigin: 'center top' }}
