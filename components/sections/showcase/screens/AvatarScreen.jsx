@@ -19,6 +19,14 @@ const TURNS = [
    mouth to read as talking energy. Motion is disabled under reduced-motion. */
 function FemaleAvatar({ speaking }) {
   const reduced = useReducedMotion()
+  // Prefer the animated gif; fall back to the still photo if it isn't present.
+  const [src, setSrc] = useState('/avatar-sarah.gif')
+  const imgRef = useRef(null)
+  useEffect(() => {
+    // If the gif 404'd before hydration, onError won't fire — catch it here.
+    const img = imgRef.current
+    if (img && img.complete && img.naturalWidth === 0) setSrc('/avatar-sarah.jpg')
+  }, [])
 
   return (
     <motion.div
@@ -27,12 +35,16 @@ function FemaleAvatar({ speaking }) {
       animate={reduced ? undefined : { scale: speaking ? [1, 1.015, 1] : [1, 1.025, 1] }}
       transition={{ duration: speaking ? 1.5 : 9, repeat: Infinity, ease: 'easeInOut' }}
     >
+      {/* Animated avatar clip. Drop the file at public/avatar-sarah.gif. Falls
+          back to the still photo automatically if the gif isn't present yet. */}
       <img
-        src="/avatar-sarah.jpg"
+        ref={imgRef}
+        src={src}
         alt="Sarah, AI brand ambassador"
         className="h-full w-full object-cover"
         style={{ objectPosition: 'center 24%' }}
         draggable={false}
+        onError={() => setSrc('/avatar-sarah.jpg')}
       />
       {/* Talking glow that pulses while speaking */}
       <motion.div
@@ -133,19 +145,19 @@ export function AvatarScreen({ isActive, onAction, onStep }) {
       <div className="flex-1 flex min-h-0">
         {/* Left: Avatar */}
         <div className="w-[44%] relative flex flex-col" style={{ background: 'linear-gradient(160deg, #eef3ff, #d4ddf2)' }}>
-          <div className="flex-1 flex items-center justify-center px-2 pt-2">
-            <div className="relative w-full max-w-45 aspect-6/7 rounded-2xl overflow-hidden" style={{ boxShadow: '0 8px 24px rgba(56,89,168,0.18)' }}>
-              <FemaleAvatar speaking={aiSpeaking} />
-              {/* Live-camera framing: soft studio light + vignette */}
-              <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(120% 75% at 28% 12%, rgba(255,255,255,0.22), transparent 55%)' }} />
-              <div className="pointer-events-none absolute inset-0 rounded-2xl" style={{ boxShadow: 'inset 0 0 36px rgba(20,22,45,0.28)' }} />
-              {aiSpeaking && (
-                <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-white/90 backdrop-blur" style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-[11px] font-semibold text-gray-700">LIVE</span>
-                </div>
-              )}
-            </div>
+          {/* Avatar fills the panel edge-to-edge, down to the name — no empty
+              background around it. */}
+          <div className="flex-1 relative overflow-hidden">
+            <FemaleAvatar speaking={aiSpeaking} />
+            {/* Live-camera framing: soft studio light + vignette */}
+            <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(120% 75% at 28% 12%, rgba(255,255,255,0.22), transparent 55%)' }} />
+            <div className="pointer-events-none absolute inset-0" style={{ boxShadow: 'inset 0 0 36px rgba(20,22,45,0.28)' }} />
+            {aiSpeaking && (
+              <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-white/90 backdrop-blur" style={{ boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="text-[11px] font-semibold text-gray-700">LIVE</span>
+              </div>
+            )}
           </div>
           <div className="shrink-0 px-3 pb-2 pt-1 flex flex-col items-center gap-1">
             <p className="text-[14px] font-bold text-gray-900">Sarah</p>
