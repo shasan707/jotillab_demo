@@ -174,11 +174,11 @@ function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
         </div>
         <div>
           <p className="text-[15px] font-bold leading-tight" style={{ color: BRAND.color }}>{BRAND.label}</p>
-          <p className="text-[9px] text-gray-400">{BRAND.sublabel}</p>
+          <p className="text-[11px] text-gray-400">{BRAND.sublabel}</p>
         </div>
         <div className="ml-auto flex items-center gap-1">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-          <span className="text-[8px] text-green-600">Online</span>
+          <span className="text-[10px] text-green-600">Online</span>
         </div>
       </div>
 
@@ -202,7 +202,7 @@ function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
                   </div>
                 )}
                 <div
-                  className={`max-w-[78%] px-2.5 py-1.5 text-[10px] leading-[1.4] ${
+                  className={`max-w-[78%] px-2.5 py-1.5 text-[12px] leading-[1.4] ${
                     isUser
                       ? 'rounded-xl rounded-br-sm text-gray-900'
                       : 'rounded-xl rounded-bl-sm text-white'
@@ -228,10 +228,10 @@ function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
               </div>
               <div className="flex items-center gap-1 mt-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                <span className="text-[8px] font-semibold" style={{ color: BRAND.color }}>
+                <span className="text-[10px] font-semibold" style={{ color: BRAND.color }}>
                   {conversation.action.label}
                 </span>
-                <span className="text-[7px] text-gray-400">{conversation.action.sublabel}</span>
+                <span className="text-[9px] text-gray-400">{conversation.action.sublabel}</span>
               </div>
             </div>
           )
@@ -264,7 +264,7 @@ function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
             <Logo size={10} tone="on-dark" animate={false} />
           </div>
         </div>
-        <div className="flex-1 bg-gray-50 rounded-full px-3 py-1 text-[9px] flex items-center min-h-5">
+        <div className="flex-1 bg-gray-50 rounded-full px-3 py-1 text-[11px] flex items-center min-h-5">
           {phase === 'thinking' ? (
             <span className="flex items-center gap-0.75">
               {[0, 1, 2].map((d) => (

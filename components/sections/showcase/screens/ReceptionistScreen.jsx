@@ -63,8 +63,8 @@ function RingingPhase() {
       </div>
 
       <p className="text-sm font-semibold" style={{ color: '#0f1129' }}>Sarah Mitchell</p>
-      <p className="text-[11px] mt-0.5" style={{ color: '#6B7098' }}>+1 (801) 555-0147</p>
-      <p className="text-[10px] mt-1" style={{ color: '#9da3c0' }}>Incoming Call...</p>
+      <p className="text-[12.5px] mt-0.5" style={{ color: '#6B7098' }}>+1 (801) 555-0147</p>
+      <p className="text-[12px] mt-1" style={{ color: '#9da3c0' }}>Incoming Call...</p>
 
       <div className="flex gap-14 mt-10">
         <div className="flex flex-col items-center gap-1.5">
@@ -77,7 +77,7 @@ function RingingPhase() {
           >
             <PhoneOff size={18} strokeWidth={1.5} className="text-white" />
           </div>
-          <span className="text-[9px]" style={{ color: '#9da3c0' }}>Decline</span>
+          <span className="text-[11px]" style={{ color: '#9da3c0' }}>Decline</span>
         </div>
         <div className="flex flex-col items-center gap-1.5">
           <motion.div
@@ -91,7 +91,7 @@ function RingingPhase() {
           >
             <PhoneCall size={18} strokeWidth={1.5} className="text-white" />
           </motion.div>
-          <span className="text-[9px]" style={{ color: '#9da3c0' }}>Accept</span>
+          <span className="text-[11px]" style={{ color: '#9da3c0' }}>Accept</span>
         </div>
       </div>
 
@@ -224,8 +224,8 @@ function BlingAction({ action }) {
         <div className="w-3 h-3 rounded-full bg-green-500/15 flex items-center justify-center">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
         </div>
-        <span className="text-[9px] font-semibold" style={{ color: '#3859a8' }}>{action.label}</span>
-        <span className="text-[9px] text-gray-400">{action.sublabel}</span>
+        <span className="text-[11px] font-semibold" style={{ color: '#3859a8' }}>{action.label}</span>
+        <span className="text-[11px] text-gray-400">{action.sublabel}</span>
       </motion.div>
     </motion.div>
   )
@@ -241,7 +241,7 @@ function ChatBubble({ line }) {
       className={`flex mb-3 ${isAI ? 'justify-start' : 'justify-end'}`}
     >
       <div
-        className={`max-w-[82%] px-2.5 py-1.5 text-[10px] leading-[1.4] ${
+        className={`max-w-[82%] px-2.5 py-1.5 text-[12px] leading-[1.4] ${
           isAI ? 'rounded-xl rounded-bl-sm text-white' : 'rounded-xl rounded-br-sm bg-[#f1f3f5] text-gray-900'
         }`}
         style={isAI ? { backgroundColor: '#3859a8' } : {}}
@@ -262,17 +262,17 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
   }, [items, speakingRole, blingAction])
 
   return (
-    <div className="w-full h-full flex flex-col bg-white text-[11px]">
+    <div className="w-full h-full flex flex-col bg-white text-[12.5px]">
       {/* Call header */}
       <div className="pt-7 pb-1.5 px-3 flex items-center gap-2" style={{ background: 'linear-gradient(to bottom, #3859a8, #2a4688)' }}>
         <div className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center shrink-0">
           <Logo size={12} tone="on-dark" animate={false} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[11px] text-white leading-tight">Sarah Mitchell</p>
+          <p className="font-semibold text-[12.5px] text-white leading-tight">Sarah Mitchell</p>
           <div className="flex items-center gap-1">
             <Logo size={8} tone="on-dark" animate={false} />
-            <p className="text-[9px] text-white/60">JotilLabs AI Answering</p>
+            <p className="text-[11px] text-white/60">JotilLabs AI Answering</p>
           </div>
         </div>
         {/* Header waveform */}

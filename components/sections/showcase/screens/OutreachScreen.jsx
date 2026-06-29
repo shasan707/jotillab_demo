@@ -93,14 +93,14 @@ function UploadView({ progress, isUploading }) {
       </div>
 
       <div className="text-center">
-        <p className="text-[11px] font-semibold text-gray-900">leads_q2.xlsx</p>
-        <p className="text-[9px] text-gray-400 mt-0.5">{CONTACTS_TOTAL} contacts</p>
+        <p className="text-[12.5px] font-semibold text-gray-900">leads_q2.xlsx</p>
+        <p className="text-[11px] text-gray-400 mt-0.5">{CONTACTS_TOTAL} contacts</p>
       </div>
 
       <div className="w-full">
         <div className="flex items-center gap-1 mb-1.5">
           <Upload className="w-2.5 h-2.5" style={{ color: '#3859a8' }} strokeWidth={1.8} />
-          <p className="text-[9px] font-semibold" style={{ color: '#3859a8' }}>
+          <p className="text-[11px] font-semibold" style={{ color: '#3859a8' }}>
             {isUploading ? `Importing... ${Math.round(progress * 100)}%` : 'Ready to upload'}
           </p>
         </div>
@@ -126,13 +126,13 @@ function SheetView({ rowsVisible }) {
     >
       <div className="px-3 py-2 flex items-center gap-2 border-b border-gray-100" style={{ backgroundColor: '#f8f9fb' }}>
         <FileSpreadsheet className="w-3.5 h-3.5" style={{ color: COLORS.primary }} strokeWidth={1.6} />
-        <p className="text-[10px] font-semibold text-gray-900 flex-1">leads_q2.xlsx</p>
-        <p className="text-[9.5px] text-gray-500 font-mono">{CONTACTS_TOTAL} rows</p>
+        <p className="text-[12px] font-semibold text-gray-900 flex-1">leads_q2.xlsx</p>
+        <p className="text-[11.5px] text-gray-500 font-mono">{CONTACTS_TOTAL} rows</p>
       </div>
 
       <div>
         <div
-          className="grid items-center text-[9.5px] font-bold text-gray-500 uppercase tracking-wider px-2 py-1.5 border-b border-gray-100"
+          className="grid items-center text-[11.5px] font-bold text-gray-500 uppercase tracking-wider px-2 py-1.5 border-b border-gray-100"
           style={{ gridTemplateColumns: '1fr 1.1fr 1.2fr', backgroundColor: '#fafbfd' }}
         >
           <span>Name</span>
@@ -148,7 +148,7 @@ function SheetView({ rowsVisible }) {
               initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : -6 }}
               transition={{ duration: 0.25 }}
-              className="grid items-center text-[9.5px] px-2 py-1.5 border-b border-gray-100 last:border-b-0"
+              className="grid items-center text-[11.5px] px-2 py-1.5 border-b border-gray-100 last:border-b-0"
               style={{ gridTemplateColumns: '1fr 1.1fr 1.2fr' }}
             >
               <span className="text-gray-900 font-medium truncate">{lead.name}</span>
@@ -165,7 +165,7 @@ function SheetView({ rowsVisible }) {
             transition={{ delay: 0.2 }}
             className="px-2 py-1.5 text-center"
           >
-            <p className="text-[9.5px] text-gray-400 italic">+ {CONTACTS_TOTAL - LEADS.length} more contacts</p>
+            <p className="text-[11.5px] text-gray-400 italic">+ {CONTACTS_TOTAL - LEADS.length} more contacts</p>
           </motion.div>
         )}
       </div>
@@ -184,7 +184,7 @@ function SheetView({ rowsVisible }) {
           >
             <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
           </div>
-          <p className="text-[9.5px] font-semibold text-green-700">Sheet parsed. Starting outreach...</p>
+          <p className="text-[11.5px] font-semibold text-green-700">Sheet parsed. Starting outreach...</p>
         </motion.div>
       )}
     </motion.div>
@@ -203,8 +203,8 @@ function CallingView({ activeIdx, finished }) {
           <Phone className="w-4.5 h-4.5" style={{ color: COLORS.call }} strokeWidth={1.6} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[12px] font-bold text-gray-900 leading-tight">Calling leads</p>
-          <p className="text-[9.5px] text-gray-500">From leads_q2.xlsx</p>
+          <p className="text-[13px] font-bold text-gray-900 leading-tight">Calling leads</p>
+          <p className="text-[11.5px] text-gray-500">From leads_q2.xlsx</p>
         </div>
       </div>
 
@@ -242,7 +242,7 @@ function CallingView({ activeIdx, finished }) {
           </div>
         </div>
 
-        <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: COLORS.call }}>
+        <p className="text-[12px] font-semibold uppercase tracking-wider" style={{ color: COLORS.call }}>
           {finished ? 'Campaign complete' : 'Calling'}
         </p>
 
@@ -257,7 +257,7 @@ function CallingView({ activeIdx, finished }) {
               className="text-center"
             >
               <p className="text-[14px] font-bold text-gray-900 font-mono">{lead.phone}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">{lead.name}</p>
+              <p className="text-[12px] text-gray-500 mt-0.5">{lead.name}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -278,8 +278,8 @@ function EmailView({ activeIdx }) {
           <Mail className="w-4.5 h-4.5" style={{ color: COLORS.email }} strokeWidth={1.6} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[12px] font-bold text-gray-900 leading-tight">Sending emails</p>
-          <p className="text-[9.5px] text-gray-500">Personalized for each lead</p>
+          <p className="text-[13px] font-bold text-gray-900 leading-tight">Sending emails</p>
+          <p className="text-[11.5px] text-gray-500">Personalized for each lead</p>
         </div>
       </div>
 
@@ -302,7 +302,7 @@ function EmailView({ activeIdx }) {
               >
                 <div className="px-2 py-1 flex items-center gap-1 border-b border-gray-100">
                   <Mail className="w-2.5 h-2.5 shrink-0" style={{ color: COLORS.email }} strokeWidth={1.8} />
-                  <p className="text-[9.5px] text-gray-500 truncate flex-1">
+                  <p className="text-[11.5px] text-gray-500 truncate flex-1">
                     To: <span className="text-gray-900 font-mono">{lead.email}</span>
                   </p>
                   {isActive ? (
@@ -331,8 +331,8 @@ function EmailView({ activeIdx }) {
                   )}
                 </div>
                 <div className="px-2 py-1.5">
-                  <p className="text-[9px] font-bold text-gray-900 truncate mb-0.5">Quick idea for your team</p>
-                  <p className="text-[9.5px] text-gray-600 leading-snug line-clamp-2">
+                  <p className="text-[11px] font-bold text-gray-900 truncate mb-0.5">Quick idea for your team</p>
+                  <p className="text-[11.5px] text-gray-600 leading-snug line-clamp-2">
                     Hi {firstName}, noticed your team is growing. Quick idea on streamlining your sales outreach...
                   </p>
                 </div>
@@ -357,8 +357,8 @@ function SmsView({ activeIdx }) {
           <MessageCircle className="w-4.5 h-4.5" style={{ color: COLORS.sms }} strokeWidth={1.6} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[12px] font-bold text-gray-900 leading-tight">Sending SMS</p>
-          <p className="text-[9.5px] text-gray-500">Across the full contact list</p>
+          <p className="text-[13px] font-bold text-gray-900 leading-tight">Sending SMS</p>
+          <p className="text-[11.5px] text-gray-500">Across the full contact list</p>
         </div>
       </div>
 
@@ -375,7 +375,7 @@ function SmsView({ activeIdx }) {
                 transition={{ duration: 0.3 }}
                 className="flex flex-col gap-0.5 shrink-0"
               >
-                <p className="text-[9px] text-gray-400 font-mono px-1">To: {lead.phone}</p>
+                <p className="text-[11px] text-gray-400 font-mono px-1">To: {lead.phone}</p>
                 <div className="flex justify-end">
                   <div
                     className="max-w-[88%] px-2.5 py-1.5 rounded-xl rounded-br-sm text-white"
@@ -384,19 +384,19 @@ function SmsView({ activeIdx }) {
                       boxShadow: `0 2px 8px ${COLORS.sms}40`,
                     }}
                   >
-                    <p className="text-[9px] leading-snug">
+                    <p className="text-[11px] leading-snug">
                       Hi {firstName}, this is JotilLabs. Got 2 mins to chat about your sales pipeline?
                     </p>
                   </div>
                 </div>
                 <div className="flex justify-end items-center gap-0.5 px-1.5">
                   {isActive ? (
-                    <span className="text-[7.5px] text-gray-400">Sending...</span>
+                    <span className="text-[9.5px] text-gray-400">Sending...</span>
                   ) : (
                     <>
                       <Check className="w-2 h-2" style={{ color: COLORS.sms }} strokeWidth={3} />
                       <Check className="w-2 h-2 -ml-1" style={{ color: COLORS.sms }} strokeWidth={3} />
-                      <span className="text-[7.5px] text-gray-400 ml-0.5">Delivered</span>
+                      <span className="text-[9.5px] text-gray-400 ml-0.5">Delivered</span>
                     </>
                   )}
                 </div>
@@ -445,7 +445,7 @@ function ResultCard({ icon: Icon, statValue, statSuffix, label, color }) {
           {statValue}
           {statSuffix && <span className="text-[14px]">{statSuffix}</span>}
         </motion.p>
-        <p className="text-[10px] font-semibold text-gray-700 mt-0.5">{label}</p>
+        <p className="text-[12px] font-semibold text-gray-700 mt-0.5">{label}</p>
       </div>
     </motion.div>
   )
@@ -564,13 +564,13 @@ export function OutreachScreen({ isActive, onAction, onStep }) {
   }, [isActive, onStep])
 
   return (
-    <div className="w-full h-full flex flex-col bg-white text-[11px]">
+    <div className="w-full h-full flex flex-col bg-white text-[12.5px]">
       <div className="pt-9 px-4 pb-3 border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-1.5 mb-0.5">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
           <p className="font-semibold text-xs text-gray-900">Campaign: Spring Launch</p>
         </div>
-        <p className="text-[10px] text-gray-400">AI-powered multi-channel outreach</p>
+        <p className="text-[12px] text-gray-400">AI-powered multi-channel outreach</p>
       </div>
 
       <div className="flex-1 px-3 py-3 overflow-hidden flex flex-col gap-2.5 min-h-0">

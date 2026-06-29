@@ -166,13 +166,13 @@ function BentoTile({ tile }) {
       </div>
 
       <h3
-        className="font-bold text-text tracking-[-0.025em] mb-2"
-        style={{ fontFamily: 'var(--font-display)', fontSize: size === 'large' ? '1.45rem' : '1.05rem' }}
+        className="font-bold text-text tracking-[-0.02em] mb-2.5"
+        style={{ fontFamily: 'var(--font-display)', fontSize: size === 'large' ? '1.5rem' : '1.2rem' }}
       >
         {title}
       </h3>
       <p
-        className="text-sm text-text-secondary leading-relaxed m-0"
+        className="text-[15px] text-text-secondary leading-[1.65] m-0"
         style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
       >
         {copy}
