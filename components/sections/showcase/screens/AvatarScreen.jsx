@@ -19,14 +19,6 @@ const TURNS = [
    mouth to read as talking energy. Motion is disabled under reduced-motion. */
 function FemaleAvatar({ speaking }) {
   const reduced = useReducedMotion()
-  // Prefer the animated gif; fall back to the still photo if it isn't present.
-  const [src, setSrc] = useState('/avatar-sarah.gif')
-  const imgRef = useRef(null)
-  useEffect(() => {
-    // If the gif 404'd before hydration, onError won't fire — catch it here.
-    const img = imgRef.current
-    if (img && img.complete && img.naturalWidth === 0) setSrc('/avatar-sarah.jpg')
-  }, [])
 
   return (
     <motion.div
@@ -35,17 +27,20 @@ function FemaleAvatar({ speaking }) {
       animate={reduced ? undefined : { scale: speaking ? [1, 1.015, 1] : [1, 1.025, 1] }}
       transition={{ duration: speaking ? 1.5 : 9, repeat: Infinity, ease: 'easeInOut' }}
     >
-      {/* Animated avatar clip. Drop the file at public/avatar-sarah.gif. Falls
-          back to the still photo automatically if the gif isn't present yet. */}
-      <img
-        ref={imgRef}
-        src={src}
-        alt="Sarah, AI brand ambassador"
+      {/* Looping avatar clip (gives the motion). Add the file at
+          public/avatar-sarah.mp4 — until then the poster still photo shows.
+          Muted + playsInline so it autoplays everywhere. */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="/avatar-sarah.jpg"
         className="h-full w-full object-cover"
         style={{ objectPosition: 'center 24%' }}
-        draggable={false}
-        onError={() => setSrc('/avatar-sarah.jpg')}
-      />
+      >
+        <source src="/avatar-sarah.mp4" type="video/mp4" />
+      </video>
       {/* Talking glow that pulses while speaking */}
       <motion.div
         aria-hidden="true"

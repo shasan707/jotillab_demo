@@ -78,6 +78,12 @@ const HEADLINE_SHADOW_DARK = '2px 3px 0 rgba(15,17,41,0.14), 4px 6px 9px rgba(15
 const HEADLINE_FILTER_DARK =
   'drop-shadow(2px 3px 0 rgba(15,17,41,0.14)) drop-shadow(4px 6px 7px rgba(15,17,41,0.10))'
 
+// Deep wave-blue gradient (drawn from the hero background's deepest blue):
+// rich navy -> royal -> sapphire. Used for the gradient headline words and the
+// primary CTA so they tie into the background in a deep, professional way.
+const HERO_GRADIENT =
+  'linear-gradient(120deg, #22396E 0%, #2a4688 38%, #3859a8 68%, #3B82F6 100%)'
+
 /* Unique, hand-built SVG glyphs — one per product. Stroked with a per-icon
    gradient (color -> c2). Not from any icon library. */
 function ProductIcon({ iconKey, color, c2 }) {
@@ -298,7 +304,7 @@ export function SplineAura() {
             </span>
             <span
               style={{
-                background: 'linear-gradient(90deg, #3B82F6, #7c3aed, #06b6d4)',
+                background: HERO_GRADIENT,
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
@@ -309,7 +315,7 @@ export function SplineAura() {
             </span>
             <span
               style={{
-                background: 'linear-gradient(90deg, #3B82F6, #7c3aed, #06b6d4)',
+                background: HERO_GRADIENT,
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
@@ -330,8 +336,8 @@ export function SplineAura() {
             {/* Book a Demo — kept from the previous hero */}
             <Link
               href="/contact"
-              className="btn-gradient btn-shine inline-flex items-center gap-2 rounded-[12px] px-7 py-4 text-sm font-semibold text-white no-underline shadow-lg shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
-              style={{ fontFamily: 'var(--font-display)' }}
+              className="btn-shine inline-flex items-center gap-2 rounded-[12px] px-7 py-4 text-sm font-semibold text-white no-underline shadow-lg shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+              style={{ fontFamily: 'var(--font-display)', background: HERO_GRADIENT }}
             >
               Book a Demo
               <ArrowRight size={15} strokeWidth={2} />

@@ -33,7 +33,7 @@ function SectionHeading() {
   )
 }
 
-function ShowcaseRow({ product, flip }) {
+function ShowcaseRow({ product, flip, bg }) {
   const [step, setStep] = useState(0)
   const ref = useRef(null)
   const reduced = useReducedMotion()
@@ -79,54 +79,65 @@ function ShowcaseRow({ product, flip }) {
     transition: { ...spring, delay: 0.1 },
   }
 
-  // Only the product-name badge is centered, on its own row. Below it the copy
-  // sits beside the device (side-by-side, like before). The device keeps the
-  // wider share of the row so its in-screen text stays readable; the device
-  // side alternates per row.
-  // Each product is its own white "card" on the section's cool background, so
-  // the products read as clearly separated blocks instead of one long strip.
+  // Each product is a full-width band with an alternating background (white /
+  // cool tint) — so the products read as clearly separated sections via the
+  // background, with no card/box around them. Badge centered on top, copy beside
+  // the device below.
   return (
-    <div
-      ref={ref}
-      className="cv-auto flex flex-col gap-7 rounded-[28px] border border-black/[0.06] bg-white px-6 py-10 shadow-[0_12px_44px_rgba(15,17,41,0.06)] sm:px-10 sm:py-12 lg:gap-9 lg:px-14 lg:py-14"
-    >
-      <motion.div {...badgeMotion}>
-        <SlideBadge product={product} />
-      </motion.div>
-
+    <div className="w-full" style={{ backgroundColor: bg }}>
       <div
-        className={`grid grid-cols-1 items-center gap-10 lg:gap-12 ${flip ? 'lg:grid-cols-[1.18fr_0.82fr]' : 'lg:grid-cols-[0.82fr_1.18fr]'}`}
+        ref={ref}
+        className="cv-auto mx-auto flex max-w-[1300px] flex-col gap-7 px-6 py-16 lg:gap-9 lg:py-20"
       >
-        {/* Copy */}
-        <motion.div className={flip ? 'lg:order-2' : 'lg:order-1'} {...textMotion}>
-          <SlideText product={product} />
+        <motion.div {...badgeMotion}>
+          <SlideBadge product={product} />
         </motion.div>
 
-        {/* Device + live caption */}
-        <motion.div
-          className={`flex min-w-0 flex-col items-center gap-5 ${flip ? 'lg:order-1' : 'lg:order-2'}`}
-          {...deviceMotion}
+        <div
+          className={`grid grid-cols-1 items-center gap-10 lg:gap-12 ${flip ? 'lg:grid-cols-[1.18fr_0.82fr]' : 'lg:grid-cols-[0.82fr_1.18fr]'}`}
         >
-          <SlideDevice slug={product.slug} deviceType={product.deviceType} isActive={inView} onStep={setStep} />
-          <DeviceCaption steps={PRODUCT_STEPS[product.slug]} activeIndex={step} />
-        </motion.div>
+          {/* Copy */}
+          <motion.div className={flip ? 'lg:order-2' : 'lg:order-1'} {...textMotion}>
+            <SlideText product={product} />
+          </motion.div>
+
+          {/* Device + live caption */}
+          <motion.div
+            className={`flex min-w-0 flex-col items-center gap-5 ${flip ? 'lg:order-1' : 'lg:order-2'}`}
+            {...deviceMotion}
+          >
+            <SlideDevice slug={product.slug} deviceType={product.deviceType} isActive={inView} onStep={setStep} />
+            <DeviceCaption steps={PRODUCT_STEPS[product.slug]} activeIndex={step} />
+          </motion.div>
+        </div>
       </div>
     </div>
   )
 }
 
 export function ScrollProductShowcase() {
+  // Alternating full-width background bands differentiate each product section.
+  const ALT = '#E9EEF7'
   return (
-    <section className="bg-[#E9EEF7] overflow-x-clip">
-      <SectionHeading />
+    <section className="overflow-x-clip">
+      <div style={{ backgroundColor: ALT }}>
+        <SectionHeading />
+      </div>
 
-      <div className="mx-auto flex max-w-[1300px] flex-col gap-10 px-6 pb-12 lg:gap-14">
+      <div className="flex flex-col">
         {PRODUCT_SLIDES.map((product, i) => (
-          <ShowcaseRow key={product.slug} product={product} flip={i % 2 === 1} />
+          <ShowcaseRow
+            key={product.slug}
+            product={product}
+            flip={i % 2 === 1}
+            bg={i % 2 === 0 ? '#ffffff' : ALT}
+          />
         ))}
       </div>
 
-      <FlowCard />
+      <div style={{ backgroundColor: ALT }} className="pb-12">
+        <FlowCard />
+      </div>
     </section>
   )
 }
