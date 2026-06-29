@@ -30,17 +30,34 @@ export const metadata = {
     'Never miss a customer again. JotilLabs AI voice agents, chatbots, and SMS automation handle your calls, chats, leads, and workflows 24/7.',
 }
 
+// Hairline seam between sections so each block reads as its own section
+// (paired with the alternating section backgrounds below).
+function Seam() {
+  return (
+    <div
+      aria-hidden="true"
+      className="mx-auto h-px max-w-7xl bg-gradient-to-r from-transparent via-[rgba(15,17,41,0.10)] to-transparent"
+    />
+  )
+}
+
 export default function Home() {
   return (
     <>
       <SplineAura />
       {/* Everything below the hero uses the professional Roboto heading
-          treatment (see .home-pro-headings in globals.css). */}
+          treatment (see .home-pro-headings in globals.css). Sections alternate
+          background (alt / white) and are split by a hairline Seam so the page
+          reads as distinct sections rather than one continuous block. */}
       <div className="home-pro-headings">
         <ScrollProductShowcase />
+        <Seam />
         <SolutionsBento />
+        <Seam />
         <HowItWorks />
+        <Seam />
         <IntegrationStrip />
+        <Seam />
         <LiveConsole />
         <CTASection />
       </div>
