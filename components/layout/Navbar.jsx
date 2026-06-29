@@ -323,7 +323,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/contact"
-            className="hidden lg:inline-flex items-center no-underline text-sm font-semibold text-white btn-gradient px-5 py-2.5 rounded-[10px] shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
+            className="hidden lg:inline-flex items-center no-underline text-sm font-semibold text-white btn-gradient-hero px-5 py-2.5 rounded-[10px] shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
           >
             Book a Demo
           </Link>
@@ -515,7 +515,7 @@ export function Navbar() {
                   <Link
                     href="/contact"
                     onClick={closeMobile}
-                    className="block no-underline text-center text-[15px] font-semibold text-white btn-gradient rounded-[10px] py-3 shadow-lg shadow-primary/20"
+                    className="block no-underline text-center text-[15px] font-semibold text-white btn-gradient-hero rounded-[10px] py-3 shadow-lg shadow-primary/20"
                   >
                     Book a Demo
                   </Link>

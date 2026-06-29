@@ -530,6 +530,11 @@ h6 {
   background: linear-gradient(135deg, #3B82F6 0%, #6d28d9 55%, #7c3aed 100%);
 }
 
+/* Deep wave-blue CTA gradient — matches the hero "Book a Demo" / headline. */
+.btn-gradient-hero {
+  background: linear-gradient(120deg, #22396E 0%, #2a4688 38%, #3859a8 68%, #3B82F6 100%);
+}
+
 .icon-gradient-bg {
   background: linear-gradient(135deg, rgba(56, 89, 168, 0.10), rgba(59, 130, 246, 0.08));
 }
