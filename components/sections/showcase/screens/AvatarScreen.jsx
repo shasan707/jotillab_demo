@@ -19,6 +19,15 @@ const TURNS = [
    mouth to read as talking energy. Motion is disabled under reduced-motion. */
 function FemaleAvatar({ speaking }) {
   const reduced = useReducedMotion()
+  // The animated avatar (hand/mouth motion) — add the file at
+  // public/avatar-sarah.gif. Until that file exists it falls back to the still
+  // photo (so there is no motion until you add the gif).
+  const [src, setSrc] = useState('/avatar-sarah.gif')
+  const imgRef = useRef(null)
+  useEffect(() => {
+    const img = imgRef.current
+    if (img && img.complete && img.naturalWidth === 0) setSrc('/avatar-sarah.jpg')
+  }, [])
 
   return (
     <motion.div
@@ -27,20 +36,15 @@ function FemaleAvatar({ speaking }) {
       animate={reduced ? undefined : { scale: speaking ? [1, 1.015, 1] : [1, 1.025, 1] }}
       transition={{ duration: speaking ? 1.5 : 9, repeat: Infinity, ease: 'easeInOut' }}
     >
-      {/* Looping avatar clip (gives the motion). Add the file at
-          public/avatar-sarah.mp4 — until then the poster still photo shows.
-          Muted + playsInline so it autoplays everywhere. */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster="/avatar-sarah.jpg"
+      <img
+        ref={imgRef}
+        src={src}
+        alt="Sarah, AI brand ambassador"
         className="h-full w-full object-cover"
         style={{ objectPosition: 'center 24%' }}
-      >
-        <source src="/avatar-sarah.mp4" type="video/mp4" />
-      </video>
+        draggable={false}
+        onError={() => setSrc('/avatar-sarah.jpg')}
+      />
       {/* Talking glow that pulses while speaking */}
       <motion.div
         aria-hidden="true"
