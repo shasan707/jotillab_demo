@@ -4,7 +4,6 @@ import * as LucideIcons from 'lucide-react'
 import { Check, ArrowRight } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
-import { AtmosphericDivider } from '@/components/design'
 import { Button } from '@/components/ui/Button'
 import { IconBox } from '@/components/ui/IconBox'
 import { PricingCard } from '@/components/pricing/PricingCard'
@@ -190,10 +189,9 @@ export default async function ProductPage({ params }) {
         </section>
       )}
 
-      <AtmosphericDivider from="var(--color-primary-50)" to="var(--color-bg)" height={50} />
 
       {/* ─── 2. Services breakdown ─── */}
-      <section className="py-20 px-4">
+      <section className="bg-white py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What you get</p>
@@ -241,15 +239,13 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
       {/* ─── 3. Demo visualization (the live interface is now in the hero) ─── */}
       <DemoVisualization slug={slug} />
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 4. Features grid ─── */}
-      <section className="py-20 px-4 surface-sunken">
+      <section className="bg-white py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Why it works</p>
@@ -285,10 +281,9 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 5. Pricing teaser — single highlighted tier + CTA to full pricing page ─── */}
-      <section id="pricing" className="py-20 px-4">
+      <section id="pricing" className="bg-[#E9EEF7] py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Pricing</p>
@@ -377,15 +372,13 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
       {/* ─── 6. FAQ (client accordion) ─── */}
       <FAQAccordion faq={product.faq} />
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 7. Bottom CTA ─── */}
-      <section className="py-20 px-4">
+      <section className="bg-[#E9EEF7] py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Get Started</p>
@@ -414,8 +407,7 @@ export default async function ProductPage({ params }) {
       {/* ─── 8. Integrations — interactive logo grid (before footer) ─── */}
       {product.integrations?.length > 0 && (
         <>
-          <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
-          <section className="cv-auto py-20 px-4 surface-sunken">
+          <section className="cv-auto bg-white py-20 px-4">
             <div className="max-w-5xl mx-auto">
               <AnimatedSection className="text-center mb-12">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">

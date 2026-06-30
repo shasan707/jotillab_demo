@@ -910,7 +910,7 @@ export function DemoVisualization({ slug }) {
   if (!Demo) return null
 
   return (
-    <div className="py-20 px-4">
+    <div className="py-20 px-4 bg-[#E9EEF7]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Live Preview</p>

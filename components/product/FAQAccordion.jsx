@@ -9,7 +9,7 @@ export function FAQAccordion({ faq }) {
   const [open, setOpen] = useState(null)
 
   return (
-    <div className="py-20 px-4 bg-[#FAFBFD]">
+    <div className="py-20 px-4 bg-white">
       <div className="max-w-3xl mx-auto">
         <AnimatedSection className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">FAQ</p>
