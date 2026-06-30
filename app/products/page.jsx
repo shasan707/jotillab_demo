@@ -61,7 +61,7 @@ export default function ProductsPage() {
   return (
     <>
       {/* ─── Hero ─── */}
-      <section className="relative pt-28 pb-16 px-4 overflow-hidden">
+      <section className="hero-wave-bg relative pt-28 pb-16 px-4 overflow-hidden">
         {/* Subtle orb */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full opacity-30 pointer-events-none"
@@ -111,7 +111,7 @@ export default function ProductsPage() {
       <AtmosphericDivider from="var(--color-primary-50)" to="var(--color-bg)" height={50} />
 
       {/* ─── Products grid ─── */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What we offer</p>
@@ -196,7 +196,7 @@ export default function ProductsPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
       {/* ─── Comparison table ─── */}
-      <section className="py-20 px-4 surface-sunken overflow-hidden">
+      <section className="py-20 px-4 bg-[#E9EEF7] overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Compare</p>
@@ -269,7 +269,7 @@ export default function ProductsPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── Bottom CTA ─── */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <h2

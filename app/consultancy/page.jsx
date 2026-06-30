@@ -82,7 +82,7 @@ export default function ConsultancyPage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-24">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-24">
         <div
           className="pointer-events-none absolute top-[-120px] right-[-80px] rounded-full"
           aria-hidden="true"
@@ -135,7 +135,7 @@ export default function ConsultancyPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-primary-50)" height={40} />
 
       {/* What We Offer */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we offer</Badge>
@@ -177,7 +177,7 @@ export default function ConsultancyPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Process */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">How it works</Badge>
@@ -226,7 +226,7 @@ export default function ConsultancyPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <AnimatedSection>
             <div

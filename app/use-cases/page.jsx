@@ -42,7 +42,7 @@ export default function UseCasesPage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-32 pb-20">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-20">
         <div
           className="pointer-events-none absolute top-[-160px] right-[-120px] rounded-full"
           aria-hidden="true"
@@ -94,7 +94,7 @@ export default function UseCasesPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-primary-50)" height={40} />
 
       {/* ── Industry showcase (interactive) ── */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <AnimatedSection className="text-center mb-12">
             <p className="text-sm font-semibold tracking-wide uppercase mb-3" style={{ color: '#3859a8' }}>
@@ -118,7 +118,7 @@ export default function UseCasesPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* ── How it works ── */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-6xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">How it works</Badge>
@@ -186,7 +186,7 @@ export default function UseCasesPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* ── Stats ── */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">By the numbers</Badge>
@@ -224,7 +224,7 @@ export default function UseCasesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <AnimatedSection>
             <div

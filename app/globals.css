@@ -533,6 +533,18 @@ h6 {
   background: linear-gradient(120deg, #22396E 0%, #2a4688 38%, #3859a8 68%, #3B82F6 100%);
 }
 
+/* Wavy hero background — the same scene image as the homepage hero, with a soft
+   white wash on top so headings/text stay readable. Applied to the hero/top
+   section of every page for a consistent landing-page look. */
+.hero-wave-bg {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.42)),
+    url(/hero-bg.jpg);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+
 .icon-gradient-bg {
   background: linear-gradient(135deg, rgba(56, 89, 168, 0.10), rgba(59, 130, 246, 0.08));
 }

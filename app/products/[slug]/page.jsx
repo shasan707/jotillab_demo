@@ -76,7 +76,7 @@ export default async function ProductPage({ params }) {
       {/* ─── 1. Hero ─── */}
       {slug === 'receptionist' ? (
         /* Voice-agent hero: the live voice panel is the centerpiece */
-        <section className="relative pt-28 pb-24 px-4 overflow-hidden">
+        <section className="hero-wave-bg relative pt-28 pb-24 px-4 overflow-hidden">
           {/* Background orbs */}
           <div
             className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
@@ -128,7 +128,7 @@ export default async function ProductPage({ params }) {
           </div>
         </section>
       ) : (
-        <section className="relative pt-28 pb-20 px-4 overflow-hidden">
+        <section className="hero-wave-bg relative pt-28 pb-20 px-4 overflow-hidden">
           {/* Background orbs */}
           <div
             className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"

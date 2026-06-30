@@ -31,7 +31,7 @@ export default function ContactPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-16">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-16">
         <div
           className="pointer-events-none absolute top-[-100px] right-[-60px] rounded-full"
           aria-hidden="true"

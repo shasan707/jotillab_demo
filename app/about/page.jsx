@@ -71,7 +71,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-24">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-24">
         <div
           className="pointer-events-none absolute top-[-120px] right-[-80px] rounded-full"
           aria-hidden="true"
@@ -115,7 +115,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-primary-50)" height={40} />
 
       {/* Story + Mission / Vision */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left: Story */}
@@ -213,7 +213,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Stats */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <h2
@@ -254,7 +254,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* Values */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we believe</Badge>
@@ -288,7 +288,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Team */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">The founders</Badge>
@@ -334,7 +334,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <AnimatedSection>
             <div

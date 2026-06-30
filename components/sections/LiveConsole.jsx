@@ -322,7 +322,7 @@ export function LiveConsole() {
               className="rounded-[26px] p-[3px]"
               style={{
                 background:
-                  'linear-gradient(150deg, rgba(255,255,255,0.95) 0%, rgba(56,89,168,0.55) 30%, rgba(124,58,237,0.45) 58%, rgba(6,182,212,0.45) 80%, rgba(255,255,255,0.7) 100%)',
+                  'linear-gradient(150deg, rgba(255,255,255,0.95) 0%, rgba(96,165,250,0.55) 32%, rgba(59,130,246,0.5) 62%, rgba(147,197,253,0.55) 85%, rgba(255,255,255,0.7) 100%)',
                 boxShadow: '0 30px 70px rgba(56,89,168,0.18), 0 8px 26px rgba(15,17,41,0.08)',
               }}
             >
