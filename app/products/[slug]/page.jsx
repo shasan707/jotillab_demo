@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/Button'
 import { IconBox } from '@/components/ui/IconBox'
 import { PricingCard } from '@/components/pricing/PricingCard'
 import { DemoVisualization } from '@/components/product/DemoVisualization'
-import { ProductDemoDevice } from '@/components/product/ProductDemoDevice'
+import { ProductHeroDevice } from '@/components/product/ProductHeroDevice'
 
-// Products that have a live device-interface demo (same screens as the homepage
-// showcase). Others fall back to DemoVisualization.
+// Products that have a live device interface (same screens as the homepage
+// showcase) — shown as the hero visual. Others use ProductHeroPreview.
 const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar']
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
@@ -176,9 +176,14 @@ export default async function ProductPage({ params }) {
                 </div>
               </AnimatedSection>
 
-              {/* Right column - interactive animated live preview */}
+              {/* Right column - live product interface (same device mockup as the
+                  homepage showcase); products without a screen use the preview. */}
               <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
-                <ProductHeroPreview slug={slug} productName={product.name} />
+                {DEMO_DEVICE_SLUGS.includes(slug) ? (
+                  <ProductHeroDevice slug={slug} />
+                ) : (
+                  <ProductHeroPreview slug={slug} productName={product.name} />
+                )}
               </AnimatedSection>
             </div>
           </div>
@@ -238,13 +243,8 @@ export default async function ProductPage({ params }) {
 
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
-      {/* ─── 3. Demo — live device interface (same as the homepage showcase);
-          products without an interface screen fall back to DemoVisualization ─── */}
-      {DEMO_DEVICE_SLUGS.includes(slug) ? (
-        <ProductDemoDevice slug={slug} />
-      ) : (
-        <DemoVisualization slug={slug} />
-      )}
+      {/* ─── 3. Demo visualization (the live interface is now in the hero) ─── */}
+      <DemoVisualization slug={slug} />
 
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 

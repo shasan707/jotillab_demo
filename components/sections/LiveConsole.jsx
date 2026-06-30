@@ -307,7 +307,11 @@ export function LiveConsole() {
   const opacity = useTransform(scrollYProgress, [0, 0.55], [0.35, 1])
 
   return (
-    <section ref={sectionRef} className="relative bg-[#E9EEF7] py-16 sm:py-20">
+    <section
+      ref={sectionRef}
+      className="relative py-16 sm:py-20"
+      style={{ background: 'linear-gradient(160deg, #eaf2fd 0%, #d8e6f8 55%, #cfe0f6 100%)' }}
+    >
       <div className="max-w-5xl mx-auto px-6" style={{ perspective: 1300 }}>
         <motion.div
           style={reduced ? undefined : { y, scale, rotateX, opacity, transformOrigin: 'center top' }}
