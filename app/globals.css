@@ -466,6 +466,18 @@ h6 {
     4px 6px 9px rgba(15, 17, 41, 0.10);
 }
 
+/* Heading accent words use the single royal-blue everywhere (not the rainbow
+   gradient), so every page matches the homepage. Only targets accents INSIDE
+   headings — decorative gradient text elsewhere is untouched. */
+h1 .text-gradient,
+h2 .text-gradient,
+h3 .text-gradient {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #3859a8 !important;
+  color: #3859a8 !important;
+}
+
 .card-premium::before {
   content: '';
   position: absolute;

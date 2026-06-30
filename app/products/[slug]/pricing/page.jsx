@@ -102,7 +102,7 @@ export default async function ProductPricingPage({ params }) {
   return (
     <>
       {/* ─── 1. Hero ─── */}
-      <section className="relative pt-28 pb-16 px-4">
+      <section className="hero-wave-bg relative pt-28 pb-16 px-4">
         <div className="relative max-w-4xl mx-auto text-center">
           <AnimatedSection>
             <Link
@@ -142,7 +142,7 @@ export default async function ProductPricingPage({ params }) {
       </section>
 
       {/* ─── 2. Pricing block (branches by billingModel) ─── */}
-      <section className="pb-20 px-4">
+      <section className="pb-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           {product.pricing.billingModel === 'contact' ? (
             <ContactOnlyPricing product={product} />
@@ -201,7 +201,7 @@ export default async function ProductPricingPage({ params }) {
 
       {/* ─── 3. Feature comparison ─── */}
       {comparisonRows.length > 0 && (
-        <section className="py-20 px-4">
+        <section className="py-20 px-4 bg-[#E9EEF7]">
           <div className="max-w-6xl mx-auto">
             <AnimatedSection className="text-center mb-12">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
@@ -229,7 +229,7 @@ export default async function ProductPricingPage({ params }) {
       {pricingFaq.length > 0 && <FAQAccordion faq={pricingFaq} />}
 
       {/* ─── 5. Bottom CTA ─── */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4">
