@@ -526,11 +526,9 @@ h6 {
   50% { background-position: 100% 50%; }
 }
 
-.btn-gradient {
-  background: linear-gradient(135deg, #3B82F6 0%, #6d28d9 55%, #7c3aed 100%);
-}
-
-/* Deep wave-blue CTA gradient — matches the hero "Book a Demo" / headline. */
+/* Site-wide CTA gradient — the deep wave-blue used on the hero "Book a Demo"
+   and headline. btn-gradient-hero is kept as an alias for the same look. */
+.btn-gradient,
 .btn-gradient-hero {
   background: linear-gradient(120deg, #22396E 0%, #2a4688 38%, #3859a8 68%, #3B82F6 100%);
 }

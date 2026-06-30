@@ -9,6 +9,11 @@ import { Button } from '@/components/ui/Button'
 import { IconBox } from '@/components/ui/IconBox'
 import { PricingCard } from '@/components/pricing/PricingCard'
 import { DemoVisualization } from '@/components/product/DemoVisualization'
+import { ProductDemoDevice } from '@/components/product/ProductDemoDevice'
+
+// Products that have a live device-interface demo (same screens as the homepage
+// showcase). Others fall back to DemoVisualization.
+const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar']
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
@@ -233,8 +238,13 @@ export default async function ProductPage({ params }) {
 
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
-      {/* ─── 3. Demo visualization (client component) ─── */}
-      <DemoVisualization slug={slug} />
+      {/* ─── 3. Demo — live device interface (same as the homepage showcase);
+          products without an interface screen fall back to DemoVisualization ─── */}
+      {DEMO_DEVICE_SLUGS.includes(slug) ? (
+        <ProductDemoDevice slug={slug} />
+      ) : (
+        <DemoVisualization slug={slug} />
+      )}
 
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
