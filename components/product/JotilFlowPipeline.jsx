@@ -85,16 +85,22 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
         const b = center(nodes.current[e[1]]);
         const mx = (a.x + b.x) / 2;
         const d = `M ${a.x} ${a.y} C ${mx} ${a.y} ${mx} ${b.y} ${b.x} ${b.y}`;
-        const base = mkPath(d, "#dfe3ef", 2, 1);
-        const lit = mkPath(d, cssv.getPropertyValue(e[2]).trim(), 2.4, 0);
+        const col = cssv.getPropertyValue(e[2]).trim();
+        const base = mkPath(d, "#e3e6f0", 2, 1);
+        const flow = mkPath(d, col, 1.4, 0.16);
+        flow.setAttribute("stroke-linecap", "round");
+        flow.setAttribute("stroke-dasharray", "1.5 9");
+        flow.setAttribute("class", "flow");
+        const lit = mkPath(d, col, 2.4, 0);
         lit.setAttribute("stroke-linecap", "round");
         svg.appendChild(base);
+        svg.appendChild(flow);
         svg.appendChild(lit);
         paths[`${e[0]}-${e[1]}`] = {
           base,
           lit,
           len: base.getTotalLength(),
-          color: cssv.getPropertyValue(e[2]).trim(),
+          color: col,
         };
       });
     };
@@ -106,19 +112,28 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
           res();
           return;
         }
-        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        dot.setAttribute("r", "4.5");
-        dot.setAttribute("fill", p.color);
-        dot.style.filter = `drop-shadow(0 0 5px ${p.color})`;
-        svg.appendChild(dot);
+        const NS = "http://www.w3.org/2000/svg";
+        const g = document.createElementNS(NS, "g");
+        const halo = document.createElementNS(NS, "circle");
+        halo.setAttribute("r", "9");
+        halo.setAttribute("fill", p.color);
+        halo.setAttribute("opacity", "0.16");
+        halo.style.filter = "blur(3px)";
+        const core = document.createElementNS(NS, "circle");
+        core.setAttribute("r", "4.6");
+        core.setAttribute("fill", p.color);
+        core.style.filter = `drop-shadow(0 0 6px ${p.color})`;
+        g.appendChild(halo);
+        g.appendChild(core);
+        svg.appendChild(g);
         p.lit.style.transition = "opacity .2s";
-        p.lit.style.opacity = "0.85";
+        p.lit.style.opacity = "0.9";
 
-        const dur = 700;
+        const dur = 640;
         let start = null;
         const step = (ts) => {
           if (!mounted) {
-            if (dot.parentNode) svg.removeChild(dot);
+            if (g.parentNode) svg.removeChild(g);
             res();
             return;
           }
@@ -126,12 +141,11 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
           const t = Math.min((ts - start) / dur, 1);
           const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
           const pt = p.base.getPointAtLength(e * p.len);
-          dot.setAttribute("cx", pt.x);
-          dot.setAttribute("cy", pt.y);
+          g.setAttribute("transform", `translate(${pt.x} ${pt.y})`);
           if (t < 1) {
             requestAnimationFrame(step);
           } else {
-            if (dot.parentNode) svg.removeChild(dot);
+            if (g.parentNode) svg.removeChild(g);
             p.lit.style.transition = "opacity .5s";
             p.lit.style.opacity = "0";
             res();
@@ -144,22 +158,22 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
       ["n1", "n2", "n3", "n4"].forEach(idle);
       if (!mounted) return;
       fire("n1", "Received");
-      await wait(480);
+      await wait(420);
       await travel("n1-n2");
       idle("n1");
       fire("n2", "Scoring");
       nodes.current.n2?.classList.add("think");
-      await wait(880);
+      await wait(900);
       nodes.current.n2?.classList.remove("think");
       label("n2", "Routed");
-      await wait(160);
+      await wait(150);
       idle("n2");
       fire("n3", "Writing");
       fire("n4", "Sending");
       await Promise.all([travel("n2-n3"), travel("n2-n4")]);
       label("n3", "Created");
       label("n4", "Sent");
-      await wait(900);
+      await wait(820);
       idle("n3");
       idle("n4");
     };
@@ -231,6 +245,7 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
           <div className="node" data-accent="ai" ref={setNode("n2")} style={{ left: "50%", top: "56%" }}>
             <div className="top">
               <div className="ic">
+                <span className="ic-ring" aria-hidden="true" />
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 3a3 3 0 0 0-3 3 3 3 0 0 0-3 3 3 3 0 0 0 0 6 3 3 0 0 0 3 3 3 3 0 0 0 6 0 3 3 0 0 0 3-3 3 3 0 0 0 0-6 3 3 0 0 0-3-3 3 3 0 0 0-3-3z" />
                   <path d="M12 8v8M9 12h6" />
@@ -289,35 +304,40 @@ const CSS = `
   --ease:cubic-bezier(.22,.61,.36,1);
   font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   -webkit-font-smoothing:antialiased;
-  width:100%;
-  display:flex;
-  justify-content:center;
 }
 .jf-pipeline *{box-sizing:border-box}
 .jf-pipeline .canvas-wrap{width:100%;max-width:640px;background:var(--card);border:1px solid var(--line);
   border-radius:14px;box-shadow:0 10px 30px -14px rgba(31,37,64,.28);overflow:hidden}
 .jf-pipeline .canvas-head{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid #eef0f6}
-.jf-pipeline .canvas-head .h{font-size:12.5px;font-weight:600;color:var(--slate)}
+.jf-pipeline .canvas-head .h{font-size:13px;font-weight:700;color:#232a45}
 .jf-pipeline .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--action);
   background:#e7f6ef;border:1px solid #c9ecdd;padding:3px 9px;border-radius:999px}
-.jf-pipeline .badge i{width:6px;height:6px;border-radius:50%;background:var(--action)}
+.jf-pipeline .badge i{width:6px;height:6px;border-radius:50%;background:var(--action);animation:jf-breathe 2.4s ease-in-out infinite}
+@keyframes jf-breathe{0%,100%{opacity:.55;transform:scale(.82)}50%{opacity:1;transform:scale(1.12)}}
 
 .jf-pipeline .canvas{position:relative;height:360px;
-  background:radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0) 0 0 / 22px 22px}
+  background:
+    radial-gradient(460px 260px at 50% 42%, rgba(107,92,214,.07), transparent 72%),
+    radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0) 0 0 / 22px 22px}
 .jf-pipeline #wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.jf-pipeline #wires .flow{animation:jf-flow 1.3s linear infinite}
+@keyframes jf-flow{to{stroke-dashoffset:-21}}
 
-.jf-pipeline .node{position:absolute;transform:translate(-50%,-50%);width:142px;background:var(--card);
+.jf-pipeline .node{position:absolute;transform:translate(-50%,-50%);width:156px;background:var(--card);
   border:1px solid var(--line);border-radius:12px;padding:10px 11px;z-index:3;
-  box-shadow:0 10px 26px -16px rgba(31,37,64,.4);
-  transition:border-color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease)}
+  box-shadow:0 1px 2px rgba(31,37,64,.06),0 14px 30px -18px rgba(31,37,64,.45);
+  transition:border-color .4s var(--ease),box-shadow .4s var(--ease),transform .4s var(--ease)}
+.jf-pipeline .node.fire{transform:translate(-50%,-50%) scale(1.035);z-index:5}
 .jf-pipeline .node .top{display:flex;align-items:center;gap:9px}
 .jf-pipeline .node .ic{width:29px;height:29px;border-radius:8px;flex:0 0 auto;position:relative;display:grid;place-items:center;
   background:var(--wash);color:var(--faint);transition:background .3s,color .3s}
-.jf-pipeline .node .ic svg{width:15px;height:15px}
-.jf-pipeline .node .title{font-size:12.5px;font-weight:600;color:var(--slate);line-height:1.1}
-.jf-pipeline .node .kind{font-size:10px;color:var(--faint);margin-top:2px;font-family:"JetBrains Mono",ui-monospace,monospace}
-.jf-pipeline .node .state{margin-top:9px;display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;
-  color:var(--muted);padding:3px 8px;border-radius:6px;background:var(--wash)}
+.jf-pipeline .node .ic svg{width:15px;height:15px;position:relative;z-index:1}
+.jf-pipeline .node .title{font-size:13.5px;font-weight:700;color:#232a45;line-height:1.15}
+.jf-pipeline .node .kind{display:inline-block;font-size:10.5px;color:#4c5578;font-weight:600;margin-top:4px;
+  padding:2px 6px;border-radius:5px;background:#eef0f7;letter-spacing:.01em;
+  font-family:"JetBrains Mono",ui-monospace,monospace}
+.jf-pipeline .node .state{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+  color:#565f7d;padding:3px 9px;border-radius:6px;background:var(--wash)}
 .jf-pipeline .node .state i{width:5px;height:5px;border-radius:50%;background:var(--faint);transition:background .3s}
 
 .jf-pipeline .node[data-accent="trigger"].fire{border-color:var(--trigger);box-shadow:0 0 0 1px var(--trigger),0 10px 26px -10px rgba(47,111,237,.55)}
@@ -331,9 +351,16 @@ const CSS = `
 .jf-pipeline .node[data-accent="action"].fire .state{color:var(--action);background:#e6f7f0}
 .jf-pipeline .node.fire .state i{background:currentColor}
 
-.jf-pipeline .node.think .ic::after{content:"";position:absolute;inset:-3px;border-radius:10px;
-  border:1.6px solid transparent;border-top-color:var(--ai);animation:jf-spin .7s linear infinite}
-@keyframes jf-spin{to{transform:rotate(360deg)}}
+.jf-pipeline .node .ic{overflow:visible}
+@property --jf-a{syntax:"<angle>";inherits:false;initial-value:0deg}
+.jf-pipeline .ic-ring{position:absolute;left:-3px;top:-3px;width:calc(100% + 6px);height:calc(100% + 6px);
+  border-radius:11px;padding:2.2px;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:conic-gradient(from var(--jf-a, 0deg), transparent 0deg, var(--ai) 68deg, transparent 150deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  filter:drop-shadow(0 0 4px rgba(107,87,224,.5))}
+.jf-pipeline .node.think .ic-ring{opacity:1;animation:jf-rot 1.1s linear infinite}
+@keyframes jf-rot{to{--jf-a:360deg}}
 
 @media (prefers-reduced-motion:reduce){.jf-pipeline *{animation-duration:.001s!important}}
 `;
