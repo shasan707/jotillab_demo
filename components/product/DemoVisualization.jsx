@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, PhoneIncoming, PhoneOff, Mic, MicOff,
@@ -30,6 +30,7 @@ const cardEntry = {
 function ReceptionistDemo() {
   const [callState, setCallState] = useState('ringing') // ringing | answered | transcript
   const [typingIndex, setTypingIndex] = useState(0)
+  const transcriptRef = useRef(null)
 
   useEffect(() => {
     const t1 = setTimeout(() => setCallState('answered'), 2200)
@@ -42,6 +43,14 @@ function ReceptionistDemo() {
     const iv = setInterval(() => setTypingIndex(i => i + 1), 1200)
     return () => clearInterval(iv)
   }, [callState])
+
+  // Keep the latest line in view inside the fixed frame, exactly like the phone
+  // interface: an INSTANT scrollTop assignment (no smooth behaviour), which does
+  // not flicker and never changes the card size.
+  useEffect(() => {
+    const el = transcriptRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [typingIndex])
 
   const transcript = [
     { from: 'ai', text: 'Good morning! Thank you for calling Meridian Dental. How can I help you today?' },
@@ -157,10 +166,10 @@ function ReceptionistDemo() {
           )}
         </div>
 
-        {/* Transcript area — fixed height sized to hold the whole conversation,
-            so the screen never resizes and nothing scrolls or flickers. Messages
-            simply appear top-down as they did before. */}
-        <div className="px-5 pb-2 space-y-2.5 h-[420px] overflow-hidden">
+        {/* Transcript area — compact fixed frame like the phone screen. Messages
+            appear top-down and the frame auto-scrolls (instant) to the newest
+            line, so the card stays a fixed size. */}
+        <div ref={transcriptRef} className="px-5 pb-2 space-y-2.5 h-[240px] overflow-hidden">
           {transcript.slice(0, Math.min(typingIndex + 1, transcript.length)).map((msg, i) => (
             <motion.div
               key={i}
@@ -192,7 +201,7 @@ function ReceptionistDemo() {
           <div className="h-8 w-8 rounded-full bg-[#3859a8] flex items-center justify-center shrink-0">
             <Mic size={14} className="text-white" />
           </div>
-          <div className="flex-1 flex items-center gap-[3px]">
+          <div className="flex-1 flex items-center gap-[3px] h-[44px]">
             {Array.from({ length: 24 }, (_, i) => {
               const h = [3, 5, 8, 12, 9, 14, 10, 7, 11, 6, 13, 8, 5, 9, 15, 11, 7, 10, 6, 12, 8, 4, 7, 5][i]
               return (

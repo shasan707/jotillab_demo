@@ -1040,15 +1040,15 @@ textarea:focus-visible {
   [data-device-frame][data-device-type="browser"] { --s: 0.83; }
 }
 
-/* Product-page hero (data-hero-device): the browser device sits in a ~464-544px
-   column right beside the headline, so its large showcase scale (0.83 -> 681px)
-   overlaps the text. Cap it here to fit the column. The homepage showcase, which
-   has more room, keeps the larger scale above. */
+/* Product-page hero (data-hero-device): the browser device sits beside the
+   headline in a device-favoured column (see wideDevice grid). Size it to fill
+   that column so its in-screen text stays readable, without overlapping the
+   text. The homepage showcase keeps the larger scale above. */
 @media (min-width: 1024px) {
-  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.54; }
+  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.62; }
 }
 @media (min-width: 1280px) {
-  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.62; }
+  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.74; }
 }
 
 

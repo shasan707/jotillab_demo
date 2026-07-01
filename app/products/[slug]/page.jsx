@@ -58,6 +58,10 @@ export default async function ProductPage({ params }) {
 
   if (!product) notFound()
 
+  // Space + Avatar use the wide "browser" (PC) interface, so give the device a
+  // larger column than the text (otherwise it renders too small to read).
+  const wideDevice = slug === 'space' || slug === 'avatar'
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -92,7 +96,7 @@ export default async function ProductPage({ params }) {
         />
 
         <div className="relative max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className={`grid grid-cols-1 gap-12 lg:gap-16 items-center ${wideDevice ? 'lg:grid-cols-[0.85fr_1.15fr]' : 'lg:grid-cols-2'}`}>
             {/* Left column */}
             <AnimatedSection>
               <div className="flex items-center gap-3 mb-5">
