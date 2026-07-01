@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, PhoneIncoming, PhoneOff, Mic, MicOff,
@@ -30,7 +30,6 @@ const cardEntry = {
 function ReceptionistDemo() {
   const [callState, setCallState] = useState('ringing') // ringing | answered | transcript
   const [typingIndex, setTypingIndex] = useState(0)
-  const transcriptRef = useRef(null)
 
   useEffect(() => {
     const t1 = setTimeout(() => setCallState('answered'), 2200)
@@ -43,13 +42,6 @@ function ReceptionistDemo() {
     const iv = setInterval(() => setTypingIndex(i => i + 1), 1200)
     return () => clearInterval(iv)
   }, [callState])
-
-  // Keep the newest message in view without growing the card (chat behaviour,
-  // like the phone interface). The transcript region has a fixed height.
-  useEffect(() => {
-    const el = transcriptRef.current
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
-  }, [typingIndex])
 
   const transcript = [
     { from: 'ai', text: 'Good morning! Thank you for calling Meridian Dental. How can I help you today?' },
@@ -165,10 +157,10 @@ function ReceptionistDemo() {
           )}
         </div>
 
-        {/* Transcript area — messages appear top-down as before, but the region
-            is a fixed-height scrolling window (auto-scrolls to the newest line),
-            so the card never grows the page. */}
-        <div ref={transcriptRef} className="px-5 pb-2 space-y-2.5 h-[200px] overflow-hidden">
+        {/* Transcript area — fixed height sized to hold the whole conversation,
+            so the screen never resizes and nothing scrolls or flickers. Messages
+            simply appear top-down as they did before. */}
+        <div className="px-5 pb-2 space-y-2.5 h-[420px] overflow-hidden">
           {transcript.slice(0, Math.min(typingIndex + 1, transcript.length)).map((msg, i) => (
             <motion.div
               key={i}
