@@ -27,7 +27,7 @@ export function ProductHeroDevice({ slug }) {
   if (!deviceType) return null
 
   return (
-    <div ref={ref} className="flex w-full justify-center lg:justify-end">
+    <div ref={ref} data-hero-device className="flex w-full justify-center lg:justify-end">
       <CursorTilt>
         <SlideDevice slug={slug} deviceType={deviceType} isActive={inView} onStep={setStep} />
       </CursorTilt>

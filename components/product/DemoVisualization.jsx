@@ -304,7 +304,7 @@ function MessengerDemo() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2 }}
-            className="px-4 py-4 space-y-2.5 min-h-[200px]"
+            className="px-4 py-4 space-y-2.5 h-[460px] overflow-hidden"
           >
             {activeThread.map((msg, i) => (
               <motion.div
@@ -529,6 +529,7 @@ function SpaceDemo() {
           })}
         </div>
 
+        <div className="min-h-[300px]">
         <AnimatePresence mode="wait">
           {activeTab === 'leads' ? (
             <motion.div
@@ -628,6 +629,7 @@ function SpaceDemo() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   )
@@ -849,7 +851,7 @@ function AvatarDemo() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="bg-[#F0F4FF] rounded-xl px-4 py-2.5"
+              className="bg-[#F0F4FF] rounded-xl px-4 py-2.5 min-h-[92px]"
             >
               <p className="text-[10px] font-semibold text-[#3859a8] mb-0.5">
                 {isSpeaking ? 'AI Avatar' : 'You'}
