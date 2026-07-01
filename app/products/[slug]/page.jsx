@@ -14,8 +14,8 @@ import { ProductHeroDevice } from '@/components/product/ProductHeroDevice'
 // showcase) — shown as the hero visual. Others use ProductHeroPreview.
 const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar']
 import { FAQAccordion } from '@/components/product/FAQAccordion'
-import { VoiceAgentPanel } from '@/components/product/VoiceAgentPanel'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { getBrandLogo } from '@/components/ui/BrandLogos'
 
 /* ─── Static generation ─── */
@@ -74,25 +74,27 @@ export default async function ProductPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {/* ─── 1. Hero ─── */}
-      {slug === 'receptionist' ? (
-        /* Voice-agent hero: the live voice panel is the centerpiece */
-        <section className="hero-wave-bg relative pt-28 pb-24 px-4 overflow-hidden">
-          {/* Background orbs */}
-          <div
-            className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
-            aria-hidden="true"
-            style={{ background: 'radial-gradient(ellipse, #3859a815 0%, transparent 65%)', filter: 'blur(80px)' }}
-          />
-          {/* Glowing arc beneath the panel (reference-style horizon glow) */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 bottom-[2%] w-[130%] h-[46%] pointer-events-none"
-            aria-hidden="true"
-            style={{ background: 'radial-gradient(58% 100% at 50% 100%, rgba(59,130,246,0.22), transparent 70%)', filter: 'blur(46px)' }}
-          />
+      <section className="hero-wave-bg relative pt-28 pb-20 px-4 overflow-hidden">
+        {/* Background orbs */}
+        <div
+          className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
+          aria-hidden="true"
+          style={{ background: 'radial-gradient(ellipse, #3859a815 0%, transparent 65%)', filter: 'blur(80px)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full opacity-25 pointer-events-none"
+          aria-hidden="true"
+          style={{ background: 'radial-gradient(ellipse, #3B82F610 0%, transparent 70%)', filter: 'blur(60px)' }}
+        />
 
-          <div className="relative max-w-3xl mx-auto text-center">
+        <div className="relative max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left column */}
             <AnimatedSection>
-              <Badge variant="blue" className="mb-5">{product.badge}</Badge>
+              <div className="flex items-center gap-3 mb-5">
+                <ProductGlyph slug={slug} size={52} />
+                <Badge variant="blue">{product.badge}</Badge>
+              </div>
               <h1
                 className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
@@ -100,15 +102,15 @@ export default async function ProductPage({ params }) {
                 <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
               </h1>
               <p
-                className="text-lg sm:text-xl font-semibold text-text-secondary mb-4"
+                className="text-xl font-semibold text-text-secondary mb-4"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 {product.tagline}
               </p>
-              <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-xl mx-auto">
+              <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-lg">
                 {product.heroDescription}
               </p>
-              <div className="flex items-center justify-center gap-3 flex-wrap mb-14">
+              <div className="flex items-center gap-3 flex-wrap">
                 <Button href="/contact" variant="primary" size="lg">
                   Book a Demo
                 </Button>
@@ -122,72 +124,18 @@ export default async function ProductPage({ params }) {
               </div>
             </AnimatedSection>
 
-            <AnimatedSection delay={0.15}>
-              <VoiceAgentPanel />
+            {/* Right column - live product interface (same device mockup as the
+                homepage showcase); products without a screen use the preview. */}
+            <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
+              {DEMO_DEVICE_SLUGS.includes(slug) ? (
+                <ProductHeroDevice slug={slug} />
+              ) : (
+                <ProductHeroPreview slug={slug} productName={product.name} />
+              )}
             </AnimatedSection>
           </div>
-        </section>
-      ) : (
-        <section className="hero-wave-bg relative pt-28 pb-20 px-4 overflow-hidden">
-          {/* Background orbs */}
-          <div
-            className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
-            aria-hidden="true"
-            style={{ background: 'radial-gradient(ellipse, #3859a815 0%, transparent 65%)', filter: 'blur(80px)' }}
-          />
-          <div
-            className="absolute bottom-0 left-0 w-[400px] h-[300px] rounded-full opacity-25 pointer-events-none"
-            aria-hidden="true"
-            style={{ background: 'radial-gradient(ellipse, #3B82F610 0%, transparent 70%)', filter: 'blur(60px)' }}
-          />
-
-          <div className="relative max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-              {/* Left column */}
-              <AnimatedSection>
-                <Badge variant="blue" className="mb-5">{product.badge}</Badge>
-                <h1
-                  className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
-                  style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
-                >
-                  <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
-                </h1>
-                <p
-                  className="text-xl font-semibold text-text-secondary mb-4"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  {product.tagline}
-                </p>
-                <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-lg">
-                  {product.heroDescription}
-                </p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <Button href="/contact" variant="primary" size="lg">
-                    Book a Demo
-                  </Button>
-                  <Button
-                    href={`/products/${slug}/pricing`}
-                    variant="outline"
-                    size="lg"
-                  >
-                    View Pricing
-                  </Button>
-                </div>
-              </AnimatedSection>
-
-              {/* Right column - live product interface (same device mockup as the
-                  homepage showcase); products without a screen use the preview. */}
-              <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
-                {DEMO_DEVICE_SLUGS.includes(slug) ? (
-                  <ProductHeroDevice slug={slug} />
-                ) : (
-                  <ProductHeroPreview slug={slug} productName={product.name} />
-                )}
-              </AnimatedSection>
-            </div>
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
 
       {/* ─── 2. Services breakdown ─── */}
