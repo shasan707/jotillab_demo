@@ -15,6 +15,7 @@ import { ProductHeroDevice } from '@/components/product/ProductHeroDevice'
 const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar']
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
+import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { getBrandLogo } from '@/components/ui/BrandLogos'
 
@@ -127,7 +128,9 @@ export default async function ProductPage({ params }) {
             {/* Right column - live product interface (same device mockup as the
                 homepage showcase); products without a screen use the preview. */}
             <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
-              {DEMO_DEVICE_SLUGS.includes(slug) ? (
+              {slug === 'flow' ? (
+                <JotilFlowPipeline />
+              ) : DEMO_DEVICE_SLUGS.includes(slug) ? (
                 <ProductHeroDevice slug={slug} />
               ) : (
                 <ProductHeroPreview slug={slug} productName={product.name} />
