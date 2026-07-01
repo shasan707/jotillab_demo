@@ -17,6 +17,7 @@ import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
 import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
 import { CursorTilt } from '@/components/ui/CursorTilt'
+import { DeviceGlow } from '@/components/sections/showcase/devices/DeviceGlow'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { getBrandLogo } from '@/components/ui/BrandLogos'
 
@@ -131,7 +132,12 @@ export default async function ProductPage({ params }) {
             <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
               {slug === 'flow' ? (
                 <CursorTilt className="w-full flex justify-center lg:justify-end">
-                  <JotilFlowPipeline />
+                  <div className="relative w-full max-w-[640px]">
+                    <DeviceGlow radius={20} inset={-24} intensity={0.9} />
+                    <div className="relative">
+                      <JotilFlowPipeline />
+                    </div>
+                  </div>
                 </CursorTilt>
               ) : DEMO_DEVICE_SLUGS.includes(slug) ? (
                 <ProductHeroDevice slug={slug} />
