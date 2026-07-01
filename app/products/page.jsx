@@ -4,29 +4,13 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
 import { AtmosphericDivider } from '@/components/design'
 import { Button } from '@/components/ui/Button'
-import {
-  ReceptionistLogo,
-  MessengerLogo,
-  OutreachLogo,
-  SpaceLogo,
-  FlowLogo,
-  AvatarLogo,
-} from '@/components/ui/ProductLogos'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { products } from '@/data/products'
 
 export const metadata = {
   title: 'Our AI Products',
   description:
     'AI-powered tools to automate every customer touchpoint. Voice, chat, SMS, outbound campaigns, CRM, workflow automation, and AI avatars.',
-}
-
-const LOGO_MAP = {
-  receptionist: ReceptionistLogo,
-  messenger: MessengerLogo,
-  outreach: OutreachLogo,
-  space: SpaceLogo,
-  flow: FlowLogo,
-  avatar: AvatarLogo,
 }
 
 /* ── Comparison table data ── */
@@ -86,24 +70,23 @@ export default function ProductsPage() {
 
           {/* Logo row */}
           <AnimatedSection delay={0.15} className="mt-10 flex items-center justify-center gap-5 flex-wrap">
-            {products.map((p) => {
-              const Logo = LOGO_MAP[p.slug]
-              return (
-                <Link
-                  key={p.slug}
-                  href={`/products/${p.slug}`}
-                  className="flex flex-col items-center gap-2 group"
-                  aria-label={p.name}
-                >
-                  <div className="h-14 w-14 rounded-2xl bg-white border border-black/5 shadow-sm flex items-center justify-center transition-all duration-200 group-hover:shadow-md group-hover:border-primary/15 group-hover:-translate-y-0.5">
-                    <Logo size={36} />
-                  </div>
-                  <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider group-hover:text-primary transition-colors duration-150">
-                    {p.displayName[1]}
-                  </span>
-                </Link>
-              )
-            })}
+            {products.map((p) => (
+              <Link
+                key={p.slug}
+                href={`/products/${p.slug}`}
+                className="flex flex-col items-center gap-2 group"
+                aria-label={p.name}
+              >
+                <ProductGlyph
+                  slug={p.slug}
+                  size={56}
+                  className="shadow-sm transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md"
+                />
+                <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider group-hover:text-primary transition-colors duration-150">
+                  {p.displayName[1]}
+                </span>
+              </Link>
+            ))}
           </AnimatedSection>
         </div>
       </section>
@@ -125,7 +108,6 @@ export default function ProductsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {products.map((product, i) => {
-              const Logo = LOGO_MAP[product.slug]
               const price = startingPrice(product)
 
               return (
@@ -133,9 +115,11 @@ export default function ProductsPage() {
                   <div className="card-premium h-full flex flex-col group">
                     {/* Card header */}
                     <div className="flex items-start gap-4 mb-5">
-                      <div className="h-16 w-16 rounded-2xl bg-[#F0F4FF] flex items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#E8F0FE]">
-                        <Logo size={48} />
-                      </div>
+                      <ProductGlyph
+                        slug={product.slug}
+                        size={64}
+                        className="shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5"
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1.5">
                           <h3
@@ -219,11 +203,10 @@ export default function ProductsPage() {
                         Feature
                       </th>
                       {products.map((p) => {
-                        const Logo = LOGO_MAP[p.slug]
                         return (
                           <th key={p.slug} scope="col" className="px-4 py-4 text-center">
                             <div className="flex flex-col items-center gap-1.5">
-                              <Logo size={28} />
+                              <ProductGlyph slug={p.slug} size={40} />
                               <span
                                 className="text-xs font-semibold text-text whitespace-nowrap"
                                 style={{ fontFamily: 'var(--font-display)' }}
