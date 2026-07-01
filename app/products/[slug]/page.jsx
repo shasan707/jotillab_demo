@@ -19,7 +19,7 @@ import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
 import { CursorTilt } from '@/components/ui/CursorTilt'
 import { DeviceGlow } from '@/components/sections/showcase/devices/DeviceGlow'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
-import { IntegrationStrip } from '@/components/sections/IntegrationStrip'
+import { IntegrationsMarquee } from '@/components/product/IntegrationsMarquee'
 import { TiltCard } from '@/components/design'
 
 /* ─── Static generation ─── */
@@ -365,8 +365,37 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      {/* ─── 8. Integrations — same two-row marquee as the homepage ─── */}
-      <IntegrationStrip />
+      {/* ─── 8. Integrations — per-product tools in a two-row moving marquee ─── */}
+      {product.integrations?.length > 0 && (
+        <section className="cv-auto bg-white py-20 px-4">
+          <div className="max-w-5xl mx-auto">
+            <AnimatedSection className="text-center mb-12">
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
+                Integrations
+              </p>
+              <h2
+                className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                Works with the tools you already use
+              </h2>
+              <p className="text-text-secondary mt-3 max-w-md mx-auto">
+                {product.name} plugs into your existing stack in minutes. No ripping and replacing.
+              </p>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.15}>
+              <IntegrationsMarquee items={product.integrations} />
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.3}>
+              <p className="text-center text-sm text-text-secondary mt-8">
+                Plus any REST API, webhook, or custom integration your business needs.
+              </p>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
     </>
   )
 }
