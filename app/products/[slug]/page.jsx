@@ -16,6 +16,7 @@ const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'av
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
 import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
+import { CursorTilt } from '@/components/ui/CursorTilt'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { getBrandLogo } from '@/components/ui/BrandLogos'
 
@@ -129,7 +130,9 @@ export default async function ProductPage({ params }) {
                 homepage showcase); products without a screen use the preview. */}
             <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
               {slug === 'flow' ? (
-                <JotilFlowPipeline />
+                <CursorTilt className="w-full flex justify-center lg:justify-end">
+                  <JotilFlowPipeline />
+                </CursorTilt>
               ) : DEMO_DEVICE_SLUGS.includes(slug) ? (
                 <ProductHeroDevice slug={slug} />
               ) : (

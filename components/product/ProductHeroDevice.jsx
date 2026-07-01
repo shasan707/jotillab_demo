@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useInView } from 'framer-motion'
 import { SlideDevice } from '@/components/sections/showcase/SlideDevice'
+import { CursorTilt } from '@/components/ui/CursorTilt'
 
 // Same device mapping as the homepage showcase.
 const DEVICE_TYPE = {
@@ -27,7 +28,9 @@ export function ProductHeroDevice({ slug }) {
 
   return (
     <div ref={ref} className="flex w-full justify-center lg:justify-end">
-      <SlideDevice slug={slug} deviceType={deviceType} isActive={inView} onStep={setStep} />
+      <CursorTilt>
+        <SlideDevice slug={slug} deviceType={deviceType} isActive={inView} onStep={setStep} />
+      </CursorTilt>
     </div>
   )
 }
