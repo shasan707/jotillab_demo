@@ -19,7 +19,8 @@ import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
 import { CursorTilt } from '@/components/ui/CursorTilt'
 import { DeviceGlow } from '@/components/sections/showcase/devices/DeviceGlow'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
-import { getBrandLogo } from '@/components/ui/BrandLogos'
+import { IntegrationStrip } from '@/components/sections/IntegrationStrip'
+import { TiltCard } from '@/components/design'
 
 /* ─── Static generation ─── */
 
@@ -172,7 +173,7 @@ export default async function ProductPage({ params }) {
           >
             {product.services.map((svc, i) => (
               <AnimatedSection key={i} delay={i * 0.08}>
-                <div className="card-premium h-full flex flex-col">
+                <TiltCard maxTilt={4} className="card-premium h-full flex flex-col rounded-[20px]">
                   <h3
                     className="text-lg font-bold text-text mb-3"
                     style={{ fontFamily: 'var(--font-display)' }}
@@ -192,7 +193,7 @@ export default async function ProductPage({ params }) {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </TiltCard>
               </AnimatedSection>
             ))}
           </div>
@@ -222,7 +223,7 @@ export default async function ProductPage({ params }) {
               const Icon = getLucideIcon(feat.icon)
               return (
                 <AnimatedSection key={i} delay={i * 0.06}>
-                  <div className="card h-full">
+                  <TiltCard maxTilt={4} className="card h-full rounded-[20px]">
                     <IconBox size="md" glow className="mb-4">
                       <Icon strokeWidth={1.5} />
                     </IconBox>
@@ -233,7 +234,7 @@ export default async function ProductPage({ params }) {
                       {feat.title}
                     </h3>
                     <p className="text-sm text-text-secondary leading-relaxed">{feat.description}</p>
-                  </div>
+                  </TiltCard>
                 </AnimatedSection>
               )
             })}
@@ -364,58 +365,8 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      {/* ─── 8. Integrations — interactive logo grid (before footer) ─── */}
-      {product.integrations?.length > 0 && (
-        <>
-          <section className="cv-auto bg-white py-20 px-4">
-            <div className="max-w-5xl mx-auto">
-              <AnimatedSection className="text-center mb-12">
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
-                  Integrations
-                </p>
-                <h2
-                  className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
-                  style={{ fontFamily: 'var(--font-display)' }}
-                >
-                  Works with the tools you already use
-                </h2>
-                <p className="text-text-secondary mt-3 max-w-md mx-auto">
-                  {product.name} plugs into your existing stack in minutes. No ripping and replacing.
-                </p>
-              </AnimatedSection>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {product.integrations.map((name, i) => {
-                  const Logo = getBrandLogo(name)
-                  return (
-                    <AnimatedSection key={name} delay={i * 0.06}>
-                      <div className="group relative flex h-full flex-col items-center justify-center gap-3 rounded-2xl bg-white border border-black/5 px-4 py-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/25 hover:shadow-[0_18px_44px_rgba(56,89,168,0.14)]">
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                          style={{ background: 'radial-gradient(120% 80% at 50% 0%, rgba(59,130,246,0.07), transparent 60%)' }}
-                        />
-                        <span className="relative flex h-10 w-10 items-center justify-center transition-transform duration-300 group-hover:scale-110 [&_svg]:h-9 [&_svg]:w-9">
-                          {Logo ? <Logo /> : <LucideIcons.Plug className="h-7 w-7 text-primary" strokeWidth={1.5} />}
-                        </span>
-                        <span className="relative text-sm font-medium text-text-secondary transition-colors group-hover:text-text">
-                          {name}
-                        </span>
-                      </div>
-                    </AnimatedSection>
-                  )
-                })}
-              </div>
-
-              <AnimatedSection delay={0.3}>
-                <p className="text-center text-sm text-text-secondary mt-8">
-                  Plus any REST API, webhook, or custom integration your business needs.
-                </p>
-              </AnimatedSection>
-            </div>
-          </section>
-        </>
-      )}
+      {/* ─── 8. Integrations — same two-row marquee as the homepage ─── */}
+      <IntegrationStrip />
     </>
   )
 }

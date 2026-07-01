@@ -107,7 +107,7 @@ export function IntegrationStrip() {
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Works with{' '}
-            <span className="text-gradient">150+ tools</span>{' '}
+            <span className="text-gradient">300+ tools</span>{' '}
             you already use
           </h2>
           <p

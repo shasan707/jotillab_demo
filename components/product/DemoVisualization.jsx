@@ -157,8 +157,10 @@ function ReceptionistDemo() {
           )}
         </div>
 
-        {/* Transcript area */}
-        <div className="px-5 pb-2 space-y-2.5 min-h-[140px]">
+        {/* Transcript area — fixed height so only the messages change, not the
+            card size. Newest messages anchor to the bottom; older ones scroll
+            up out of view (a live-transcript window). */}
+        <div className="px-5 pb-2 space-y-2.5 h-[200px] overflow-hidden flex flex-col justify-end">
           {transcript.slice(0, Math.min(typingIndex + 1, transcript.length)).map((msg, i) => (
             <motion.div
               key={i}

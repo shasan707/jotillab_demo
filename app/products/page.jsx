@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Check, Minus } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
-import { AtmosphericDivider } from '@/components/design'
+import { AtmosphericDivider, TiltCard } from '@/components/design'
 import { Button } from '@/components/ui/Button'
 import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { products } from '@/data/products'
@@ -112,7 +112,7 @@ export default function ProductsPage() {
 
               return (
                 <AnimatedSection key={product.slug} delay={i * 0.07}>
-                  <div className="card-premium h-full flex flex-col group">
+                  <TiltCard maxTilt={4} className="card-premium h-full flex flex-col group rounded-[20px]">
                     {/* Card header */}
                     <div className="flex items-start gap-4 mb-5">
                       <ProductGlyph
@@ -169,7 +169,7 @@ export default function ProductsPage() {
                         <span aria-hidden>&#8594;</span>
                       </Link>
                     </div>
-                  </div>
+                  </TiltCard>
                 </AnimatedSection>
               )
             })}
