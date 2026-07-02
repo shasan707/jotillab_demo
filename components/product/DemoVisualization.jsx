@@ -787,47 +787,35 @@ function AvatarDemo() {
 
         {/* Avatar video area */}
         <div className="relative bg-gradient-to-br from-[#E8EFFE] to-[#F0F4FF] mx-4 mt-4 rounded-2xl overflow-hidden aspect-[4/3]">
-          {/* Avatar face placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Outer glow when speaking */}
-              {isSpeaking && (
-                <motion.div
-                  className="absolute -inset-4 rounded-full bg-[#3859a8]/10"
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              )}
+          {/* Live motion avatar (hand/mouth motion). Loops, muted, autoplays;
+              the still photo shows as the poster while it loads / if it can't
+              play. Same clip as the hero avatar interface. */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/avatar-sarah.jpg"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: 'center 24%' }}
+          >
+            <source src="/avatar-sarah.mp4" type="video/mp4" />
+          </video>
 
-              {/* Avatar circle */}
-              <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-[#3859a8] to-[#3B82F6] flex items-center justify-center shadow-lg shadow-[#3859a8]/20">
-                <User size={40} className="text-white/90" />
+          {/* Talking glow that pulses over the avatar while speaking */}
+          {isSpeaking && (
+            <motion.div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              animate={{ opacity: [0, 0.18, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ background: 'radial-gradient(55% 42% at 50% 74%, rgba(56,89,168,0.45), transparent 70%)' }}
+            />
+          )}
 
-                {/* Lip-sync indicator */}
-                {isSpeaking && (
-                  <motion.div
-                    className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-[2px]"
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
-                  >
-                    {[3, 5, 7, 5, 3].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        className="w-[2px] rounded-full bg-white/70"
-                        style={{ height: h }}
-                        animate={{ height: [h, h * 1.8, h * 0.6, h * 1.4, h] }}
-                        transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.06 }}
-                      />
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Name tag */}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 border border-black/5 whitespace-nowrap">
-                <p className="text-[11px] font-medium text-text">Jotil AI Avatar</p>
-              </div>
-            </div>
+          {/* Name tag */}
+          <div className="absolute bottom-3 left-3 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 border border-black/5 whitespace-nowrap">
+            <p className="text-[11px] font-medium text-text">Jotil AI Avatar</p>
           </div>
 
           {/* Small self-view */}
