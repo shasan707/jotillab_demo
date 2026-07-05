@@ -8,6 +8,7 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
 import { CountUp } from '@/components/ui/CountUp'
 import { AtmosphericDivider } from '@/components/design'
+import { CursorTilt } from '@/components/ui/CursorTilt'
 import { INDUSTRIES, INDUSTRY_SLUGS, getIndustry, getRelatedIndustries } from '@/lib/industries'
 import { products } from '@/data/products'
 import { ScenarioCard } from '@/components/sections/industry/ScenarioCard'
@@ -137,25 +138,27 @@ export default async function IndustryPage({ params }) {
       <section className="pb-16">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection>
-            <div
-              className="relative rounded-[24px] overflow-hidden"
-              style={{
-                border: '1px solid rgba(56,89,168,0.14)',
-                boxShadow: '0 24px 60px -24px rgba(15,17,41,0.30)',
-              }}
-            >
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className="block w-full h-auto"
-                aria-label={`${industry.name} platform dashboard preview`}
+            <CursorTilt max={6}>
+              <div
+                className="relative rounded-[24px] overflow-hidden"
+                style={{
+                  border: '1px solid rgba(56,89,168,0.14)',
+                  boxShadow: '0 24px 60px -24px rgba(15,17,41,0.30)',
+                }}
               >
-                <source src="/dashboard-promo.mp4" type="video/mp4" />
-              </video>
-            </div>
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="block w-full h-auto"
+                  aria-label={`${industry.name} platform dashboard preview`}
+                >
+                  <source src="/dashboard-promo.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </CursorTilt>
           </AnimatedSection>
         </div>
       </section>
