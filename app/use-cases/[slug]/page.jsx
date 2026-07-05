@@ -133,6 +133,33 @@ export default async function IndustryPage({ params }) {
         </div>
       </section>
 
+      {/* ── Product dashboard promo ── */}
+      <section className="pb-16">
+        <div className="max-w-5xl mx-auto px-6">
+          <AnimatedSection>
+            <div
+              className="relative rounded-[24px] overflow-hidden"
+              style={{
+                border: '1px solid rgba(56,89,168,0.14)',
+                boxShadow: '0 24px 60px -24px rgba(15,17,41,0.30)',
+              }}
+            >
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="block w-full h-auto"
+                aria-label={`${industry.name} platform dashboard preview`}
+              >
+                <source src="/dashboard-promo.mp4" type="video/mp4" />
+              </video>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* ── Problems / Solutions ── */}
