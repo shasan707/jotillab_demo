@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   UtensilsCrossed, Stethoscope, Home, Scale, Hotel,
-  TrendingUp, ShoppingCart, Wrench, Quote, Sparkles, ArrowRight, Check,
+  TrendingUp, ShoppingCart, Wrench, Sparkles, ArrowRight, Check,
 } from 'lucide-react'
 import Link from 'next/link'
 import { CountUp } from '@/components/ui/CountUp'
@@ -162,12 +162,6 @@ export function IndustryShowcase() {
   const [activeIdx, setActiveIdx] = useState(0)
   const active = INDUSTRIES[activeIdx]
   const ActiveIcon = active.icon
-  const initials = active.quote.author
-    .split(' ')
-    .map((n) => n[0])
-    .filter((c) => /[A-Za-z]/.test(c))
-    .slice(0, 2)
-    .join('')
 
   return (
     <div className="relative">
@@ -295,31 +289,6 @@ export function IndustryShowcase() {
                 ))}
               </div>
             </div>
-
-            {/* Quote */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.25 }}
-              className="relative mt-auto pt-6 border-t border-black/5"
-            >
-              <Quote size={18} color={BRAND} strokeWidth={2} className="mb-2" />
-              <p className="text-[13px] italic text-text-secondary leading-relaxed mb-3">
-                &ldquo;{active.quote.text}&rdquo;
-              </p>
-              <div className="flex items-center gap-2.5">
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold"
-                  style={{ background: `linear-gradient(135deg, ${BRAND}, #2a4688)` }}
-                >
-                  {initials}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-text truncate">{active.quote.author}</p>
-                  <p className="text-xs text-text-secondary truncate">{active.quote.role}</p>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Right column: use cases */}

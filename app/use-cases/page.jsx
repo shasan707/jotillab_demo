@@ -230,7 +230,7 @@ export default function UseCasesPage() {
             <div
               className="relative rounded-[28px] p-10 md:p-14 text-center overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(34, 211, 238,0.05))',
+                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(59, 130, 246,0.05))',
                 border: '1px solid rgba(56, 89, 168,0.18)',
               }}
             >
@@ -247,7 +247,7 @@ export default function UseCasesPage() {
                 className="pointer-events-none absolute -bottom-16 -left-16 w-64 h-64 rounded-full"
                 aria-hidden="true"
                 style={{
-                  background: 'radial-gradient(circle, rgba(34, 211, 238,0.16) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(59, 130, 246,0.16) 0%, transparent 70%)',
                   filter: 'blur(40px)',
                 }}
               />

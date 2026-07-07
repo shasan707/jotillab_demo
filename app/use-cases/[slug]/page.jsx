@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowRight, ArrowLeft, AlertCircle, Sparkles,
-  Quote, Check, ChevronRight,
+  Check, ChevronRight,
 } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
@@ -60,7 +60,7 @@ export default async function IndustryPage({ params }) {
           style={{
             width: 460,
             height: 460,
-            background: 'radial-gradient(circle, rgba(34, 211, 238,0.07) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(59, 130, 246,0.07) 0%, transparent 70%)',
             filter: 'blur(80px)',
           }}
         />
@@ -320,56 +320,7 @@ export default async function IndustryPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
-
-      {/* ── Customer Quote ── */}
-      <section className="py-24">
-        <div className="max-w-3xl mx-auto px-6">
-          <AnimatedSection>
-            <div
-              className="relative rounded-[28px] p-10 md:p-14 overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(56,89,168,0.06), rgba(56,89,168,0.14))',
-                border: '1px solid rgba(56,89,168,0.18)',
-              }}
-            >
-              <Quote
-                size={48}
-                color={BRAND}
-                strokeWidth={1.5}
-                className="opacity-30 mb-6"
-              />
-              <p
-                className="font-bold tracking-[-0.02em] text-text leading-[1.3] mb-8"
-                style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.25rem, 2.4vw, 1.75rem)' }}
-              >
-                &ldquo;{industry.quote.text}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white font-bold"
-                  style={{ background: `linear-gradient(135deg, ${BRAND}, #2a4688)` }}
-                >
-                  {industry.quote.author
-                    .split(' ')
-                    .map((n) => n[0])
-                    .filter((c) => /[A-Za-z]/.test(c))
-                    .slice(0, 2)
-                    .join('')}
-                </div>
-                <div>
-                  <p className="font-bold text-text">{industry.quote.author}</p>
-                  <p className="text-sm text-text-secondary">
-                    {industry.quote.role} · {industry.quote.company}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
+      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg-alt)" height={50} />
 
       {/* ── Recommended Products ── */}
       <section className="py-24 bg-bg-alt/40">
@@ -480,7 +431,7 @@ export default async function IndustryPage({ params }) {
             <div
               className="relative rounded-[28px] p-10 md:p-14 text-center overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(34, 211, 238,0.05))',
+                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(59, 130, 246,0.05))',
                 border: '1px solid rgba(56, 89, 168,0.18)',
               }}
             >
