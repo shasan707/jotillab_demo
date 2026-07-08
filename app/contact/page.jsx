@@ -83,7 +83,7 @@ export default function ContactPage() {
 
               <AnimatedSection delay={0.06}>
                 <h1
-                  className="font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-5"
+                  className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-5"
                   style={{ fontSize: 'clamp(2.3rem, 4.6vw, 3.6rem)' }}
                 >
                   See your AI answer a{' '}
@@ -153,7 +153,7 @@ export default function ContactPage() {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">What to expect</p>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               From booking to a live call in three steps

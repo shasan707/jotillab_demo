@@ -116,7 +116,7 @@ export default async function ProductPricingPage({ params }) {
               {product.name} Pricing
             </Badge>
             <h1
-              className="font-display text-4xl sm:text-5xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+              className="headline-shadow font-display text-4xl sm:text-5xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
             >
               {product.pricing.billingModel === 'contact' ? (
                 <>Let us <span className="text-primary">build it with you.</span></>
@@ -208,7 +208,7 @@ export default async function ProductPricingPage({ params }) {
                 Compare plans
               </p>
               <h2
-                className="text-3xl font-bold text-text tracking-tight"
+                className="headline-shadow text-3xl font-bold text-text tracking-tight"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 Everything at a glance
@@ -232,7 +232,7 @@ export default async function ProductPricingPage({ params }) {
       <section className="py-20 px-4 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
-            <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4">
+            <h2 className="headline-shadow font-display text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4">
               Ready to try <span className="text-primary">{product.name}</span>?
             </h2>
             <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">

@@ -104,7 +104,7 @@ export default async function ProductPage({ params }) {
                 <Badge variant="blue">{product.badge}</Badge>
               </div>
               <h1
-                className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                className="headline-shadow break-words text-5xl sm:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
               >
                 <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>

@@ -98,7 +98,7 @@ export default async function IndustryPage({ params }) {
 
               <AnimatedSection delay={0.1}>
                 <h1
-                  className="font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-4"
+                  className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-4"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 3.85rem)' }}
                 >
                   {industry.tagline}
@@ -160,7 +160,7 @@ export default async function IndustryPage({ params }) {
                 Where it breaks today
               </p>
               <h2
-                className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
+                className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
                 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
               >
                 The reality of running {industry.name.toLowerCase()} ops
@@ -200,7 +200,7 @@ export default async function IndustryPage({ params }) {
                 What JotilLabs does
               </p>
               <h2
-                className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
+                className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
                 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
               >
                 Built for how {industry.name.toLowerCase()} actually runs
@@ -260,7 +260,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">See it in action</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Real conversations, not slideware
@@ -288,7 +288,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">Measured impact</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               What changes for {industry.name.toLowerCase()} teams
@@ -328,7 +328,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">The stack</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Products that power this setup
@@ -388,7 +388,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">FAQ</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Common questions from {industry.name.toLowerCase()} owners
@@ -455,7 +455,7 @@ export default async function IndustryPage({ params }) {
                   <Icon size={26} color={BRAND} strokeWidth={1.6} />
                 </div>
                 <h2
-                  className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
+                  className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.85rem, 3.2vw, 2.6rem)' }}
                 >
                   See it on a {industry.name.toLowerCase()} call.
@@ -496,7 +496,7 @@ export default async function IndustryPage({ params }) {
               Also serving
             </p>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
             >
               Other industries we work with

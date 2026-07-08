@@ -169,7 +169,7 @@ export default function BlogPage() {
               <BookOpen className="h-3.5 w-3.5 text-primary" strokeWidth={1.5} />
               <span className="text-xs font-600 text-primary">JotilLabs Blog</span>
             </div>
-            <h1 className="mb-4 font-[var(--font-sans)] text-4xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-5xl">
+            <h1 className="headline-shadow mb-4 font-[var(--font-sans)] text-4xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-5xl">
               Insights &amp;{' '}
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Resources

@@ -200,7 +200,7 @@ export default async function BlogPost({ params }) {
           </div>
 
           {/* Title */}
-          <h1 className="mb-6 font-[var(--font-sans)] text-3xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-4xl lg:text-5xl">
+          <h1 className="headline-shadow mb-6 font-[var(--font-sans)] text-3xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-4xl lg:text-5xl">
             {post.title}
           </h1>
 

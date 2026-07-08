@@ -74,9 +74,9 @@ const BLOB_MORPH = [
 // matches every other bold heading on the site (consistent shadow everywhere).
 // Solid words use text-shadow; the gradient words use a drop-shadow FILTER,
 // because text-shadow does not render on background-clip:text gradient text.
-const HEADLINE_SHADOW_DARK = '2px 3px 0 rgba(15,17,41,0.14), 4px 6px 9px rgba(15,17,41,0.10)'
+const HEADLINE_SHADOW_DARK = '1px 2px 0 rgba(15,17,41,0.10), 2px 3px 6px rgba(15,17,41,0.07)'
 const HEADLINE_FILTER_DARK =
-  'drop-shadow(2px 3px 0 rgba(15,17,41,0.14)) drop-shadow(4px 6px 7px rgba(15,17,41,0.10))'
+  'drop-shadow(1px 2px 0 rgba(15,17,41,0.10)) drop-shadow(2px 3px 5px rgba(15,17,41,0.07))'
 
 // Deep wave-blue gradient (drawn from the hero background's deepest blue):
 // rich navy -> royal -> sapphire. Used for the gradient headline words and the
@@ -213,7 +213,7 @@ function HeroOrb() {
               ease: [0.22, 1, 0.36, 1],
               borderRadius: { duration: 7, repeat: Infinity },
             }}
-            className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-3 px-6 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
+            className="relative flex h-[230px] w-[230px] flex-col items-center justify-center gap-2.5 px-4 text-center sm:h-[300px] sm:w-[300px] sm:gap-4 sm:px-8 lg:h-[320px] lg:w-[320px]"
             style={{
               transformStyle: 'preserve-3d',
               background: 'linear-gradient(150deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
@@ -248,10 +248,15 @@ function HeroOrb() {
             <div style={{ transform: 'translateZ(55px)' }}>
               <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
             </div>
-            <span className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)' }}>
+            {/* Fluid size so long names (JotilReceptionist) stay inside the
+                230px blob on phones; caps at the original 24px from sm up. */}
+            <span
+              className="max-w-full font-bold leading-tight"
+              style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)', fontSize: 'clamp(15px, 4.4vw, 24px)' }}
+            >
               {product.name}
             </span>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
+            <span className="max-w-full text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
               {product.tag}
             </span>
           </motion.div>

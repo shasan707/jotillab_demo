@@ -462,8 +462,8 @@ h6 {
   -webkit-text-fill-color: #3859a8 !important;
   color: #3859a8 !important;
   text-shadow:
-    2px 3px 0 rgba(15, 17, 41, 0.14),
-    4px 6px 9px rgba(15, 17, 41, 0.10);
+    1px 2px 0 rgba(15, 17, 41, 0.10),
+    2px 3px 6px rgba(15, 17, 41, 0.07);
 }
 
 /* Heading accent words use the single royal-blue everywhere (not the rainbow
@@ -524,11 +524,11 @@ h3 .text-gradient {
 .headline-shadow {
   /* Light directional "long shadow": a short hard offset (the colored
      extrusion) plus a soft blur for depth, cast down-right. Low opacity so it
-     stays subtle on the smaller section headings. The hero sets its own,
-     larger, per-word tinted version inline. */
+     stays subtle on the smaller section headings. The hero mirrors these
+     values inline (SplineAura HEADLINE_SHADOW_DARK / HEADLINE_FILTER_DARK). */
   text-shadow:
-    2px 3px 0 rgba(15, 17, 41, 0.14),
-    4px 6px 9px rgba(15, 17, 41, 0.10);
+    1px 2px 0 rgba(15, 17, 41, 0.10),
+    2px 3px 6px rgba(15, 17, 41, 0.07);
 }
 
 /* Slow drifting color wash for the solutions bento tiles (per-tile hue via

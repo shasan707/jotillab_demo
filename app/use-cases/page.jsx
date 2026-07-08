@@ -10,7 +10,7 @@ import { IndustryIconStrip } from '@/components/sections/IndustryIconStrip'
 export const metadata = {
   title: 'Use Cases & Industry Solutions',
   description:
-    'See how JotilLabs AI voice agents, chatbots, and SMS automation solve real problems across restaurant, dental, real estate, legal, hospitality, finance, e-commerce, and home services.',
+    'See how JotilLabs AI voice agents, chatbots, and SMS automation solve real problems across beauty, finance, health and wellness, home services, legal, real estate, restaurants, and small business.',
 }
 
 const STATS = [
@@ -71,7 +71,7 @@ export default function UseCasesPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-6"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.75rem, 5.5vw, 4.25rem)' }}
             >
               AI built for the way your{' '}
@@ -101,7 +101,7 @@ export default function UseCasesPage() {
               Pick your industry
             </p>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               See exactly what we&rsquo;d do for you
@@ -123,7 +123,7 @@ export default function UseCasesPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">How it works</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               From signup to live in three steps
@@ -191,7 +191,7 @@ export default function UseCasesPage() {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">By the numbers</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Results that pay back the platform
@@ -255,7 +255,7 @@ export default function UseCasesPage() {
               <div className="relative">
                 <Shield size={28} className="mx-auto mb-4" color="#3859a8" strokeWidth={1.6} />
                 <h2
-                  className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
+                  className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.85rem, 3.2vw, 2.6rem)' }}
                 >
                   See it live. Talk to our AI.

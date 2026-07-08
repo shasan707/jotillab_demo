@@ -102,7 +102,7 @@ export default function CustomDevelopmentPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)' }}
             >
               Custom AI{' '}
@@ -129,7 +129,7 @@ export default function CustomDevelopmentPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we build</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               AI solutions built for your business
@@ -171,7 +171,7 @@ export default function CustomDevelopmentPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">Why JotilLabs</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               What makes us different
@@ -220,7 +220,7 @@ export default function CustomDevelopmentPage() {
               }}
             >
               <h2
-                className="font-bold tracking-[-0.03em] text-text mb-4"
+                className="headline-shadow font-bold tracking-[-0.03em] text-text mb-4"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Have something specific in mind?

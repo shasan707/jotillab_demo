@@ -91,7 +91,7 @@ export default function AboutPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)' }}
             >
               We believe every business{' '}
@@ -122,7 +122,7 @@ export default function AboutPage() {
             <AnimatedSection>
               <Badge variant="blue" className="mb-5">How it started</Badge>
               <h2
-                className="font-bold tracking-[-0.03em] leading-snug mb-6 text-text"
+                className="headline-shadow font-bold tracking-[-0.03em] leading-snug mb-6 text-text"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Born from a frustration with wasted potential
@@ -217,7 +217,7 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               Trusted by growing businesses
@@ -259,7 +259,7 @@ export default function AboutPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we believe</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               The values that guide every decision
@@ -293,7 +293,7 @@ export default function AboutPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">The founders</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               Built by people who care deeply
@@ -345,7 +345,7 @@ export default function AboutPage() {
               }}
             >
               <h2
-                className="font-bold tracking-[-0.03em] text-text mb-4"
+                className="headline-shadow font-bold tracking-[-0.03em] text-text mb-4"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Want to join our mission?

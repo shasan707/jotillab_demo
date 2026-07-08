@@ -113,7 +113,7 @@ export default function ConsultancyPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)' }}
             >
               AI Automation{' '}
@@ -140,7 +140,7 @@ export default function ConsultancyPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we offer</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               From assessment to results
@@ -182,7 +182,7 @@ export default function ConsultancyPage() {
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">How it works</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               A clear path from question to outcome
@@ -238,7 +238,7 @@ export default function ConsultancyPage() {
               }}
             >
               <h2
-                className="font-bold tracking-[-0.03em] text-text mb-4"
+                className="headline-shadow font-bold tracking-[-0.03em] text-text mb-4"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Ready to see where AI fits in your business?
