@@ -12,6 +12,7 @@ const DEVICE_TYPE = {
   outreach: 'phone',
   space: 'browser',
   avatar: 'browser',
+  jotildevs: 'browser',
 }
 
 /**

@@ -10,6 +10,7 @@ import { MessengerScreen } from './screens/MessengerScreen'
 import { OutreachScreen } from './screens/OutreachScreen'
 import { SpaceScreen } from './screens/SpaceScreen'
 import { AvatarScreen } from './screens/AvatarScreen'
+import { DevsScreen } from './screens/DevsScreen'
 
 const SCREENS = {
   receptionist: ReceptionistScreen,
@@ -17,6 +18,7 @@ const SCREENS = {
   outreach: OutreachScreen,
   space: SpaceScreen,
   avatar: AvatarScreen,
+  jotildevs: DevsScreen,
 }
 
 const DEVICES = {
@@ -36,6 +38,7 @@ const TILT = {
 const BROWSER_URL = {
   space: 'app.jotillabs.com',
   avatar: 'app.jotillabs.com/avatar',
+  jotildevs: 'devs.jotillabs.com/builder',
 }
 
 export function SlideDevice({ slug, deviceType, isActive, messengerProgressRef, spaceProgressRef, onStep }) {

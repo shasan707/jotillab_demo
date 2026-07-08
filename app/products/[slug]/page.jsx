@@ -12,7 +12,7 @@ import { ProductHeroDevice } from '@/components/product/ProductHeroDevice'
 
 // Products that have a live device interface (same screens as the homepage
 // showcase) — shown as the hero visual. Others use ProductHeroPreview.
-const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar']
+const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar', 'jotildevs']
 import { FAQAccordion } from '@/components/product/FAQAccordion'
 import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
 import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
@@ -58,9 +58,9 @@ export default async function ProductPage({ params }) {
 
   if (!product) notFound()
 
-  // Space + Avatar use the wide "browser" (PC) interface, so give the device a
-  // larger column than the text (otherwise it renders too small to read).
-  const wideDevice = slug === 'space' || slug === 'avatar'
+  // Browser (PC) interfaces need a larger column than the text (otherwise
+  // they render too small to read).
+  const wideDevice = slug === 'space' || slug === 'avatar' || slug === 'jotildevs'
 
   const faqJsonLd = {
     '@context': 'https://schema.org',

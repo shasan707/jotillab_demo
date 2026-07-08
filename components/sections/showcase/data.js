@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle } from 'lucide-react'
+import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle, Braces } from 'lucide-react'
 
 export const PRODUCT_SLIDES = [
   {
@@ -66,6 +66,19 @@ export const PRODUCT_SLIDES = [
     ],
     deviceType: 'browser',
   },
+  {
+    slug: 'jotildevs',
+    icon: Braces,
+    badge: 'JotilDevs',
+    title: 'Custom software, built around your business.',
+    desc: 'We design and build the apps, tools, and integrations your team actually needs, shipped fast and made to fit how you already work.',
+    features: [
+      'Custom apps, dashboards, and internal tools',
+      'AI agents and pipelines wired into your stack',
+      'From prototype to production in weeks',
+    ],
+    deviceType: 'browser',
+  },
 ]
 
 /* Human-readable "what's happening now" labels, indexed to match each screen's
@@ -104,4 +117,6 @@ export const PRODUCT_STEPS = {
     'AI explains the plan',
     'Guides them to a demo',
   ],
+  // Static mockup: a single frozen caption, no step animation.
+  jotildevs: ['From idea to shipped'],
 }
