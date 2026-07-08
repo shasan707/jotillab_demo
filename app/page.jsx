@@ -17,6 +17,9 @@ const HowItWorks = dynamic(() =>
 const IntegrationStrip = dynamic(() =>
   import('@/components/sections/IntegrationStrip').then((m) => m.IntegrationStrip),
 )
+const TestimonialSpotlight = dynamic(() =>
+  import('@/components/sections/TestimonialSpotlight').then((m) => m.TestimonialSpotlight),
+)
 const LiveConsole = dynamic(() =>
   import('@/components/sections/LiveConsole').then((m) => m.LiveConsole),
 )
@@ -57,6 +60,8 @@ export default function Home() {
         <HowItWorks />
         <Seam />
         <IntegrationStrip />
+        <Seam />
+        <TestimonialSpotlight />
         <Seam />
         <LiveConsole />
         <CTASection />

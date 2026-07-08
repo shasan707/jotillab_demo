@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Note: README.md is a leftover Vite template and is NOT accurate. This file is authoritative.
 
 ## Company
-JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Founded 2026, Lehi, Utah). We help SMBs never miss a customer through AI-powered communication automation. 6 solutions: Receptionist, Messenger, Outreach, Space, Flow, Avatar. Target market: SMB, contact-based sales (no self-signup).
+JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Founded 2026, Lehi, Utah). We help SMBs never miss a customer through AI-powered communication automation. 9 solutions: Receptionist, Messenger, Outreach, Space, Flow, Avatar (core products) + Devs, Consult, Education (engagement-based services, contact pricing). Industries: 9, alphabetical (Beauty & Spa, Finance & Insurance, Health & Wellness, Home Services, Legal, Personal Secretary, Real Estate, Restaurant, Small Business). Target market: SMB, contact-based sales (no self-signup).
 
 ## Stack
 - Next.js 15 App Router + React 19 + JSX (NOT TypeScript) + Tailwind CSS v4
@@ -65,7 +65,7 @@ lib/brand.js            — SINGLE SOURCE OF TRUTH for brand constants
                           (colors + tonal scales, fonts, contact, social)
 lib/industries.js       — Industry data for use-cases pages
 lib/mdx.js              — MDX blog utilities
-data/products.js        — 6 solutions with full data incl. pricing tiers
+data/products.js        — 9 solutions with full data incl. pricing tiers
 content/blog/           — MDX blog posts
 docs/plans/ docs/specs/ — Design/implementation history (read before redesigning)
 tests/                  — Playwright visual specs + snapshots
@@ -130,7 +130,8 @@ tests/                  — Playwright visual specs + snapshots
 ## Homepage Section Order
 HeroConsole > SolutionsBento > HowItWorks > Stats > Testimonials > IntegrationStrip > CTASection
 - HeroConsole: editorial centered headline (Fraunces italic cycling word) over a "Live Console" glass panel (typewriter call transcript + streaming activity feed + stats strip)
-- SolutionsBento: asymmetric bento grid of the 6 solutions (large Receptionist anchor tile with live micro-visual, wide Messenger tile, 4 compact tiles, navy CTA tile)
+- SolutionsBento: asymmetric bento grid of the 9 solutions (large Receptionist anchor tile with live micro-visual, wide Messenger + Devs tiles, compact tiles, navy CTA tile)
+- TestimonialSpotlight: single customer quote card (between IntegrationStrip and LiveConsole)
 - Hero.jsx (voice orb), ScrollProductShowcase, LogoCloud, HomeWatermark are unused on the homepage but kept in the codebase
 
 ## Contact Info
