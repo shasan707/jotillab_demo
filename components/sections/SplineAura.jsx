@@ -256,7 +256,9 @@ function HeroOrb() {
             >
               {product.name}
             </span>
-            <span className="max-w-full text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-[11px] sm:tracking-[0.18em]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
+            {/* Width-capped so the wrapped lines stay inside the blob's CURVED
+                edge (it narrows below the middle) on every screen size. */}
+            <span className="max-w-[150px] text-[10px] font-semibold uppercase leading-relaxed tracking-[0.14em] sm:max-w-[200px] sm:text-[11px] sm:tracking-[0.18em] lg:max-w-[215px]" style={{ color: product.color, transform: 'translateZ(26px)' }}>
               {product.tag}
             </span>
           </motion.div>
