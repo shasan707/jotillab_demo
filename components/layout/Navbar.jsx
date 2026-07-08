@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -60,6 +60,20 @@ export function Navbar() {
   const closeDesktopDropdown = useCallback(() => {
     setOpenDropdown(null)
   }, [])
+
+  // The wide mega-panels live at nav level (viewport-centered so they always
+  // fit, even at 1024px). A short close delay lets the cursor travel from the
+  // trigger down into the panel without the menu snapping shut.
+  const closeTimer = useRef(null)
+  const openMenu = useCallback((menu) => {
+    clearTimeout(closeTimer.current)
+    setOpenDropdown(menu)
+  }, [])
+  const scheduleClose = useCallback(() => {
+    clearTimeout(closeTimer.current)
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 150)
+  }, [])
+  useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -121,8 +135,8 @@ export function Navbar() {
                 <div
                   key={label}
                   className="relative"
-                  onMouseEnter={() => setOpenDropdown(dropdown)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+                  onMouseEnter={() => openMenu(dropdown)}
+                  onMouseLeave={scheduleClose}
                 >
                   <Link
                     href={to}
@@ -139,129 +153,11 @@ export function Navbar() {
                       className={cn('transition-transform duration-200', openDropdown === dropdown && 'rotate-180')}
                     />
                   </Link>
-
-                  {/* Solutions mega-menu */}
-                  {dropdown === 'solutions' && (
-                    <AnimatePresence>
-                      {openDropdown === 'solutions' && (
-                        <motion.div
-                          {...dropdownAnimation}
-                          className="absolute top-full left-1/2 -ml-[390px] pt-3 w-[780px]"
-                        >
-                          <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
-                            <div className="p-5">
-                              <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Solutions</p>
-                              <div className="grid grid-cols-3 gap-1.5">
-                                {PRODUCT_ITEMS.map((item) => {
-                                  const ItemIcon = item.icon
-                                  return (
-                                    <Link
-                                      key={item.slug}
-                                      href={`/products/${item.slug}`}
-                                      className={cn(
-                                        'flex items-start gap-3 px-3 py-3.5 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03]',
-                                        pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5'
-                                      )}
-                                    >
-                                      <div
-                                        className="w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
-                                        style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
-                                      >
-                                        <ItemIcon size={18} strokeWidth={1.5} style={{ color: item.color }} />
-                                      </div>
-                                      <div className="flex-1 min-w-0 pt-0.5">
-                                        <span className="text-sm font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
-                                        <p className="text-[11px] text-text-secondary mt-0.5 leading-snug">{item.description}</p>
-                                      </div>
-                                    </Link>
-                                  )
-                                })}
-                              </div>
-                            </div>
-                            <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-between">
-                              <Link
-                                href="/products"
-                                className="text-xs font-semibold text-primary no-underline inline-flex items-center gap-1 hover:gap-2 transition-all"
-                              >
-                                See all solutions
-                                <ArrowRight size={12} strokeWidth={2} />
-                              </Link>
-                              <Link
-                                href="/contact"
-                                className="text-xs font-semibold text-white no-underline inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark px-3.5 py-1.5 rounded-lg transition-colors"
-                              >
-                                <Sparkles size={11} strokeWidth={2} />
-                                Book a Demo
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  )}
-
-                  {/* Industries mega-menu */}
-                  {dropdown === 'industries' && (
-                    <AnimatePresence>
-                      {openDropdown === 'industries' && (
-                        <motion.div
-                          {...dropdownAnimation}
-                          className="absolute top-full left-1/2 -ml-[390px] pt-3 w-[780px]"
-                        >
-                          <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
-                            <div className="p-5">
-                              <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Industries We Serve</p>
-                              <div className="grid grid-cols-3 gap-1.5">
-                                {INDUSTRY_ITEMS.map((item) => {
-                                  const ItemIcon = item.icon
-                                  return (
-                                    <Link
-                                      key={item.slug}
-                                      href={`/use-cases/${item.slug}`}
-                                      className="flex items-start gap-3 px-3 py-3.5 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03] hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5"
-                                    >
-                                      <div
-                                        className="w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
-                                        style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
-                                      >
-                                        <ItemIcon size={18} strokeWidth={1.5} style={{ color: item.color }} />
-                                      </div>
-                                      <div className="flex-1 min-w-0 pt-0.5">
-                                        <span className="text-sm font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
-                                        <p className="text-[11px] text-text-secondary mt-0.5 leading-snug">{item.description}</p>
-                                      </div>
-                                    </Link>
-                                  )
-                                })}
-                              </div>
-                            </div>
-                            <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-between">
-                              <Link
-                                href="/use-cases"
-                                className="text-xs font-semibold text-primary no-underline inline-flex items-center gap-1 hover:gap-2 transition-all"
-                              >
-                                See all industries
-                                <ArrowRight size={12} strokeWidth={2} />
-                              </Link>
-                              <Link
-                                href="/contact"
-                                className="text-xs font-semibold text-white no-underline inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark px-3.5 py-1.5 rounded-lg transition-colors"
-                              >
-                                <Sparkles size={11} strokeWidth={2} />
-                                Book a Demo
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  )}
-
                 </div>
               )
             }
 
-            // Simple link (About, Contact)
+            // Simple link (Resources, About, Contact)
             return (
               <Link
                 key={to}
@@ -308,6 +204,127 @@ export function Navbar() {
             </AnimatePresence>
           </button>
         </div>
+      </div>
+
+      {/* ── Nav-level mega panels — centered on the viewport so the wide
+             layout fits at every desktop width ── */}
+      <div className="hidden lg:block">
+        {/* Solutions mega-menu */}
+        <AnimatePresence>
+          {openDropdown === 'solutions' && (
+            <motion.div
+              {...dropdownAnimation}
+              onMouseEnter={() => openMenu('solutions')}
+              onMouseLeave={scheduleClose}
+              className="absolute top-full left-1/2 -ml-[430px] pt-3 w-[860px]"
+            >
+              <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
+                <div className="p-6">
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Solutions</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {PRODUCT_ITEMS.map((item) => {
+                      const ItemIcon = item.icon
+                      return (
+                        <Link
+                          key={item.slug}
+                          href={`/products/${item.slug}`}
+                          className={cn(
+                            'flex items-start gap-3.5 px-4 py-4 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03]',
+                            pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5'
+                          )}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
+                            style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
+                          >
+                            <ItemIcon size={22} strokeWidth={1.5} style={{ color: item.color }} />
+                          </div>
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <span className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
+                            <p className="text-xs text-text-secondary mt-0.5 leading-snug">{item.description}</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+                <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-between">
+                  <Link
+                    href="/products"
+                    className="text-xs font-semibold text-primary no-underline inline-flex items-center gap-1 hover:gap-2 transition-all"
+                  >
+                    See all solutions
+                    <ArrowRight size={12} strokeWidth={2} />
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="text-xs font-semibold text-white no-underline inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark px-3.5 py-1.5 rounded-lg transition-colors"
+                  >
+                    <Sparkles size={11} strokeWidth={2} />
+                    Book a Demo
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Industries mega-menu */}
+        <AnimatePresence>
+          {openDropdown === 'industries' && (
+            <motion.div
+              {...dropdownAnimation}
+              onMouseEnter={() => openMenu('industries')}
+              onMouseLeave={scheduleClose}
+              className="absolute top-full left-1/2 -ml-[430px] pt-3 w-[860px]"
+            >
+              <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
+                <div className="p-6">
+                  <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Industries We Serve</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {INDUSTRY_ITEMS.map((item) => {
+                      const ItemIcon = item.icon
+                      return (
+                        <Link
+                          key={item.slug}
+                          href={`/use-cases/${item.slug}`}
+                          className="flex items-start gap-3.5 px-4 py-4 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03] hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5"
+                        >
+                          <div
+                            className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
+                            style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
+                          >
+                            <ItemIcon size={22} strokeWidth={1.5} style={{ color: item.color }} />
+                          </div>
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <span className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
+                            <p className="text-xs text-text-secondary mt-0.5 leading-snug">{item.description}</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+                <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-between">
+                  <Link
+                    href="/use-cases"
+                    className="text-xs font-semibold text-primary no-underline inline-flex items-center gap-1 hover:gap-2 transition-all"
+                  >
+                    See all industries
+                    <ArrowRight size={12} strokeWidth={2} />
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="text-xs font-semibold text-white no-underline inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark px-3.5 py-1.5 rounded-lg transition-colors"
+                  >
+                    <Sparkles size={11} strokeWidth={2} />
+                    Book a Demo
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Mobile slide-in menu */}
@@ -422,7 +439,7 @@ export function Navbar() {
                     )
                   }
 
-                  // Simple link (About, Contact)
+                  // Simple link (Resources, About, Contact)
                   return (
                     <motion.div
                       key={to}

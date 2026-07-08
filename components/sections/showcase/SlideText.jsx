@@ -8,10 +8,10 @@ export function SlideBadge({ product }) {
   return (
     <div className="flex justify-center">
       <div
-        className="slide-badge inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold tracking-wide"
+        className="slide-badge inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-lg sm:text-xl font-bold tracking-wide"
         style={{ background: 'rgba(124, 58, 237, 0.09)', color: '#7c3aed' }}
       >
-        <Icon size={16} strokeWidth={2} />
+        <Icon size={22} strokeWidth={2} />
         {badge}
       </div>
     </div>
