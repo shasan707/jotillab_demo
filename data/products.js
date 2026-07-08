@@ -620,6 +620,243 @@ export const products = [
       { question: 'Does it work on mobile devices?', answer: 'Yes. Our avatars are optimized for web browsers across desktop, tablet, and mobile devices. No app installation required.' },
     ],
   },
+  {
+    slug: 'jotildevs',
+    name: 'JotilDevs',
+    displayName: ['Jotil', 'Devs'],
+    shortName: 'Devs',
+    icon: 'Braces',
+    iconColor: '#f97316',
+    oneLiner: 'Custom software built around how your business already works.',
+    tagline: 'Your business. Your software. Built to fit.',
+    badge: 'Custom Development',
+    description:
+      'Custom apps, tools, and automations designed and built for your business. From the apps your customers touch to the systems your team runs on every day.',
+    heroDescription:
+      'Off-the-shelf software makes you work its way. JotilDevs builds software that works your way. Customer-facing apps, internal tools, voice and chat systems, and the connections between them, all shaped around how your business actually runs.',
+    accentType: 'code',
+    services: [
+      {
+        name: 'Customer-Facing Apps',
+        description:
+          'Web apps and portals your customers actually enjoy using. Booking, quoting, ordering, and account access, built around their real journey.',
+        features: [
+          'Designed around your customers, not a template',
+          'Booking, quoting, and payment flows',
+          'Works on any device from day one',
+          'Your branding, front and center',
+        ],
+      },
+      {
+        name: 'Internal Tools',
+        description:
+          'Dashboards and back-office tools that replace spreadsheets, copy-paste work, and the systems your team has outgrown.',
+        features: [
+          'Dashboards that show what matters at a glance',
+          'Replace spreadsheets and double entry',
+          'The right view for each role on your team',
+          'Built to match how your team already works',
+        ],
+      },
+      {
+        name: 'Voice, Chat, and Connections',
+        description:
+          'Custom call and messaging experiences for your brand, plus the connections that make your existing tools finally talk to each other.',
+        features: [
+          'Voice and chat experiences built for your brand',
+          'Your tools connected so data moves itself',
+          'Automations that remove repeat work',
+          'Support that stays on after launch',
+        ],
+      },
+    ],
+    features: [
+      { icon: 'Braces', title: 'Built to Fit', description: 'Software shaped around your process, not the other way around' },
+      { icon: 'Layers', title: 'Apps and Tools', description: 'Customer-facing apps and internal tools from one team' },
+      { icon: 'Plug', title: 'Everything Connected', description: 'Your existing systems finally talk to each other' },
+      { icon: 'Rocket', title: 'Fast Delivery', description: 'Working software in weeks, with progress you can see' },
+      { icon: 'ShieldCheck', title: 'Reliable and Secure', description: 'Built, tested, and monitored so it just keeps working' },
+      { icon: 'Wrench', title: 'Ongoing Care', description: 'We stay on after launch for updates and improvements' },
+    ],
+    integrations: ['Slack', 'HubSpot', 'Salesforce', 'Zapier', 'Google Sheets', 'Twilio'],
+    pricing: {
+      billingModel: 'contact',
+      headline: 'Built for your business, priced for your scope.',
+      subhead: 'Every build starts with a conversation about what you need and what it should do for you. We scope it together, then hand you a clear plan and a clear price.',
+      primaryCTA: { label: 'Book discovery call', href: '/contact?product=jotildevs' },
+      engagementTypes: [
+        { name: 'Custom app build', description: 'A customer-facing app or portal, scoped and delivered as a project', priceNote: 'Project-based' },
+        { name: 'Internal tools', description: 'Dashboards and back-office tools that replace spreadsheet work', priceNote: 'Project-based' },
+        { name: 'Voice and chat systems', description: 'Custom call and messaging experiences built for your brand', priceNote: 'Project-based' },
+        { name: 'Build and care retainer', description: 'Ongoing development, updates, and support every month', priceNote: 'Monthly' },
+      ],
+      whatsIncluded: ['Discovery and scoping', 'Design and build', 'Testing before launch', 'Training and handoff', 'Documentation', '30 days of post-launch support'],
+    },
+    faq: [
+      { question: 'What can you build for us?', answer: 'Customer-facing apps and portals, internal tools and dashboards, custom voice and chat systems, and the automations and connections that tie your existing tools together. If it touches your customers or your daily operations, we can build it.' },
+      { question: 'How long does a typical project take?', answer: 'Smaller builds ship in a few weeks. Larger apps are delivered in stages, so you see working software early and often instead of waiting months for a big reveal.' },
+      { question: 'Do we own what you build?', answer: 'Yes. The software we build for you belongs to you, along with the documentation that goes with it.' },
+      { question: 'What happens after launch?', answer: 'We offer ongoing care plans that cover updates, improvements, and support. If you prefer to hand it to your own team, we set them up to run it confidently.' },
+    ],
+  },
+  {
+    slug: 'jotilconsult',
+    name: 'JotilConsult',
+    displayName: ['Jotil', 'Consult'],
+    shortName: 'Consult',
+    icon: 'Compass',
+    iconColor: '#a855f7',
+    oneLiner: 'A clear plan for where AI saves you time and money.',
+    tagline: 'See the leaks. Fix the biggest one first.',
+    badge: 'AI Consultancy',
+    description:
+      'We study how your business runs, find where time and money leak, and hand you a clear plan for what to automate first. Then we help you make it happen.',
+    heroDescription:
+      'AI is everywhere, and most of it is noise. JotilConsult cuts through it. We look at how your business actually runs, find where hours and dollars slip away, and give you a prioritized plan you can act on. Then we roll it out with you and keep improving it.',
+    accentType: 'compass',
+    services: [
+      {
+        name: 'Operations Audit',
+        description:
+          'A close look at how work moves through your business today. Where people wait, where things fall through, and where the same work gets done twice.',
+        features: [
+          'A walkthrough of how work really flows through your business',
+          'Where hours and dollars leak, in plain numbers',
+          'Quick wins you can act on right away',
+          'A report your whole team can read',
+        ],
+      },
+      {
+        name: 'Automation Roadmap',
+        description:
+          'A prioritized plan for what to automate first, ranked by payoff, sized to your budget, and built around the tools you already use.',
+        features: [
+          'What to automate first, ranked by payoff',
+          'Clear costs and timelines for every step',
+          'Recommendations sized to your budget',
+          'Works with the tools you already use',
+        ],
+      },
+      {
+        name: 'Rollout and Optimization',
+        description:
+          'We put the plan in place with you, train your team on every change, and keep tuning as your business grows.',
+        features: [
+          'Hands-on help putting the plan in place',
+          'Your team trained on every change',
+          'Monthly reviews of what is working',
+          'Adjustments as your business grows',
+        ],
+      },
+    ],
+    features: [
+      { icon: 'Search', title: 'Honest Audit', description: 'A clear picture of where your time and money actually go' },
+      { icon: 'Map', title: 'Prioritized Roadmap', description: 'What to automate first, ranked by payoff and effort' },
+      { icon: 'ClipboardCheck', title: 'Practical Plans', description: 'Recommendations you can act on, sized to your budget' },
+      { icon: 'Workflow', title: 'Hands-On Rollout', description: 'We put the plan in place with you, not just hand you a report' },
+      { icon: 'Gauge', title: 'Measured Results', description: 'Time saved and costs cut, tracked so you see the return' },
+      { icon: 'RefreshCw', title: 'Keeps Improving', description: 'Regular reviews so the plan grows with your business' },
+    ],
+    integrations: ['HubSpot', 'Salesforce', 'Slack', 'Zapier', 'Notion', 'Google Sheets'],
+    pricing: {
+      billingModel: 'contact',
+      headline: 'Advice that pays for itself.',
+      subhead: 'Every engagement starts with a conversation about your business. You leave the first call knowing whether we can help and roughly what it costs.',
+      primaryCTA: { label: 'Book a strategy call', href: '/contact?product=jotilconsult' },
+      engagementTypes: [
+        { name: 'Operations audit', description: 'A full review of how your business runs and where it leaks', priceNote: 'Fixed fee' },
+        { name: 'Automation roadmap', description: 'A prioritized plan for what to automate first and why', priceNote: 'Fixed fee' },
+        { name: 'Guided rollout', description: 'We put the plan in place with you, step by step', priceNote: 'Project-based' },
+        { name: 'Ongoing advisory', description: 'Monthly reviews, tuning, and a direct line to our team', priceNote: 'Monthly' },
+      ],
+      whatsIncluded: ['Discovery call', 'Operations review', 'Written findings and plan', 'Priorities ranked by payoff', 'Rollout support', 'Regular progress reviews'],
+    },
+    faq: [
+      { question: 'Do we need to be technical to work with you?', answer: 'No. We explain everything in plain language and handle the technical side for you. Your job is to tell us how your business works.' },
+      { question: 'What does the audit look at?', answer: 'How calls, messages, and paperwork move through your business. Where people wait, where things fall through the cracks, and where the same work gets done twice.' },
+      { question: 'What if we already use some AI tools?', answer: 'Even better. We review what you have, keep what works, and fix what does not. Most businesses get more from the tools they already own before they need new ones.' },
+      { question: 'How soon do we see results?', answer: 'Most clients act on their first quick wins within the first month. The full roadmap is designed so each step pays for itself as it lands.' },
+    ],
+  },
+  {
+    slug: 'jotileducation',
+    name: 'JotilEducation',
+    displayName: ['Jotil', 'Education'],
+    shortName: 'Education',
+    icon: 'GraduationCap',
+    iconColor: '#10b981',
+    oneLiner: 'Your team, confident with modern tools and AI.',
+    tagline: 'Tools change. Your team keeps up.',
+    badge: 'Team Training',
+    description:
+      'Hands-on training that teaches your employees how to actually use modern tools and AI in their daily work. Workshops, playbooks, and ongoing support.',
+    heroDescription:
+      'New tools only pay off when people use them. JotilEducation trains your team hands-on, with real examples pulled from their own work. They leave every session with skills they use the same day, plus simple playbooks to fall back on.',
+    accentType: 'education',
+    services: [
+      {
+        name: 'Hands-On Workshops',
+        description:
+          'Live sessions built around your team and their real daily tasks. No slide marathons, just practice on the work they actually do.',
+        features: [
+          'Live sessions, in person or online',
+          'Built around your team and their real daily tasks',
+          'Practice on real examples, not slides',
+          'Works for teams of three or three hundred',
+        ],
+      },
+      {
+        name: 'Role-Specific Training',
+        description:
+          'Front desk, sales, and back office each work differently. Each role gets its own track, focused on the tools they touch every day.',
+        features: [
+          'Separate tracks for front desk, sales, and operations',
+          'Focused on the tools each role uses daily',
+          'Beginner-friendly, no experience needed',
+          'Refresher sessions when tools change',
+        ],
+      },
+      {
+        name: 'Playbooks and Ongoing Support',
+        description:
+          'Simple step-by-step guides your team keeps, plus a direct line for questions long after the training ends.',
+        features: [
+          'Step-by-step guides your team keeps',
+          'A direct line for questions after training',
+          'New sessions as tools and AI evolve',
+          'Progress check-ins with team leads',
+        ],
+      },
+    ],
+    features: [
+      { icon: 'GraduationCap', title: 'Hands-On Learning', description: 'Your team practices on their own real work, not demos' },
+      { icon: 'Users', title: 'Role-Based Tracks', description: 'Front desk, sales, and operations each learn what they need' },
+      { icon: 'BookOpen', title: 'Simple Playbooks', description: 'Step-by-step guides your team keeps and actually uses' },
+      { icon: 'Target', title: 'Useful Same Day', description: 'Skills your team puts to work before the week is out' },
+      { icon: 'MessagesSquare', title: 'Questions Welcome', description: 'A direct line to trainers after every session' },
+      { icon: 'LifeBuoy', title: 'Ongoing Support', description: 'Refreshers and new sessions as tools keep changing' },
+    ],
+    integrations: ['Microsoft Teams', 'Slack', 'Notion', 'Google Sheets', 'HubSpot'],
+    pricing: {
+      billingModel: 'contact',
+      headline: 'Training that sticks.',
+      subhead: 'Every program is built around your team, your tools, and your pace. It starts with a short call about where your team is today.',
+      primaryCTA: { label: 'Plan your training', href: '/contact?product=jotileducation' },
+      engagementTypes: [
+        { name: 'Team workshop', description: 'A focused hands-on session for one team or one tool', priceNote: 'Per session' },
+        { name: 'Training program', description: 'A multi-week rollout across roles and departments', priceNote: 'Project-based' },
+        { name: 'Leadership briefing', description: 'What AI means for your business, for owners and managers', priceNote: 'Per session' },
+        { name: 'Ongoing enablement', description: 'Regular sessions, playbook updates, and support', priceNote: 'Monthly' },
+      ],
+      whatsIncluded: ['Skills assessment', 'Custom session plan', 'Live hands-on training', 'Step-by-step playbooks', 'Follow-up questions and answers', 'Progress check-ins'],
+    },
+    faq: [
+      { question: 'Our team is not technical. Will this work for them?', answer: 'Yes. That is exactly who this is for. We start from where each person is, use plain language, and build confidence through practice.' },
+      { question: 'What tools do you train on?', answer: 'The ones your team already uses, plus the AI tools that fit your work. Every program is tailored to your setup rather than a generic list.' },
+      { question: 'How long until the team is up to speed?', answer: 'Most people use what they learn the same day. A typical program runs a few weeks, with each session building on the last.' },
+      { question: 'What happens when the tools change?', answer: 'We update your playbooks and run refresher sessions, so your team keeps up without starting over.' },
+    ],
+  },
 ]
 
 export const getProductBySlug = (slug) => products.find((p) => p.slug === slug)

@@ -10,6 +10,9 @@ const COLORS = {
   space: { color: '#a855f7', c2: '#3B82F6' },
   flow: { color: '#10b981', c2: '#06b6d4' },
   avatar: { color: '#ec4899', c2: '#a855f7' },
+  jotildevs: { color: '#f97316', c2: '#a855f7' },
+  jotilconsult: { color: '#a855f7', c2: '#06b6d4' },
+  jotileducation: { color: '#10b981', c2: '#3B82F6' },
 }
 
 function Glyph({ slug, stroke }) {
@@ -58,6 +61,30 @@ function Glyph({ slug, stroke }) {
           <circle cx="22" cy="19" r="8.5" {...common} />
           <path {...common} d="M9 40c1.6-7.4 7-11 13-11s11.4 3.6 13 11" />
           <path d="M37 8l1.6 3.6 3.6 1.6-3.6 1.6L37 19l-1.6-3.6L31.8 13.8l3.6-1.6z" fill={stroke} stroke="none" />
+        </>
+      )
+    case 'jotildevs':
+      return (
+        <>
+          <path {...common} d="M16 14 8 24l8 10" />
+          <path {...common} d="m32 14 8 10-8 10" />
+          <path {...common} d="M27 11 21 37" />
+        </>
+      )
+    case 'jotilconsult':
+      return (
+        <>
+          <circle cx="24" cy="24" r="14" {...common} />
+          <path {...common} d="m30 18-3.4 8.6L18 30l3.4-8.6z" />
+          <circle cx="24" cy="24" r="1.6" fill={stroke} stroke="none" />
+        </>
+      )
+    case 'jotileducation':
+      return (
+        <>
+          <path {...common} d="M24 11 7 19l17 8 17-8z" />
+          <path {...common} d="M15 23.5v7.5c0 2.6 4 5 9 5s9-2.4 9-5v-7.5" />
+          <path {...common} d="M41 20v8" />
         </>
       )
     case 'receptionist':

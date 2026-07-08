@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ArrowUpRight, Phone, MessageCircle, TrendingUp, LayoutGrid, GitBranch, UserCircle, Check } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Phone, MessageCircle, TrendingUp, LayoutGrid, GitBranch, UserCircle, Braces, Compass, GraduationCap, Check } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Spotlight, useSpotlight } from '@/components/design/Spotlight'
 import { TiltCard } from '@/components/design'
 
-/* Asymmetric bento overview of all six solutions. Outcome-led copy,
+/* Asymmetric bento overview of all nine solutions. Outcome-led copy,
    one large "anchor" tile (Receptionist) with a live micro-visual,
-   one wide tile (Messenger) with typing dots, four compact tiles,
+   two wide tiles (Messenger with typing dots, Devs), six compact tiles,
    and a navy CTA tile closing the grid. */
 
 const TILES = [
@@ -60,6 +60,30 @@ const TILES = [
     copy: 'A lifelike guide that greets visitors and walks them to the right place.',
     size: 'small',
   },
+  {
+    slug: 'jotildevs',
+    icon: Braces,
+    color: '#3B82F6',
+    title: 'Software that fits',
+    copy: 'Custom apps and tools built around how your business already works, not the other way around.',
+    size: 'wide',
+  },
+  {
+    slug: 'jotilconsult',
+    icon: Compass,
+    color: '#3859a8',
+    title: 'A plan worth following',
+    copy: 'We find where time and money leak, and show you what to fix first.',
+    size: 'small',
+  },
+  {
+    slug: 'jotileducation',
+    icon: GraduationCap,
+    color: '#3B82F6',
+    title: 'A team that keeps up',
+    copy: 'Hands-on training so your people actually use modern tools and AI.',
+    size: 'small',
+  },
 ]
 
 export function SolutionsBento() {
@@ -74,7 +98,7 @@ export function SolutionsBento() {
             className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.045em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Six ways to{' '}
+            Nine ways to{' '}
             <em
               className="text-gradient not-italic"
               style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontStyle: 'italic', fontWeight: 560, letterSpacing: 'normal', padding: '0 0.12em' }}
@@ -111,7 +135,7 @@ export function SolutionsBento() {
           ))}
 
           {/* CTA tile */}
-          <AnimatedSection delay={0.36} className="sm:col-span-2 lg:col-span-2">
+          <AnimatedSection delay={0.54} className="sm:col-span-2 lg:col-span-2">
             <CtaTile />
           </AnimatedSection>
         </div>
@@ -217,7 +241,7 @@ function BentoTile({ tile }) {
         </div>
       )}
 
-      {size === 'wide' && (
+      {size === 'wide' && slug === 'messenger' && (
         <div className="mt-auto pt-5 flex items-center gap-2" aria-hidden="true">
           <span className="inline-flex items-center gap-[3px] rounded-full px-3 py-2" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.14)' }}>
             {[0, 1, 2].map(i => (

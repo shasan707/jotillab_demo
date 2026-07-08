@@ -10,6 +10,7 @@ import {
   FlowLogo,
   AvatarLogo,
 } from '@/components/ui/ProductLogos'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 
 const LOGO_MAP = {
   receptionist: ReceptionistLogo,
@@ -126,7 +127,7 @@ export function ProductHeroPreview({ slug, productName }) {
                 className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-white"
                 style={{ boxShadow: '0 10px 30px rgba(56,89,168,0.18)' }}
               >
-                {Logo && <Logo size={56} />}
+                {Logo ? <Logo size={56} /> : <ProductGlyph slug={slug} size={64} />}
               </div>
             </div>
             <p className="text-sm font-semibold text-text" style={{ fontFamily: 'var(--font-display)' }}>

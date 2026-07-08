@@ -23,6 +23,12 @@ const TABLE_FEATURES = [
   { label: 'Scheduling', key: 'scheduling' },
 ]
 
+/* Comparison table covers the 6 core solutions. The 3 engagement-based
+   solutions (Devs, Consult, Education) are scoped per project, so a
+   feature checklist does not apply to them. */
+const SERVICE_SLUGS = ['jotildevs', 'jotilconsult', 'jotileducation']
+const CORE = products.filter((p) => !SERVICE_SLUGS.includes(p.slug))
+
 const PRODUCT_FEATURES = {
   receptionist: { voice: true, chat: true, sms: false, crm: false, automation: false, scheduling: true },
   messenger: { voice: false, chat: true, sms: true, crm: false, automation: true, scheduling: false },
@@ -57,7 +63,7 @@ export default function ProductsPage() {
           <AnimatedSection>
             <Badge variant="blue" className="mb-5">Our Solutions</Badge>
             <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.08]"
+              className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.08]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Everything your business needs.{' '}
@@ -99,7 +105,7 @@ export default function ProductsPage() {
           <AnimatedSection className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What we offer</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Explore our solutions
@@ -185,7 +191,7 @@ export default function ProductsPage() {
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Compare</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Which solution fits your business?
@@ -202,7 +208,7 @@ export default function ProductsPage() {
                       <th scope="col" className="text-left px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider w-40">
                         Feature
                       </th>
-                      {products.map((p) => {
+                      {CORE.map((p) => {
                         return (
                           <th key={p.slug} scope="col" className="px-4 py-4 text-center">
                             <div className="flex flex-col items-center gap-1.5">
@@ -223,7 +229,7 @@ export default function ProductsPage() {
                     {TABLE_FEATURES.map((feature, ri) => (
                       <tr key={feature.key} className={ri % 2 === 0 ? '' : 'bg-[#FAFBFD]'}>
                         <th scope="row" className="px-6 py-4 text-sm font-medium text-text text-left">{feature.label}</th>
-                        {products.map((p) => {
+                        {CORE.map((p) => {
                           const has = PRODUCT_FEATURES[p.slug]?.[feature.key]
                           return (
                             <td key={p.slug} className="px-4 py-4 text-center">
@@ -246,6 +252,12 @@ export default function ProductsPage() {
                   </tbody>
                 </table>
           </AnimatedSection>
+
+          <AnimatedSection delay={0.15}>
+            <p className="text-sm text-text-secondary text-center mt-5">
+              JotilDevs, JotilConsult and JotilEducation are scoped per engagement. Talk to us for a tailored plan.
+            </p>
+          </AnimatedSection>
         </div>
       </section>
 
@@ -256,7 +268,7 @@ export default function ProductsPage() {
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <h2
-              className="text-3xl font-bold text-text tracking-tight mb-4"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Not sure which product fits?
