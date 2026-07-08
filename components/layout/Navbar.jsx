@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import * as LucideIcons from 'lucide-react'
 import {
   Menu, X, ChevronDown, Layers, ArrowRight, Sparkles,
-  Building2, BookOpen, FileText, Code2, Users, Mail,
-  Stethoscope, Home, Scale, UtensilsCrossed, Hotel,
-  TrendingUp, ShoppingCart, Wrench
+  Building2, BookOpen, Users, Mail,
+  Scissors, TrendingUp, HeartPulse, Wrench, Scale,
+  ClipboardCheck, Home, UtensilsCrossed, Store
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Logo, { LogoText } from '@/components/ui/Logo'
@@ -24,27 +24,23 @@ const PRODUCT_ITEMS = products.map((p) => ({
   color: p.iconColor,
 }))
 
+// Nine industries, alphabetical (mirrors lib/industries.js)
 const INDUSTRY_ITEMS = [
-  { name: 'Restaurant', slug: 'restaurant', description: 'Reservations, orders, and guest experience', icon: UtensilsCrossed, color: '#3859a8' },
-  { name: 'Dental & Medical', slug: 'dental-medical', description: 'Dental offices and medical practices', icon: Stethoscope, color: '#3859a8' },
-  { name: 'Real Estate', slug: 'real-estate', description: 'Agents, brokerages, and property managers', icon: Home, color: '#3859a8' },
-  { name: 'Legal', slug: 'legal', description: 'Law firms and legal practices', icon: Scale, color: '#3859a8' },
-  { name: 'Hospitality', slug: 'hospitality', description: 'Hotels, venues, and event spaces', icon: Hotel, color: '#3859a8' },
+  { name: 'Beauty & Spa', slug: 'beauty-spa', description: 'Salons, spas, and studios that stay booked', icon: Scissors, color: '#3859a8' },
   { name: 'Finance & Insurance', slug: 'finance-insurance', description: 'Financial advisors and insurance agencies', icon: TrendingUp, color: '#3859a8' },
-  { name: 'E-commerce', slug: 'ecommerce', description: 'Online stores and retail businesses', icon: ShoppingCart, color: '#3859a8' },
+  { name: 'Health & Wellness', slug: 'health-wellness', description: 'Dental, chiropractic, therapy, and PT clinics', icon: HeartPulse, color: '#3859a8' },
   { name: 'Home Services', slug: 'home-services', description: 'HVAC, plumbing, and field service teams', icon: Wrench, color: '#3859a8' },
-]
-
-const RESOURCE_ITEMS = [
-  { name: 'Blog', href: '/blog', description: 'Insights and updates from our team', icon: BookOpen },
-  { name: 'Consultancy', href: '/consultancy', description: 'Expert guidance for your business', icon: FileText },
-  { name: 'Custom Development', href: '/custom-development', description: 'Tailored solutions built for you', icon: Code2 },
+  { name: 'Legal', slug: 'legal', description: 'Law firms and legal practices', icon: Scale, color: '#3859a8' },
+  { name: 'Personal Secretary', slug: 'personal-secretary', description: 'A personal AI secretary for busy professionals', icon: ClipboardCheck, color: '#3859a8' },
+  { name: 'Real Estate', slug: 'real-estate', description: 'Agents, brokerages, and property managers', icon: Home, color: '#3859a8' },
+  { name: 'Restaurant', slug: 'restaurant', description: 'Reservations, orders, and guest experience', icon: UtensilsCrossed, color: '#3859a8' },
+  { name: 'Small Business', slug: 'small-business', description: 'Hotels, venues, dealers, and local shops', icon: Store, color: '#3859a8' },
 ]
 
 const NAV_LINKS = [
   { label: 'Solutions', to: '/products', dropdown: 'solutions', icon: Layers },
   { label: 'Industries', to: '/use-cases', dropdown: 'industries', icon: Building2 },
-  { label: 'Resources', to: '#', dropdown: 'resources', icon: BookOpen },
+  { label: 'Resources', to: '/blog', icon: BookOpen },
   { label: 'About', to: '/about', icon: Users },
   { label: 'Contact', to: '/contact', icon: Mail },
 ]
@@ -150,12 +146,12 @@ export function Navbar() {
                       {openDropdown === 'solutions' && (
                         <motion.div
                           {...dropdownAnimation}
-                          className="absolute top-full -left-4 pt-3 w-[580px] max-w-[calc(100vw-2rem)]"
+                          className="absolute top-full left-1/2 -ml-[390px] pt-3 w-[780px]"
                         >
                           <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
-                            <div className="p-4">
+                            <div className="p-5">
                               <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Solutions</p>
-                              <div className="grid grid-cols-2 gap-1">
+                              <div className="grid grid-cols-3 gap-1.5">
                                 {PRODUCT_ITEMS.map((item) => {
                                   const ItemIcon = item.icon
                                   return (
@@ -163,18 +159,18 @@ export function Navbar() {
                                       key={item.slug}
                                       href={`/products/${item.slug}`}
                                       className={cn(
-                                        'flex items-start gap-3 px-3 py-3 rounded-xl no-underline transition-all duration-150 group',
-                                        pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF]'
+                                        'flex items-start gap-3 px-3 py-3.5 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03]',
+                                        pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5'
                                       )}
                                     >
                                       <div
-                                        className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 transition-colors duration-150"
+                                        className="w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
                                         style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
                                       >
-                                        <ItemIcon size={16} strokeWidth={1.5} style={{ color: item.color }} />
+                                        <ItemIcon size={18} strokeWidth={1.5} style={{ color: item.color }} />
                                       </div>
                                       <div className="flex-1 min-w-0 pt-0.5">
-                                        <span className="text-[13px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
+                                        <span className="text-sm font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
                                         <p className="text-[11px] text-text-secondary mt-0.5 leading-snug">{item.description}</p>
                                       </div>
                                     </Link>
@@ -210,28 +206,28 @@ export function Navbar() {
                       {openDropdown === 'industries' && (
                         <motion.div
                           {...dropdownAnimation}
-                          className="absolute top-full -left-4 pt-3 w-[580px] max-w-[calc(100vw-2rem)]"
+                          className="absolute top-full left-1/2 -ml-[390px] pt-3 w-[780px]"
                         >
                           <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
-                            <div className="p-4">
+                            <div className="p-5">
                               <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Industries We Serve</p>
-                              <div className="grid grid-cols-2 gap-1">
+                              <div className="grid grid-cols-3 gap-1.5">
                                 {INDUSTRY_ITEMS.map((item) => {
                                   const ItemIcon = item.icon
                                   return (
                                     <Link
                                       key={item.slug}
                                       href={`/use-cases/${item.slug}`}
-                                      className="flex items-start gap-3 px-3 py-3 rounded-xl no-underline transition-all duration-150 group hover:bg-[#F8FAFF]"
+                                      className="flex items-start gap-3 px-3 py-3.5 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03] hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5"
                                     >
                                       <div
-                                        className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0 transition-colors duration-150"
+                                        className="w-10 h-10 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
                                         style={{ background: `${item.color}10`, border: `1px solid ${item.color}18` }}
                                       >
-                                        <ItemIcon size={16} strokeWidth={1.5} style={{ color: item.color }} />
+                                        <ItemIcon size={18} strokeWidth={1.5} style={{ color: item.color }} />
                                       </div>
                                       <div className="flex-1 min-w-0 pt-0.5">
-                                        <span className="text-[13px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
+                                        <span className="text-sm font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
                                         <p className="text-[11px] text-text-secondary mt-0.5 leading-snug">{item.description}</p>
                                       </div>
                                     </Link>
@@ -261,43 +257,6 @@ export function Navbar() {
                     </AnimatePresence>
                   )}
 
-                  {/* Resources dropdown */}
-                  {dropdown === 'resources' && (
-                    <AnimatePresence>
-                      {openDropdown === 'resources' && (
-                        <motion.div
-                          {...dropdownAnimation}
-                          className="absolute top-full -left-4 pt-3 w-[260px]"
-                        >
-                          <div className="bg-white rounded-2xl border border-black/[0.06] shadow-2xl shadow-black/[0.08] overflow-hidden">
-                            <div className="p-2">
-                              {RESOURCE_ITEMS.map((item) => {
-                                const ItemIcon = item.icon
-                                return (
-                                  <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={cn(
-                                      'flex items-start gap-3 px-3 py-3 rounded-xl no-underline transition-all duration-150 group',
-                                      pathname === item.href ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF]'
-                                    )}
-                                  >
-                                    <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-primary/5 border border-primary/10">
-                                      <ItemIcon size={15} strokeWidth={1.5} className="text-primary" />
-                                    </div>
-                                    <div className="flex-1 min-w-0 pt-0.5">
-                                      <span className="text-[13px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
-                                      <p className="text-[11px] text-text-secondary mt-0.5 leading-snug">{item.description}</p>
-                                    </div>
-                                  </Link>
-                                )
-                              })}
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  )}
                 </div>
               )
             }
@@ -455,28 +414,6 @@ export function Navbar() {
                                   </>
                                 )}
 
-                                {/* Resources accordion content */}
-                                {dropdown === 'resources' && (
-                                  <>
-                                    {RESOURCE_ITEMS.map((item) => {
-                                      const ItemIcon = item.icon
-                                      return (
-                                        <Link
-                                          key={item.href}
-                                          href={item.href}
-                                          onClick={closeMobile}
-                                          className="flex items-center gap-2.5 no-underline rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
-                                        >
-                                          <ItemIcon size={14} strokeWidth={1.5} className="text-primary" />
-                                          <div>
-                                            <span className="text-sm font-medium text-text">{item.name}</span>
-                                            <span className="block text-[11px] text-text-secondary mt-0.5">{item.description}</span>
-                                          </div>
-                                        </Link>
-                                      )
-                                    })}
-                                  </>
-                                )}
                               </div>
                             </motion.div>
                           )}
