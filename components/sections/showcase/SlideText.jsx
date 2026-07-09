@@ -1,35 +1,29 @@
 import Link from 'next/link'
-import { Sparkle } from 'lucide-react'
 
-/* Centered product-name plate, shown on its own row above the side-by-side
-   text + device block. Styled as a classic framed label: thin navy border,
-   serif navy name, a four-point star on each side, with the product's own
-   icon beside the name. */
+/* Centered product-name lockup, shown on its own row above the side-by-side
+   text + device block: spaced uppercase navy name over a thin rule with a
+   blue dot centered on it. */
 export function SlideBadge({ product }) {
-  const { icon: Icon, badge } = product
+  const { badge } = product
   const NAVY = '#22396E'
+  // "JotilReceptionist" -> "Jotil Receptionist" so the uppercase reads cleanly
+  const spaced = badge.replace(/([a-z])([A-Z])/g, '$1 $2')
 
   return (
     <div className="flex justify-center">
-      <div
-        className="slide-badge inline-flex items-center gap-3 rounded-[10px] bg-white px-6 py-2.5 sm:gap-4 sm:px-8"
-        style={{
-          border: `1.5px solid ${NAVY}`,
-          boxShadow: '0 2px 10px rgba(15,17,41,0.06)',
-          color: NAVY,
-        }}
-      >
-        <Sparkle size={13} strokeWidth={1.5} fill={NAVY} aria-hidden="true" />
-        <span className="inline-flex items-center gap-2.5">
-          <Icon size={20} strokeWidth={2} />
-          <span
-            className="text-xl font-semibold tracking-wide sm:text-2xl"
-            style={{ fontFamily: "'Times New Roman', Times, Georgia, serif" }}
-          >
-            {badge}
-          </span>
+      <div className="slide-badge inline-flex flex-col items-center">
+        <span
+          className="text-center text-lg font-semibold uppercase tracking-[0.22em] sm:text-2xl"
+          style={{ color: NAVY, fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+        >
+          {spaced}
         </span>
-        <Sparkle size={13} strokeWidth={1.5} fill={NAVY} aria-hidden="true" />
+        <span aria-hidden="true" className="relative mt-2 block h-[2px] w-full" style={{ background: NAVY }}>
+          <span
+            className="absolute left-1/2 top-1/2 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: '#3B82F6', boxShadow: '0 0 0 3px #ffffff' }}
+          />
+        </span>
       </div>
     </div>
   )

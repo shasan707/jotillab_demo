@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge'
 import { CountUp } from '@/components/ui/CountUp'
 import { AtmosphericDivider } from '@/components/design'
 import { DashboardPromo } from '@/components/sections/industry/DashboardPromo'
+import { IndustryVoiceBot } from '@/components/sections/industry/IndustryVoiceBot'
 import { INDUSTRIES, INDUSTRY_SLUGS, getIndustry, getRelatedIndustries } from '@/lib/industries'
 import { products } from '@/data/products'
 import { ScenarioCard } from '@/components/sections/industry/ScenarioCard'
@@ -253,6 +254,9 @@ export default async function IndustryPage({ params }) {
       </section>
 
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
+
+      {/* ── Voice AI bot (interactive orb, before the demo) ── */}
+      <IndustryVoiceBot industryName={industry.name} />
 
       {/* ── Live Scenarios ── */}
       <section className="py-24">
