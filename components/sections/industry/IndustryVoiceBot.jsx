@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { VoiceOrb } from '@/components/ui/VoiceOrb'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
-import Logo from '@/components/ui/Logo'
+import { Mic, AudioLines } from 'lucide-react'
 
 /* Interactive AI-bot moment shown between the hero and the demo video.
-   Just the orb (with the JotilLabs logo at its center) and a short line
-   below it. The orb is purely visual (no microphone): tap or click to wake
-   it, tap again to let it rest. */
+   Just the orb (with a voice icon at its center: mic while resting,
+   waveform while awake) and a short line below it. The orb is purely
+   visual (no real microphone): tap or click to wake it, tap again to rest. */
 export function IndustryVoiceBot() {
   const [awake, setAwake] = useState(false)
 
@@ -25,9 +25,13 @@ export function IndustryVoiceBot() {
             style={{ touchAction: 'manipulation' }}
           >
             <VoiceOrb engaged={awake} />
-            {/* Logo floating at the orb's center */}
+            {/* Voice icon floating at the orb's center */}
             <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <Logo size={52} />
+              {awake ? (
+                <AudioLines size={46} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+              ) : (
+                <Mic size={46} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+              )}
             </span>
           </button>
 
