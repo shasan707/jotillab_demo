@@ -23,8 +23,8 @@ export function SlideBadge({ product }) {
         <span className="inline-flex items-center gap-2.5">
           <Icon size={20} strokeWidth={2} />
           <span
-            className="text-lg font-semibold tracking-wide sm:text-xl"
-            style={{ fontFamily: 'var(--font-fraunces), Georgia, serif' }}
+            className="text-xl font-semibold tracking-wide sm:text-2xl"
+            style={{ fontFamily: "'Times New Roman', Times, Georgia, serif" }}
           >
             {badge}
           </span>
