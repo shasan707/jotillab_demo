@@ -44,7 +44,7 @@ export default async function IndustryPage({ params }) {
   return (
     <div className="min-h-screen bg-bg">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-32 pb-20">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-20">
         <div
           className="pointer-events-none absolute -top-40 -right-30 rounded-full"
           aria-hidden="true"
@@ -134,6 +134,9 @@ export default async function IndustryPage({ params }) {
           </div>
         </div>
       </section>
+
+      {/* ── Voice AI bot (interactive orb, before the demo video) ── */}
+      <IndustryVoiceBot />
 
       {/* ── Product dashboard promo ── */}
       <section className="pb-16">
@@ -254,9 +257,6 @@ export default async function IndustryPage({ params }) {
       </section>
 
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
-
-      {/* ── Voice AI bot (interactive orb, before the demo) ── */}
-      <IndustryVoiceBot industryName={industry.name} />
 
       {/* ── Live Scenarios ── */}
       <section className="py-24">

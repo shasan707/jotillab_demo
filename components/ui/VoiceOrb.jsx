@@ -252,10 +252,12 @@ export function VoiceOrb({ className, hue = 0, engaged = false }) {
         program.uniforms.hue.value = hue
 
         // Touch/click drives the excitement: ease toward the engaged state.
+        // Kept deliberately low so the awake ripple stays smooth and subtle
+        // rather than heavily warping the ring.
         const target = engagedRef.current ? 1 : 0
-        hover += (target - hover) * Math.min(dt * 4, 1)
-        intensity += (target * 0.7 - intensity) * Math.min(dt * 4, 1)
-        if (!reduced) currentRot += dt * (baseRotationSpeed + hover * 1.4)
+        hover += (target * 0.4 - hover) * Math.min(dt * 2.5, 1)
+        intensity += (target * 0.22 - intensity) * Math.min(dt * 2.5, 1)
+        if (!reduced) currentRot += dt * (baseRotationSpeed + hover * 1.0)
 
         program.uniforms.hover.value = hover
         program.uniforms.hoverIntensity.value = intensity
