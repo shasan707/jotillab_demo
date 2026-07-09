@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle, Braces } from 'lucide-react'
+import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle, Braces, Compass, GraduationCap } from 'lucide-react'
 
 export const PRODUCT_SLIDES = [
   {
@@ -79,6 +79,32 @@ export const PRODUCT_SLIDES = [
     ],
     deviceType: 'browser',
   },
+  {
+    slug: 'jotilconsult',
+    icon: Compass,
+    badge: 'JotilConsult',
+    title: 'A clear plan, backed by your numbers.',
+    desc: 'We map where time and money leak across your operations, then hand you a prioritized roadmap of exactly what to fix first and what it is worth.',
+    features: [
+      'Operational and AI-readiness audit',
+      'Prioritized roadmap with projected ROI',
+      'Clear next steps, no jargon',
+    ],
+    deviceType: 'browser',
+  },
+  {
+    slug: 'jotileducation',
+    icon: GraduationCap,
+    badge: 'JotilEducation',
+    title: 'Hands-on training your team will actually use.',
+    desc: 'Practical, role-based sessions that get your people confident with modern tools and AI, taught on your real workflows, not slideware.',
+    features: [
+      'Role-based, hands-on sessions',
+      'Built on your actual tools and workflows',
+      'Progress tracking and certification',
+    ],
+    deviceType: 'browser',
+  },
 ]
 
 /* Human-readable "what's happening now" labels, indexed to match each screen's
@@ -117,6 +143,8 @@ export const PRODUCT_STEPS = {
     'AI explains the plan',
     'Guides them to a demo',
   ],
-  // Static mockup: a single frozen caption, no step animation.
+  // Static mockups: a single frozen caption, no step animation.
   jotildevs: ['From idea to shipped'],
+  jotilconsult: ['Know exactly what to fix first'],
+  jotileducation: ['Your team, leveled up'],
 }

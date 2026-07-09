@@ -13,6 +13,8 @@ const DEVICE_TYPE = {
   space: 'browser',
   avatar: 'browser',
   jotildevs: 'browser',
+  jotilconsult: 'browser',
+  jotileducation: 'browser',
 }
 
 /**
