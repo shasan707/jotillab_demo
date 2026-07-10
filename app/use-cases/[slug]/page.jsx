@@ -122,7 +122,7 @@ export default async function IndustryPage({ params }) {
                     <ArrowRight size={15} strokeWidth={2} />
                   </Link>
                   <Link
-                    href="/products"
+                    href="/"
                     className="inline-flex items-center no-underline text-sm font-semibold text-text px-7 py-3.5 rounded-[11px] transition-all duration-300 hover:-translate-y-0.5"
                     style={{ background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.07)' }}
                   >
@@ -345,8 +345,10 @@ export default async function IndustryPage({ params }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {recommendedProducts.map((product, i) => (
               <AnimatedSection key={product.slug} delay={i * 0.08}>
-                {/* Detail pages intentionally unlinked for now. */}
-                <div className="block group h-full">
+                <Link
+                  href={`/products/${product.slug}`}
+                  className="block no-underline group h-full"
+                >
                   <div
                     className="rounded-2xl bg-white p-7 h-full transition-all duration-300 group-hover:-translate-y-1"
                     style={{
@@ -364,11 +366,18 @@ export default async function IndustryPage({ params }) {
                       <Badge variant="blue">{product.badge}</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-text mb-2">{product.name}</h3>
-                    <p className="text-sm text-text-secondary leading-relaxed">
+                    <p className="text-sm text-text-secondary leading-relaxed mb-4">
                       {product.oneLiner}
                     </p>
+                    <span
+                      className="inline-flex items-center gap-1 text-xs font-semibold transition-all group-hover:gap-2"
+                      style={{ color: BRAND }}
+                    >
+                      Learn more
+                      <ArrowRight size={12} strokeWidth={2.2} />
+                    </span>
                   </div>
-                </div>
+                </Link>
               </AnimatedSection>
             ))}
           </div>

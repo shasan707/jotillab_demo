@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Check, Minus } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
@@ -75,10 +76,10 @@ export default function ProductsPage() {
 
           {/* Logo row */}
           <AnimatedSection delay={0.15} className="mt-10 flex items-center justify-center gap-5 flex-wrap">
-            {/* Detail pages intentionally unlinked for now. */}
             {products.map((p) => (
-              <div
+              <Link
                 key={p.slug}
+                href={`/products/${p.slug}`}
                 className="flex flex-col items-center gap-2 group"
                 aria-label={p.name}
               >
@@ -90,7 +91,7 @@ export default function ProductsPage() {
                 <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider group-hover:text-primary transition-colors duration-150">
                   {p.displayName[1]}
                 </span>
-              </div>
+              </Link>
             ))}
           </AnimatedSection>
         </div>
@@ -166,7 +167,13 @@ export default function ProductsPage() {
                           {price}
                         </span>
                       )}
-                      {/* Detail-page link intentionally removed for now. */}
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="ml-auto text-sm font-semibold text-primary inline-flex items-center gap-1 transition-all duration-150 hover:gap-2"
+                      >
+                        Explore {product.displayName[1]}
+                        <span aria-hidden>&#8594;</span>
+                      </Link>
                     </div>
                   </TiltCard>
                 </AnimatedSection>

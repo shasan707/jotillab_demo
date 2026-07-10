@@ -38,7 +38,9 @@ const INDUSTRY_ITEMS = [
 ]
 
 const NAV_LINKS = [
-  { label: 'Solutions', to: '/products', dropdown: 'solutions', icon: Layers },
+  // Solutions has no `to`: the overview /products page is intentionally
+  // unlinked (page kept in the codebase) — the trigger only opens the menu.
+  { label: 'Solutions', to: null, dropdown: 'solutions', icon: Layers },
   { label: 'Industries', to: '/use-cases', dropdown: 'industries', icon: Building2 },
   { label: 'Blog', to: '/blog', icon: BookOpen },
   { label: 'About', to: '/about', icon: Users },
@@ -138,21 +140,38 @@ export function Navbar() {
                   onMouseEnter={() => openMenu(dropdown)}
                   onMouseLeave={scheduleClose}
                 >
-                  <Link
-                    href={to}
-                    className={cn(
-                      'relative no-underline px-4 py-2 text-sm font-medium rounded-[10px] nav-link-hover transition-colors duration-200 inline-flex items-center gap-1.5',
-                      isActive ? 'text-primary' : 'text-text-secondary hover:text-text'
-                    )}
-                  >
-                    <NavIcon size={14} strokeWidth={1.5} />
-                    {label}
-                    <ChevronDown
-                      size={14}
-                      strokeWidth={1.5}
-                      className={cn('transition-transform duration-200', openDropdown === dropdown && 'rotate-180')}
-                    />
-                  </Link>
+                  {to ? (
+                    <Link
+                      href={to}
+                      className={cn(
+                        'relative no-underline px-4 py-2 text-sm font-medium rounded-[10px] nav-link-hover transition-colors duration-200 inline-flex items-center gap-1.5',
+                        isActive ? 'text-primary' : 'text-text-secondary hover:text-text'
+                      )}
+                    >
+                      <NavIcon size={14} strokeWidth={1.5} />
+                      {label}
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={1.5}
+                        className={cn('transition-transform duration-200', openDropdown === dropdown && 'rotate-180')}
+                      />
+                    </Link>
+                  ) : (
+                    <span
+                      className={cn(
+                        'relative cursor-default px-4 py-2 text-sm font-medium rounded-[10px] nav-link-hover transition-colors duration-200 inline-flex items-center gap-1.5',
+                        isActive ? 'text-primary' : 'text-text-secondary hover:text-text'
+                      )}
+                    >
+                      <NavIcon size={14} strokeWidth={1.5} />
+                      {label}
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={1.5}
+                        className={cn('transition-transform duration-200', openDropdown === dropdown && 'rotate-180')}
+                      />
+                    </span>
+                  )}
                 </div>
               )
             }
@@ -222,14 +241,16 @@ export function Navbar() {
                 <div className="p-6">
                   <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Solutions</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {/* Detail pages intentionally unlinked for now (pages kept
-                        in the codebase) — items are informational. */}
                     {PRODUCT_ITEMS.map((item) => {
                       const ItemIcon = item.icon
                       return (
-                        <div
+                        <Link
                           key={item.slug}
-                          className="flex items-start gap-3.5 px-4 py-4 rounded-xl transition-all duration-150 group hover:scale-[1.03] hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5"
+                          href={`/products/${item.slug}`}
+                          className={cn(
+                            'flex items-start gap-3.5 px-4 py-4 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03]',
+                            pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5'
+                          )}
                         >
                           <div
                             className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
@@ -241,19 +262,13 @@ export function Navbar() {
                             <span className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
                             <p className="text-xs text-text-secondary mt-0.5 leading-snug">{item.description}</p>
                           </div>
-                        </div>
+                        </Link>
                       )
                     })}
                   </div>
                 </div>
-                <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-between">
-                  <Link
-                    href="/products"
-                    className="text-xs font-semibold text-primary no-underline inline-flex items-center gap-1 hover:gap-2 transition-all"
-                  >
-                    See all solutions
-                    <ArrowRight size={12} strokeWidth={2} />
-                  </Link>
+                {/* Overview /products page intentionally unlinked (page kept). */}
+                <div className="border-t border-black/[0.05] bg-[#FAFBFD] px-5 py-3 flex items-center justify-end">
                   <Link
                     href="/contact"
                     className="text-xs font-semibold text-white no-underline inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark px-3.5 py-1.5 rounded-lg transition-colors"
@@ -378,26 +393,21 @@ export function Navbar() {
                               className="overflow-hidden"
                             >
                               <div className="pl-4 py-1 space-y-0.5">
-                                {/* Solutions accordion content (detail pages
-                                    intentionally unlinked for now) */}
+                                {/* Solutions accordion content (overview page
+                                    intentionally unlinked) */}
                                 {dropdown === 'solutions' && (
                                   <>
                                     {PRODUCT_ITEMS.map((item) => (
-                                      <div
+                                      <Link
                                         key={item.slug}
-                                        className="block rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
+                                        href={`/products/${item.slug}`}
+                                        onClick={closeMobile}
+                                        className="block no-underline rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
                                       >
                                         <span className="text-sm font-medium text-text">{item.name}</span>
                                         <span className="block text-[11px] text-text-secondary mt-0.5">{item.description}</span>
-                                      </div>
+                                      </Link>
                                     ))}
-                                    <Link
-                                      href="/products"
-                                      onClick={closeMobile}
-                                      className="block no-underline rounded-lg px-3 py-2 text-sm text-primary font-medium"
-                                    >
-                                      View all solutions
-                                    </Link>
                                   </>
                                 )}
 

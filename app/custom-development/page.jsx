@@ -237,7 +237,7 @@ export default function CustomDevelopmentPage() {
                   Tell Us About Your Project
                 </Link>
                 <Link
-                  href="/products"
+                  href="/"
                   className="inline-flex items-center no-underline text-sm font-semibold text-text px-7 py-3.5 rounded-[11px] transition-all duration-300 hover:-translate-y-0.5"
                   style={{
                     background: 'rgba(0,0,0,0.04)',

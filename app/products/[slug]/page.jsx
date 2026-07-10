@@ -361,7 +361,7 @@ export default async function ProductPage({ params }) {
               <Button href="/contact" variant="primary" size="lg">
                 Book a Demo
               </Button>
-              <Button href="/products" variant="outline" size="lg">
+              <Button href="/" variant="outline" size="lg">
                 Explore the Platform
               </Button>
             </div>

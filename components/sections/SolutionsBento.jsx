@@ -144,9 +144,9 @@ function BentoTile({ tile }) {
 
   return (
     <TiltCard maxTilt={4} className="h-full rounded-[20px]">
-      {/* Detail pages intentionally unlinked for now (kept in the codebase). */}
-      <div
-        className="card-premium btn-shine group relative flex h-full flex-col overflow-hidden"
+      <Link
+        href={`/products/${slug}`}
+        className="card-premium btn-shine group relative flex h-full flex-col overflow-hidden no-underline"
         style={{ padding: size === 'large' ? '32px' : '24px' }}
         {...spot}
       >
@@ -250,7 +250,7 @@ function BentoTile({ tile }) {
           </span>
         </div>
       )}
-      </div>
+      </Link>
     </TiltCard>
   )
 }
@@ -261,7 +261,7 @@ function CtaTile() {
   return (
     <TiltCard maxTilt={4} className="h-full rounded-[20px]">
       <Link
-        href="/products"
+        href="/contact"
         className="group relative flex h-full min-h-[150px] flex-col justify-between overflow-hidden rounded-[20px] p-7 no-underline"
         style={{ background: 'linear-gradient(135deg, #3859a8 0%, #2a4688 55%, #22396E 100%)' }}
         {...spot}
@@ -276,7 +276,7 @@ function CtaTile() {
           Not sure where to start? See how the pieces fit together.
         </p>
         <span className="relative inline-flex items-center gap-2 text-white font-semibold text-[15px]" style={{ fontFamily: 'var(--font-display)' }}>
-          Explore all solutions
+          Talk to us
           <ArrowRight size={16} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-1" />
         </span>
       </Link>

@@ -3,10 +3,9 @@ import Logo from '@/components/ui/Logo'
 import { products } from '@/data/products'
 import { brand, copyrightLine } from '@/lib/brand'
 
-// Detail pages intentionally unlinked for now (kept in the codebase): items
-// without a `to` render as plain text.
 const PRODUCT_LINKS = products.map((p) => ({
   label: p.shortName,
+  to: `/products/${p.slug}`,
 }))
 
 const COMPANY_LINKS = [
