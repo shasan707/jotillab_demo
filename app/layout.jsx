@@ -1,5 +1,5 @@
 import './globals.css'
-import { Montserrat_Alternates, Inter, JetBrains_Mono, Fraunces, Russo_One, Roboto } from 'next/font/google'
+import { Inter, JetBrains_Mono, Fraunces, Russo_One, Roboto } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -8,13 +8,6 @@ import { Footer } from '@/components/layout/Footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/layout/JsonLd'
 import { DeferredWidgets } from '@/components/layout/DeferredWidgets'
 import { BrandBackgroundGate, SmoothScroll } from '@/components/design'
-
-const montserratAlternates = Montserrat_Alternates({
-  subsets: ['latin'],
-  variable: '--font-montserrat-alternates',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
-})
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,15 +38,15 @@ const russoOne = Russo_One({
   weight: '400',
 })
 
-// Professional neutral display used for homepage section headings (not the hero).
-// Headings only ever render bold (700) and extrabold (800), so we load exactly
-// those two weights — no unused files, and extrabold renders natively instead
-// of being synthesized from 900.
+// The site's single display face: every heading and heading-styled element
+// uses Roboto (--font-display / --font-sans both resolve to it), EXCEPT the
+// hero headline (Russo One) and Fraunces serif accents. Mid weights are
+// loaded because styled UI text uses medium/semibold, not just bold.
 const roboto = Roboto({
   subsets: ['latin'],
   variable: '--font-roboto',
   display: 'swap',
-  weight: ['700', '800'],
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata = {
@@ -115,7 +108,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${montserratAlternates.variable} ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${russoOne.variable} ${roboto.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${russoOne.variable} ${roboto.variable}`}
     >
       <head>
         <OrganizationJsonLd />

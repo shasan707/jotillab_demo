@@ -75,10 +75,11 @@ tests/                  — Playwright visual specs + snapshots
 ## Design System
 
 ### Fonts
-- Headings/Display: Montserrat Alternates (--font-montserrat-alternates, exposed as --font-display + --font-sans)
-- Body: Inter (--font-inter, exposed as --font-body)
+- Headings/Display: Roboto (--font-roboto; --font-display and --font-sans both resolve to it, and h1-h6 are forced to it in globals.css). ONE display face site-wide.
+- Hero headline only: Russo One (--font-russo, .hero-display)
+- Body: Inter (--font-inter, exposed as --font-body, body default)
 - Mono: JetBrains Mono (--font-jetbrains, exposed as --font-mono)
-- Serif accent: Fraunces (--font-fraunces, used via SerifAccent component)
+- Serif accent: Fraunces (--font-fraunces, intentional accent words/SerifAccent only)
 
 ### Color Palette (single source of truth: lib/brand.js)
 - Primary: #3859a8 (royal blue)

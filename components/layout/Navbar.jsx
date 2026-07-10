@@ -40,7 +40,7 @@ const INDUSTRY_ITEMS = [
 const NAV_LINKS = [
   { label: 'Solutions', to: '/products', dropdown: 'solutions', icon: Layers },
   { label: 'Industries', to: '/use-cases', dropdown: 'industries', icon: Building2 },
-  { label: 'Resources', to: '/blog', icon: BookOpen },
+  { label: 'Blog', to: '/blog', icon: BookOpen },
   { label: 'About', to: '/about', icon: Users },
   { label: 'Contact', to: '/contact', icon: Mail },
 ]

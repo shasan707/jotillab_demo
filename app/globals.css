@@ -2,9 +2,12 @@
 
 @theme {
   /* Fonts */
-  --font-display: var(--font-montserrat-alternates), "Montserrat Alternates", system-ui, -apple-system, sans-serif;
+  /* Display/sans map to Roboto so EVERY heading-styled element (real h tags
+     and styled <p>/<span>) shares one type system. Hero keeps Russo One via
+     --font-russo; Fraunces stays the intentional serif accent. */
+  --font-display: var(--font-roboto), Roboto, Arial, sans-serif;
   /* font-sans aliases font-display today; kept separate so body/UI can diverge later */
-  --font-sans: var(--font-montserrat-alternates), "Montserrat Alternates", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-roboto), Roboto, Arial, sans-serif;
   --font-body: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
   /* Editorial serif accent - use sparingly for pull-quotes, emphasis, numerical displays */
