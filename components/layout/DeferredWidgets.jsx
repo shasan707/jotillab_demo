@@ -14,12 +14,17 @@ const ScrollToTop = dynamic(
   () => import('@/components/layout/ScrollToTop').then((m) => m.ScrollToTop),
   { ssr: false },
 )
+const VoiceFloatButton = dynamic(
+  () => import('@/components/widgets/VoiceFloatButton').then((m) => m.VoiceFloatButton),
+  { ssr: false },
+)
 
 export function DeferredWidgets() {
   return (
     <>
       <ScrollToTop />
       <AIWidget />
+      <VoiceFloatButton />
     </>
   )
 }

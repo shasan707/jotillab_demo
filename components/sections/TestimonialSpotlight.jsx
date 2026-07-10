@@ -1,6 +1,6 @@
 'use client'
 
-import { Quote } from 'lucide-react'
+import { Quote, UserRound } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { TiltCard } from '@/components/design'
 
@@ -18,12 +18,11 @@ export function TestimonialSpotlight() {
     <section className="cv-auto py-24 bg-[#E9EEF7]">
       <div className="max-w-3xl mx-auto px-6">
         <AnimatedSection className="text-center mb-12">
-          <p className="badge mx-auto mb-4 w-fit">What customers say</p>
           <h2
             className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Trusted to answer, <span className="text-gradient">every time</span>
+            Happy <span className="text-gradient">Clients</span>
           </h2>
         </AnimatedSection>
 
@@ -38,10 +37,10 @@ export function TestimonialSpotlight() {
             </blockquote>
             <div className="flex items-center gap-4">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-sm"
+                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white"
                 style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
               >
-                {TESTIMONIAL.initials}
+                <UserRound size={24} strokeWidth={1.5} />
               </div>
               <div>
                 <p className="font-bold text-text m-0">{TESTIMONIAL.name}</p>

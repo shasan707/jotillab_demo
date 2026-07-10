@@ -625,7 +625,7 @@ export const products = [
     name: 'JotilDevs',
     displayName: ['Jotil', 'Devs'],
     shortName: 'Devs',
-    icon: 'Braces',
+    icon: 'CodeXml',
     iconColor: '#f97316',
     oneLiner: 'Custom software built around how your business already works.',
     tagline: 'Your business. Your software. Built to fit.',
@@ -671,7 +671,7 @@ export const products = [
       },
     ],
     features: [
-      { icon: 'Braces', title: 'Built to Fit', description: 'Software shaped around your process, not the other way around' },
+      { icon: 'CodeXml', title: 'Built to Fit', description: 'Software shaped around your process, not the other way around' },
       { icon: 'Layers', title: 'Apps and Tools', description: 'Customer-facing apps and internal tools from one team' },
       { icon: 'Plug', title: 'Everything Connected', description: 'Your existing systems finally talk to each other' },
       { icon: 'Rocket', title: 'Fast Delivery', description: 'Working software in weeks, with progress you can see' },

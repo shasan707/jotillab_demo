@@ -345,10 +345,8 @@ export default async function IndustryPage({ params }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {recommendedProducts.map((product, i) => (
               <AnimatedSection key={product.slug} delay={i * 0.08}>
-                <Link
-                  href={`/products/${product.slug}`}
-                  className="block no-underline group h-full"
-                >
+                {/* Detail pages intentionally unlinked for now. */}
+                <div className="block group h-full">
                   <div
                     className="rounded-2xl bg-white p-7 h-full transition-all duration-300 group-hover:-translate-y-1"
                     style={{
@@ -366,18 +364,11 @@ export default async function IndustryPage({ params }) {
                       <Badge variant="blue">{product.badge}</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-text mb-2">{product.name}</h3>
-                    <p className="text-sm text-text-secondary leading-relaxed mb-4">
+                    <p className="text-sm text-text-secondary leading-relaxed">
                       {product.oneLiner}
                     </p>
-                    <span
-                      className="inline-flex items-center gap-1 text-xs font-semibold transition-all group-hover:gap-2"
-                      style={{ color: BRAND }}
-                    >
-                      Learn more
-                      <ArrowRight size={12} strokeWidth={2.2} />
-                    </span>
                   </div>
-                </Link>
+                </div>
               </AnimatedSection>
             ))}
           </div>

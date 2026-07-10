@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ArrowUpRight, Phone, MessageCircle, TrendingUp, LayoutGrid, GitBranch, UserCircle, Braces, Compass, GraduationCap, Check } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Phone, MessageCircle, TrendingUp, LayoutGrid, GitBranch, UserCircle, CodeXml, Compass, GraduationCap, Check } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Spotlight, useSpotlight } from '@/components/design/Spotlight'
 import { TiltCard } from '@/components/design'
@@ -62,7 +62,7 @@ const TILES = [
   },
   {
     slug: 'jotildevs',
-    icon: Braces,
+    icon: CodeXml,
     color: '#3B82F6',
     title: 'Software that fits',
     copy: 'Custom apps and tools built around how your business already works, not the other way around.',
@@ -93,19 +93,12 @@ export function SolutionsBento() {
 
         {/* Heading */}
         <AnimatedSection className="text-center mb-14 max-w-2xl mx-auto">
-          <p className="badge mx-auto mb-4 w-fit">Solutions</p>
           <h2
             className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.045em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            Nine ways to{' '}
-            <em
-              className="text-gradient not-italic"
-              style={{ fontFamily: 'var(--font-fraunces), Georgia, serif', fontStyle: 'italic', fontWeight: 560, letterSpacing: 'normal', padding: '0 0.12em' }}
-            >
-              never miss
-            </em>{' '}
-            a customer
+            One platform for every{' '}
+            <span className="text-gradient">customer conversation</span>
           </h2>
           <p
             className="text-base text-text-secondary leading-relaxed"
@@ -151,9 +144,9 @@ function BentoTile({ tile }) {
 
   return (
     <TiltCard maxTilt={4} className="h-full rounded-[20px]">
-      <Link
-        href={`/products/${slug}`}
-        className="card-premium btn-shine group relative flex h-full flex-col overflow-hidden no-underline"
+      {/* Detail pages intentionally unlinked for now (kept in the codebase). */}
+      <div
+        className="card-premium btn-shine group relative flex h-full flex-col overflow-hidden"
         style={{ padding: size === 'large' ? '32px' : '24px' }}
         {...spot}
       >
@@ -257,7 +250,7 @@ function BentoTile({ tile }) {
           </span>
         </div>
       )}
-      </Link>
+      </div>
     </TiltCard>
   )
 }

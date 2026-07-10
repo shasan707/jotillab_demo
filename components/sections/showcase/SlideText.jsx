@@ -1,27 +1,34 @@
-import Link from 'next/link'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 
 /* Centered product-name lockup, shown on its own row above the side-by-side
-   text + device block: spaced uppercase navy name over a thin rule with a
-   blue dot centered on it. */
+   text + device block: the product's own logo, then the one-word name in two
+   tones ("Jotil" navy + product part royal blue — the same pair on every
+   product), over a thin rule with a blue dot centered on it. */
 export function SlideBadge({ product }) {
-  const { badge } = product
+  const { slug, badge } = product
   const NAVY = '#22396E'
-  // "JotilReceptionist" -> "Jotil Receptionist" so the uppercase reads cleanly
-  const spaced = badge.replace(/([a-z])([A-Z])/g, '$1 $2')
+  const BLUE = '#3859a8'
+  // Split "JotilReceptionist" into ["Jotil", "Receptionist"] for the two tones
+  // (no space is rendered between them).
+  const rest = badge.replace(/^Jotil/, '')
 
   return (
     <div className="flex justify-center">
       <div className="slide-badge inline-flex flex-col items-center">
-        <span
-          className="text-center text-lg font-semibold uppercase tracking-[0.22em] sm:text-2xl"
-          style={{ color: NAVY, fontFamily: 'var(--font-inter), Inter, sans-serif' }}
-        >
-          {spaced}
-        </span>
-        <span aria-hidden="true" className="relative mt-2 block h-[2px] w-full" style={{ background: NAVY }}>
+        <span className="inline-flex items-center gap-3">
+          <ProductGlyph slug={slug} size={34} />
           <span
-            className="absolute left-1/2 top-1/2 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{ background: '#3B82F6', boxShadow: '0 0 0 3px #ffffff' }}
+            className="text-center text-lg font-semibold uppercase tracking-[0.18em] sm:text-2xl"
+            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+          >
+            <span style={{ color: NAVY }}>Jotil</span>
+            <span style={{ color: BLUE }}>{rest}</span>
+          </span>
+        </span>
+        <span aria-hidden="true" className="relative mt-2 block h-[1.5px] w-full" style={{ background: NAVY }}>
+          <span
+            className="absolute left-1/2 top-1/2 h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: '#3B82F6', boxShadow: '0 0 0 2px #ffffff' }}
           />
         </span>
       </div>
@@ -33,7 +40,7 @@ export function SlideBadge({ product }) {
    description, outcome bullets, and CTA. The product-name badge lives in
    SlideBadge above the row, so it is not repeated here. */
 export function SlideText({ product }) {
-  const { slug, title, desc, features } = product
+  const { title, desc, features } = product
 
   return (
     <div className="slide-text max-w-[460px]">
@@ -63,12 +70,8 @@ export function SlideText({ product }) {
         ))}
       </ul>
 
-      <Link
-        href={`/products/${slug}`}
-        className="slide-cta inline-flex items-center gap-2 px-7 py-3 rounded-[10px] text-sm font-medium text-white no-underline btn-gradient"
-      >
-        Learn more
-      </Link>
+      {/* Detail pages are intentionally unlinked for now (pages kept in the
+          codebase); re-add a Learn more CTA here when they go live. */}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, FileCode2, Rocket } from 'lucide-react'
+import { Check, CodeXml, Rocket } from 'lucide-react'
 
 /* JotilDevs — static split builder view. One clean frozen moment: a short
    config definition on the left, the shipped result rendered live on the
@@ -39,7 +39,7 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
             className="flex h-6 w-6 items-center justify-center rounded-md"
             style={{ background: 'rgba(56,89,168,0.10)', border: '1px solid rgba(56,89,168,0.18)' }}
           >
-            <FileCode2 size={13} strokeWidth={1.8} style={{ color: BRAND }} />
+            <CodeXml size={13} strokeWidth={1.8} style={{ color: BRAND }} />
           </span>
           <span className="text-[13px] font-semibold text-text">booking-widget</span>
           <span className="text-[11px] text-text-secondary" style={MONO}>main</span>

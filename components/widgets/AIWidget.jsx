@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { MessageSquare, X, Mic, User, Send } from 'lucide-react'
 
@@ -151,6 +151,17 @@ export function AIWidget() {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState('chat')
   const reduced = useReducedMotion()
+
+  // Other floating triggers (e.g. the voice button at bottom-left) open the
+  // widget on a specific tab via this window event.
+  useEffect(() => {
+    const onOpen = (e) => {
+      setTab(e.detail?.tab || 'chat')
+      setOpen(true)
+    }
+    window.addEventListener('jotil:open-widget', onOpen)
+    return () => window.removeEventListener('jotil:open-widget', onOpen)
+  }, [])
 
   const Panel = PANELS[tab]
 

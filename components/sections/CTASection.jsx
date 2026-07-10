@@ -152,7 +152,7 @@ export function CTASection() {
 
             {/* Secondary: frosted */}
             <Link
-              href="/products/receptionist"
+              href="/products"
               className="inline-flex items-center gap-2 no-underline text-sm font-semibold text-white rounded-[11px] px-6 py-3.5 transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               style={{
                 fontFamily: 'var(--font-display)',

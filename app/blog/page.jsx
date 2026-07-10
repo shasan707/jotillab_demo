@@ -40,7 +40,7 @@ function FeaturedPost({ post }) {
           </div>
           {/* Top-right label */}
           <div className="absolute left-5 top-5">
-            <span className="rounded-full bg-primary px-3 py-1 text-xs font-600 tracking-wide text-white">
+            <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold tracking-wide text-white">
               Featured
             </span>
           </div>
@@ -50,7 +50,7 @@ function FeaturedPost({ post }) {
           {/* Category + reading time */}
           <div className="mb-4 flex items-center gap-3">
             <span
-              className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-600 ${categoryClass(post.category)}`}
+              className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-semibold ${categoryClass(post.category)}`}
             >
               {post.category}
             </span>
@@ -61,7 +61,7 @@ function FeaturedPost({ post }) {
           </div>
 
           {/* Title */}
-          <h2 className="mb-3 font-[var(--font-sans)] text-2xl font-800 leading-tight tracking-[-0.02em] text-text transition-colors group-hover:text-primary sm:text-3xl">
+          <h2 className="mb-3 font-[var(--font-sans)] text-2xl font-extrabold leading-tight tracking-[-0.02em] text-text transition-colors group-hover:text-primary sm:text-3xl">
             {post.title}
           </h2>
 
@@ -73,18 +73,18 @@ function FeaturedPost({ post }) {
           {/* Author + date + CTA */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-700 text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white">
                 {post.author?.charAt(0) ?? 'J'}
               </div>
               <div>
-                <p className="text-sm font-600 text-text">{post.author}</p>
+                <p className="text-sm font-semibold text-text">{post.author}</p>
                 <p className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)]">
                   <Calendar className="h-3 w-3" strokeWidth={1.5} />
                   {formatDate(post.date)}
                 </p>
               </div>
             </div>
-            <span className="flex items-center gap-1.5 text-sm font-600 text-primary transition-all group-hover:gap-2.5">
+            <span className="flex items-center gap-1.5 text-sm font-semibold text-primary transition-all group-hover:gap-2.5">
               Read article
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </span>
@@ -112,7 +112,7 @@ function PostCard({ post }) {
           {/* Category + reading time */}
           <div className="mb-3 flex items-center gap-2.5">
             <span
-              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-600 ${categoryClass(post.category)}`}
+              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${categoryClass(post.category)}`}
             >
               {post.category}
             </span>
@@ -123,7 +123,7 @@ function PostCard({ post }) {
           </div>
 
           {/* Title */}
-          <h3 className="mb-2 font-[var(--font-sans)] text-[17px] font-700 leading-snug tracking-[-0.02em] text-text transition-colors group-hover:text-primary">
+          <h3 className="mb-2 font-[var(--font-sans)] text-[17px] font-bold leading-snug tracking-[-0.02em] text-text transition-colors group-hover:text-primary">
             {post.title}
           </h3>
 
@@ -134,11 +134,11 @@ function PostCard({ post }) {
 
           {/* Author + date */}
           <div className="flex items-center gap-2 border-t border-black/[0.05] pt-4">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-[11px] font-700 text-white">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-[11px] font-bold text-white">
               {post.author?.charAt(0) ?? 'J'}
             </div>
             <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
-              <p className="truncate text-xs font-600 text-text">{post.author}</p>
+              <p className="truncate text-xs font-semibold text-text">{post.author}</p>
               <p className="flex shrink-0 items-center gap-1 text-[11px] text-[var(--color-text-secondary)]">
                 <Calendar className="h-3 w-3" strokeWidth={1.5} />
                 {formatDate(post.date)}
@@ -167,9 +167,9 @@ export default function BlogPage() {
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
               <BookOpen className="h-3.5 w-3.5 text-primary" strokeWidth={1.5} />
-              <span className="text-xs font-600 text-primary">JotilLabs Blog</span>
+              <span className="text-xs font-semibold text-primary">JotilLabs Blog</span>
             </div>
-            <h1 className="headline-shadow mb-4 font-[var(--font-sans)] text-4xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-5xl">
+            <h1 className="headline-shadow mb-4 font-[var(--font-sans)] text-4xl font-extrabold leading-tight tracking-[-0.03em] text-text sm:text-5xl">
               Insights &amp;{' '}
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Resources
@@ -194,7 +194,7 @@ export default function BlogPage() {
             {/* Featured post */}
             {featured && (
               <div className="mb-16">
-                <p className="mb-6 text-xs font-700 uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+                <p className="mb-6 text-xs font-bold uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
                   Featured Article
                 </p>
                 <FeaturedPost post={featured} />
@@ -204,7 +204,7 @@ export default function BlogPage() {
             {/* Posts grid */}
             {rest.length > 0 && (
               <>
-                <p className="mb-8 text-xs font-700 uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+                <p className="mb-8 text-xs font-bold uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
                   More Articles
                 </p>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -13,7 +13,7 @@ export function IndustryVoiceBot() {
   const [awake, setAwake] = useState(false)
 
   return (
-    <section className="py-10">
+    <section className="py-8">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <AnimatedSection>
           <button
@@ -21,16 +21,16 @@ export function IndustryVoiceBot() {
             onClick={() => setAwake((v) => !v)}
             aria-pressed={awake}
             aria-label={awake ? 'Let the assistant rest' : 'Wake the assistant'}
-            className="relative mx-auto block h-[240px] w-[240px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4 sm:h-[300px] sm:w-[300px]"
+            className="relative mx-auto block h-[150px] w-[150px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4 sm:h-[190px] sm:w-[190px]"
             style={{ touchAction: 'manipulation' }}
           >
             <VoiceOrb engaged={awake} />
             {/* Voice icon floating at the orb's center */}
             <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
               {awake ? (
-                <AudioLines size={46} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+                <AudioLines size={28} strokeWidth={1.5} style={{ color: '#3859a8' }} />
               ) : (
-                <Mic size={46} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+                <Mic size={28} strokeWidth={1.5} style={{ color: '#3859a8' }} />
               )}
             </span>
           </button>

@@ -222,16 +222,14 @@ export function Navbar() {
                 <div className="p-6">
                   <p className="text-[10px] font-semibold text-text-secondary uppercase tracking-widest px-2 mb-3">Solutions</p>
                   <div className="grid grid-cols-3 gap-2">
+                    {/* Detail pages intentionally unlinked for now (pages kept
+                        in the codebase) — items are informational. */}
                     {PRODUCT_ITEMS.map((item) => {
                       const ItemIcon = item.icon
                       return (
-                        <Link
+                        <div
                           key={item.slug}
-                          href={`/products/${item.slug}`}
-                          className={cn(
-                            'flex items-start gap-3.5 px-4 py-4 rounded-xl no-underline transition-all duration-150 group hover:scale-[1.03]',
-                            pathname === `/products/${item.slug}` ? 'bg-bg-alt' : 'hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5'
-                          )}
+                          className="flex items-start gap-3.5 px-4 py-4 rounded-xl transition-all duration-150 group hover:scale-[1.03] hover:bg-[#F8FAFF] hover:shadow-md hover:shadow-primary/5"
                         >
                           <div
                             className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-110"
@@ -243,7 +241,7 @@ export function Navbar() {
                             <span className="text-[15px] font-semibold text-text group-hover:text-primary transition-colors">{item.name}</span>
                             <p className="text-xs text-text-secondary mt-0.5 leading-snug">{item.description}</p>
                           </div>
-                        </Link>
+                        </div>
                       )
                     })}
                   </div>
@@ -380,19 +378,18 @@ export function Navbar() {
                               className="overflow-hidden"
                             >
                               <div className="pl-4 py-1 space-y-0.5">
-                                {/* Solutions accordion content */}
+                                {/* Solutions accordion content (detail pages
+                                    intentionally unlinked for now) */}
                                 {dropdown === 'solutions' && (
                                   <>
                                     {PRODUCT_ITEMS.map((item) => (
-                                      <Link
+                                      <div
                                         key={item.slug}
-                                        href={`/products/${item.slug}`}
-                                        onClick={closeMobile}
-                                        className="block no-underline rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
+                                        className="block rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
                                       >
                                         <span className="text-sm font-medium text-text">{item.name}</span>
                                         <span className="block text-[11px] text-text-secondary mt-0.5">{item.description}</span>
-                                      </Link>
+                                      </div>
                                     ))}
                                     <Link
                                       href="/products"

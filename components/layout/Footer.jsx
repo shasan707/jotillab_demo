@@ -3,9 +3,10 @@ import Logo from '@/components/ui/Logo'
 import { products } from '@/data/products'
 import { brand, copyrightLine } from '@/lib/brand'
 
+// Detail pages intentionally unlinked for now (kept in the codebase): items
+// without a `to` render as plain text.
 const PRODUCT_LINKS = products.map((p) => ({
   label: p.shortName,
-  to: `/products/${p.slug}`,
 }))
 
 const COMPANY_LINKS = [
@@ -32,12 +33,16 @@ function FooterColumn({ title, links }) {
       <ul className="space-y-3 list-none p-0 m-0">
         {links.map(({ label, to }) => (
           <li key={label}>
-            <Link
-              href={to}
-              className="text-sm text-slate-400 no-underline hover:text-white transition-colors duration-200"
-            >
-              {label}
-            </Link>
+            {to ? (
+              <Link
+                href={to}
+                className="text-sm text-slate-400 no-underline hover:text-white transition-colors duration-200"
+              >
+                {label}
+              </Link>
+            ) : (
+              <span className="text-sm text-slate-400">{label}</span>
+            )}
           </li>
         ))}
       </ul>

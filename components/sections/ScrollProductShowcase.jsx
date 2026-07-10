@@ -6,7 +6,6 @@ import { PRODUCT_SLIDES, PRODUCT_STEPS } from './showcase/data'
 import { SlideBadge, SlideText } from './showcase/SlideText'
 import { SlideDevice } from './showcase/SlideDevice'
 import { DeviceCaption } from './showcase/DeviceCaption'
-import { FlowCard } from './showcase/FlowCard'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
 /* Product showcase: each product is a normal in-flow row (text + device side by
@@ -181,9 +180,6 @@ export function ScrollProductShowcase() {
         ))}
       </div>
 
-      <div style={{ backgroundColor: ALT }} className="pb-12">
-        <FlowCard />
-      </div>
     </section>
   )
 }

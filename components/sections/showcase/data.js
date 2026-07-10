@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle, Braces, Compass, GraduationCap } from 'lucide-react'
+import { Phone, MessageCircle, TrendingUp, LayoutGrid, UserCircle, CodeXml, Compass, GraduationCap } from 'lucide-react'
 
 export const PRODUCT_SLIDES = [
   {
@@ -68,7 +68,7 @@ export const PRODUCT_SLIDES = [
   },
   {
     slug: 'jotildevs',
-    icon: Braces,
+    icon: CodeXml,
     badge: 'JotilDevs',
     title: 'Custom software, built around your business.',
     desc: 'We design and build the apps, tools, and integrations your team actually needs, shipped fast and made to fit how you already work.',
