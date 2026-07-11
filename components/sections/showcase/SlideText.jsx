@@ -27,7 +27,11 @@ export function SlideBadge({ product }) {
             <span style={{ color: NAVY }}>Jotil</span>
             <span style={{ color: BLUE }}>{rest}</span>
           </span>
-          <span aria-hidden="true" className="relative mt-1.5 block h-[1.5px] w-full" style={{ background: NAVY }}>
+          {/* Rule tapers from thick at the center to hairline at both ends */}
+          <span aria-hidden="true" className="relative mt-1.5 block h-[5px] w-full">
+            <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 6" preserveAspectRatio="none">
+              <path d="M0 3 Q 50 0.4 100 3 Q 50 5.6 0 3 Z" fill={NAVY} />
+            </svg>
             <span
               className="absolute left-1/2 top-1/2 h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{ background: '#3B82F6', boxShadow: '0 0 0 2px #ffffff' }}

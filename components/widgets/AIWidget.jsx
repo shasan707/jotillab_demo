@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { MessageSquare, X, Mic, User, Send, Volume2 } from 'lucide-react'
+import { MessageSquare, X, Send } from 'lucide-react'
 
-const TABS = [
-  { key: 'chat', label: 'Chat', icon: MessageSquare },
-  { key: 'voice', label: 'Voice', icon: Mic },
-  { key: 'avatar', label: 'Avatar', icon: User },
-]
+/* Chat-only widget (bottom-right). The live voice assistant has its own
+   widget at bottom-left (VoiceWidget). */
 
 function ChatPanel() {
   const [input, setInput] = useState('')
@@ -70,178 +67,9 @@ function ChatPanel() {
   )
 }
 
-function VoicePanel() {
-  // Live Retell voice call. The browser only ever sees a short-lived access
-  // token from our own API route; the API key stays on the server.
-  const [status, setStatus] = useState('idle') // idle | connecting | live | error
-  const [agentTalking, setAgentTalking] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const clientRef = useRef(null)
-
-  useEffect(() => {
-    return () => {
-      try { clientRef.current?.stopCall() } catch {}
-      clientRef.current = null
-    }
-  }, [])
-
-  async function startCall() {
-    setStatus('connecting')
-    setErrorMessage('')
-    try {
-      const res = await fetch('/api/retell/web-call', { method: 'POST' })
-      const data = await res.json()
-      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not start the call.')
-
-      // Load the SDK only when a call actually starts.
-      const { RetellWebClient } = await import('retell-client-js-sdk')
-      const client = new RetellWebClient()
-      clientRef.current = client
-
-      client.on('call_started', () => setStatus('live'))
-      client.on('call_ended', () => {
-        setStatus('idle')
-        setAgentTalking(false)
-        clientRef.current = null
-      })
-      client.on('agent_start_talking', () => setAgentTalking(true))
-      client.on('agent_stop_talking', () => setAgentTalking(false))
-      client.on('error', () => {
-        try { client.stopCall() } catch {}
-        clientRef.current = null
-        setStatus('error')
-        setAgentTalking(false)
-        setErrorMessage('The call dropped. Please try again.')
-      })
-
-      await client.startCall({ accessToken: data.accessToken })
-    } catch (err) {
-      clientRef.current = null
-      setStatus('error')
-      setErrorMessage(err.message || 'Could not start the call.')
-    }
-  }
-
-  function endCall() {
-    try { clientRef.current?.stopCall() } catch {}
-    clientRef.current = null
-    setStatus('idle')
-    setAgentTalking(false)
-  }
-
-  const live = status === 'live'
-  const connecting = status === 'connecting'
-
-  return (
-    <div className="flex flex-col items-center justify-center h-full gap-5 p-6">
-      <button
-        onClick={live || connecting ? endCall : startCall}
-        aria-label={live ? 'End the call' : connecting ? 'Cancel' : 'Start a voice call'}
-        className="relative w-20 h-20 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 disabled:opacity-60"
-        style={{
-          background: live
-            ? 'linear-gradient(135deg, #22396E, #3859a8)'
-            : 'linear-gradient(135deg, #3859a8, #2a4688)',
-          boxShadow: live
-            ? '0 0 40px rgba(56, 89, 168,0.4)'
-            : '0 8px 24px rgba(56, 89, 168,0.3)',
-        }}
-      >
-        {(live || connecting) && (
-          <span
-            className="absolute inset-0 rounded-full animate-ping"
-            style={{ background: 'rgba(56, 89, 168,0.2)' }}
-          />
-        )}
-        {connecting ? (
-          <span className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-        ) : live ? (
-          agentTalking ? <Volume2 size={28} color="#fff" strokeWidth={1.5} /> : <Mic size={28} color="#fff" strokeWidth={1.5} />
-        ) : (
-          <Mic size={28} color="#fff" strokeWidth={1.5} />
-        )}
-      </button>
-
-      <p className="text-sm font-medium text-text-secondary">
-        {connecting
-          ? 'Connecting...'
-          : live
-            ? agentTalking
-              ? 'Jotil AI is speaking. Tap to end.'
-              : 'Live. Speak whenever you like.'
-            : 'Tap to talk to our AI'}
-      </p>
-
-      {status === 'error' && (
-        <p className="text-xs text-red-500 text-center max-w-[220px]">{errorMessage}</p>
-      )}
-
-      <p className="text-xs text-text-secondary/60 text-center leading-relaxed max-w-[220px]">
-        Prefer the phone? Call us at{' '}
-        <a href="tel:+18669307859" className="text-primary no-underline font-medium">
-          +1 (866) 930-7859
-        </a>{' '}
-        and the same AI picks up.
-      </p>
-    </div>
-  )
-}
-
-function AvatarPanel() {
-  return (
-    <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-      {/* Avatar placeholder */}
-      <div
-        className="w-28 h-28 rounded-full flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, #F0F4FF, #E8F0FE)',
-          border: '2px solid rgba(56, 89, 168,0.15)',
-        }}
-      >
-        <User size={40} className="text-primary/40" strokeWidth={1.2} />
-      </div>
-
-      <div className="text-center">
-        <p className="text-sm font-semibold text-text mb-1">AI Avatar</p>
-        <p className="text-xs text-text-secondary leading-relaxed max-w-[220px]">
-          {/* TODO: Connect to Anam AI */}
-          Meet your face-to-face AI assistant. Avatar demo launching soon.
-        </p>
-      </div>
-
-      <div
-        className="w-full rounded-xl p-3 text-center"
-        style={{ background: 'rgba(56, 89, 168,0.04)', border: '1px solid rgba(56, 89, 168,0.08)' }}
-      >
-        <p className="text-[11px] text-primary font-medium">Powered by Anam AI</p>
-      </div>
-    </div>
-  )
-}
-
-const PANELS = {
-  chat: ChatPanel,
-  voice: VoicePanel,
-  avatar: AvatarPanel,
-}
-
 export function AIWidget() {
   const [open, setOpen] = useState(false)
-  const [tab, setTab] = useState('chat')
   const reduced = useReducedMotion()
-
-  // Other floating triggers (e.g. the voice button at bottom-left) open the
-  // widget on a specific tab via this window event.
-  useEffect(() => {
-    const onOpen = (e) => {
-      setTab(e.detail?.tab || 'chat')
-      setOpen(true)
-    }
-    window.addEventListener('jotil:open-widget', onOpen)
-    return () => window.removeEventListener('jotil:open-widget', onOpen)
-  }, [])
-
-  const Panel = PANELS[tab]
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50">
@@ -275,30 +103,9 @@ export function AIWidget() {
               </button>
             </div>
 
-            {/* Tab bar */}
-            <div className="flex border-b border-black/5" role="tablist" aria-label="AI assistant mode">
-              {TABS.map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => setTab(key)}
-                  role="tab"
-                  aria-selected={tab === key}
-                  aria-label={`${label} tab`}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold border-none bg-transparent cursor-pointer transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-inset"
-                  style={{
-                    color: tab === key ? '#3859a8' : '#6B7280',
-                    borderBottom: tab === key ? '2px solid #3859a8' : '2px solid transparent',
-                  }}
-                >
-                  <Icon size={13} strokeWidth={tab === key ? 2 : 1.5} />
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {/* Panel content */}
+            {/* Chat */}
             <div className="flex-1 min-h-0">
-              <Panel />
+              <ChatPanel />
             </div>
           </motion.div>
         )}

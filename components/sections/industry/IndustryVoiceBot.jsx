@@ -5,17 +5,28 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Mic, AudioLines } from 'lucide-react'
 
 /* Interactive AI-bot moment shown between the hero and the demo video.
-   Pure CSS orb (no WebGL, no extra libraries): a slowly turning gradient
-   ring with a soft glow. Tap or click to wake it: it turns faster, breathes,
-   and the icon flips from mic to waveform. Tap again to rest. */
+   Pure CSS recreation of the original WebGL orb look (no libraries): an
+   organic glowing ring in purple / blue / cyan with a soft bloom, a bright
+   highlight travelling around the rim, and a gentle morphing wobble.
+   Tap or click to wake it: everything speeds up and breathes; the icon
+   flips from mic to waveform. Tap again to rest. */
 
-const ORB_GRADIENT = 'conic-gradient(from 0deg, #3B82F6, #7c3aed, #06b6d4, #3B82F6)'
+const RING_GRADIENT =
+  'conic-gradient(from 210deg, #7c3aed 0deg, #a855f7 70deg, #3B82F6 160deg, #06b6d4 250deg, #7c3aed 360deg)'
 
 const CSS = `
 @keyframes jvb-spin { to { transform: rotate(360deg); } }
 @keyframes jvb-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.035); }
+  50% { transform: scale(1.04); }
+}
+/* Organic wobble: the inner face drifts slightly off-center so the ring
+   reads thicker on one side and thinner on the other, like the shader. */
+@keyframes jvb-wobble {
+  0%, 100% { transform: translate(0.8%, -0.6%) scale(1); }
+  25% { transform: translate(-0.7%, 0.5%) scale(1.008); }
+  50% { transform: translate(0.5%, 0.9%) scale(0.995); }
+  75% { transform: translate(-0.9%, -0.4%) scale(1.005); }
 }
 `
 
@@ -33,35 +44,54 @@ export function IndustryVoiceBot() {
             aria-pressed={awake}
             aria-label={awake ? 'Let the assistant rest' : 'Wake the assistant'}
             className="relative mx-auto block h-[150px] w-[150px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4 sm:h-[190px] sm:w-[190px]"
-            style={{ touchAction: 'manipulation', animation: awake ? 'jvb-breathe 2.4s ease-in-out infinite' : 'none' }}
+            style={{ touchAction: 'manipulation', animation: awake ? 'jvb-breathe 2.2s ease-in-out infinite' : 'none' }}
           >
-            {/* Soft glow behind the ring */}
+            {/* Outer bloom (blurred copy of the ring) */}
             <span
               aria-hidden="true"
-              className="absolute inset-[6%] rounded-full"
+              className="absolute inset-[-6%] rounded-full"
               style={{
-                background: ORB_GRADIENT,
-                filter: 'blur(18px)',
-                opacity: awake ? 0.45 : 0.25,
+                background: RING_GRADIENT,
+                filter: 'blur(20px)',
+                opacity: awake ? 0.55 : 0.32,
                 transition: 'opacity 0.5s ease',
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite`,
               }}
             />
-            {/* Turning gradient ring */}
+            {/* Turning gradient disc (becomes the ring once the face covers it) */}
             <span
               aria-hidden="true"
               className="absolute inset-0 rounded-full"
               style={{
-                background: ORB_GRADIENT,
-                animation: `jvb-spin ${awake ? '4.5s' : '14s'} linear infinite`,
+                background: RING_GRADIENT,
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite`,
               }}
             />
-            {/* Inner face */}
+            {/* Bright highlight travelling around the rim (counter-rotating) */}
             <span
               aria-hidden="true"
-              className="absolute inset-[9px] rounded-full"
+              className="absolute inset-0 rounded-full"
+              style={{ animation: `jvb-spin ${awake ? '2.6s' : '8s'} linear infinite reverse` }}
+            >
+              <span
+                className="absolute left-1/2 top-[-4%] h-[30%] w-[30%] -translate-x-1/2 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(186,230,253,0.55) 40%, transparent 70%)',
+                  filter: 'blur(4px)',
+                  mixBlendMode: 'screen',
+                }}
+              />
+            </span>
+            {/* Inner face — offset wobble makes the ring thickness organic */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-[10%] rounded-full"
               style={{
-                background: 'linear-gradient(160deg, #ffffff 0%, #f4f7fd 60%, #eef2fb 100%)',
-                boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.9), inset 0 -10px 24px rgba(56,89,168,0.10)',
+                background:
+                  'radial-gradient(120% 120% at 68% 26%, #ffffff 0%, #f6f9ff 45%, #eef2fb 75%, #e6ecf9 100%)',
+                boxShadow:
+                  'inset 0 3px 12px rgba(255,255,255,0.95), inset 0 -12px 28px rgba(124,58,237,0.14), inset 10px 0 24px rgba(6,182,212,0.10)',
+                animation: `jvb-wobble ${awake ? '3.5s' : '7s'} ease-in-out infinite`,
               }}
             />
             {/* Awake halo */}
@@ -69,7 +99,7 @@ export function IndustryVoiceBot() {
               <span
                 aria-hidden="true"
                 className="absolute inset-0 rounded-full animate-ping"
-                style={{ background: 'rgba(56,89,168,0.18)', animationDuration: '2s' }}
+                style={{ background: 'rgba(124,58,237,0.16)', animationDuration: '2s' }}
               />
             )}
             {/* Voice icon at the center */}
