@@ -45,3 +45,6 @@ playwright-report
 *.njsproj
 *.sln
 *.sw?
+
+# Vercel CLI link metadata
+.vercel
