@@ -13,6 +13,7 @@ import { IndustryVoiceBot } from '@/components/sections/industry/IndustryVoiceBo
 import { INDUSTRIES, INDUSTRY_SLUGS, getIndustry, getRelatedIndustries } from '@/lib/industries'
 import { products } from '@/data/products'
 import { ScenarioCard } from '@/components/sections/industry/ScenarioCard'
+import { ChatScenarioCard } from '@/components/sections/industry/ChatScenarioCard'
 
 const BRAND = '#3859a8'
 
@@ -274,12 +275,15 @@ export default async function IndustryPage({ params }) {
             </p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {industry.scenarios.map((scenario, i) => (
-              <AnimatedSection key={scenario.title} delay={i * 0.1}>
-                <ScenarioCard scenario={scenario} />
-              </AnimatedSection>
-            ))}
+          {/* Two cards: Voice, plus one Chat card that combines the SMS and
+              web conversations and shows the channels they arrive from. */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            <AnimatedSection>
+              <ScenarioCard scenario={industry.scenarios.find((s) => s.channel === 'voice') ?? industry.scenarios[0]} />
+            </AnimatedSection>
+            <AnimatedSection delay={0.1}>
+              <ChatScenarioCard scenarios={industry.scenarios.filter((s) => s.channel !== 'voice')} />
+            </AnimatedSection>
           </div>
         </div>
       </section>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Quote, UserRound } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { TiltCard } from '@/components/design'
@@ -14,6 +15,9 @@ const TESTIMONIAL = {
 }
 
 export function TestimonialSpotlight() {
+  // Lifelike client photo; falls back to a neutral face icon if it fails to load.
+  const [photoFailed, setPhotoFailed] = useState(false)
+
   return (
     <section className="cv-auto py-24 bg-[#E9EEF7]">
       <div className="max-w-3xl mx-auto px-6">
@@ -37,10 +41,25 @@ export function TestimonialSpotlight() {
             </blockquote>
             <div className="flex items-center gap-4">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white"
-                style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
+                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden text-white"
+                style={{
+                  background: 'linear-gradient(135deg, #3859a8, #2a4688)',
+                  border: '2px solid rgba(56,89,168,0.25)',
+                }}
               >
-                <UserRound size={24} strokeWidth={1.5} />
+                {photoFailed ? (
+                  <UserRound size={24} strokeWidth={1.5} />
+                ) : (
+                  <img
+                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    alt={`${TESTIMONIAL.name} portrait`}
+                    width={48}
+                    height={48}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                    onError={() => setPhotoFailed(true)}
+                  />
+                )}
               </div>
               <div>
                 <p className="font-bold text-text m-0">{TESTIMONIAL.name}</p>

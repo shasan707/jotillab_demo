@@ -28,6 +28,7 @@ JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Found
 ## Environment Variables (see .env.example)
 - `RESEND_API_KEY` — contact form email delivery; the API route returns 503 without it (build still works)
 - `NEXT_PUBLIC_GA_ID` — Google Analytics 4; GA scripts only injected when set
+- `RETELL_API_KEY` + `RETELL_AGENT_ID` — live voice agent (widget Voice tab). Server-side only (app/api/retell/web-call); the route returns 503 without them. NEVER expose with NEXT_PUBLIC_
 
 ## File Structure (key areas)
 ```
