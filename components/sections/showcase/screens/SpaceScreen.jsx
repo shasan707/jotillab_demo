@@ -15,7 +15,7 @@ const MODELS = [
   { name: 'GPT-4o', provider: 'OpenAI', color: '#10a37f' },
   { name: 'Claude 4.7', provider: 'Anthropic', color: '#d97706' },
   { name: 'Gemini 2.5', provider: 'Google', color: '#4285f4' },
-  { name: 'Llama 3', provider: 'Meta', color: '#7c3aed' },
+  { name: 'Llama 3', provider: 'Meta', color: '#22396E' },
 ]
 
 const TURN_1 = {
@@ -23,7 +23,7 @@ const TURN_1 = {
   ai: "Q4 totals: $847K revenue, up 23% YoY. Here's the breakdown by channel:",
   bars: [
     { label: 'Voice', value: 342, color: '#3859a8' },
-    { label: 'Email', value: 251, color: '#7c3aed' },
+    { label: 'Email', value: 251, color: '#22396E' },
     { label: 'Web', value: 172, color: '#06b6d4' },
     { label: 'SMS', value: 82, color: '#10B981' },
   ],

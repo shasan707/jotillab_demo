@@ -58,10 +58,10 @@ function useJellyTilt(max = 12) {
 const PRODUCTS = [
   { name: 'JotilReceptionist', tag: 'Never miss a call. Never miss a customer.', iconKey: 'receptionist', color: '#3B82F6', c2: '#06b6d4' },
   { name: 'JotilMessenger', tag: 'One inbox. Every channel. Every customer.', iconKey: 'messenger', color: '#06b6d4', c2: '#3B82F6' },
-  { name: 'JotilOutreach', tag: 'Reach more. Book more. Grow faster.', iconKey: 'outreach', color: '#f97316', c2: '#ec4899' },
-  { name: 'JotilSpace', tag: 'One workspace. Every AI. Every workflow.', iconKey: 'space', color: '#a855f7', c2: '#3B82F6' },
-  { name: 'JotilFlow', tag: 'Connect. Trigger. Automate.', iconKey: 'flow', color: '#10b981', c2: '#06b6d4' },
-  { name: 'JotilAvatar', tag: 'See your brand. Hear your brand. Talk to your brand.', iconKey: 'avatar', color: '#ec4899', c2: '#a855f7' },
+  { name: 'JotilOutreach', tag: 'Reach more. Book more. Grow faster.', iconKey: 'outreach', color: '#3859a8', c2: '#06b6d4' },
+  { name: 'JotilSpace', tag: 'One workspace. Every AI. Every workflow.', iconKey: 'space', color: '#22396E', c2: '#3B82F6' },
+  { name: 'JotilFlow', tag: 'Connect. Trigger. Automate.', iconKey: 'flow', color: '#06b6d4', c2: '#3859a8' },
+  { name: 'JotilAvatar', tag: 'See your brand. Hear your brand. Talk to your brand.', iconKey: 'avatar', color: '#3B82F6', c2: '#22396E' },
 ]
 
 const BLOB_MORPH = [
@@ -353,7 +353,7 @@ export function SplineAura() {
             <Link
               href="#how-it-works"
               className="inline-flex items-center gap-2 rounded-[12px] px-7 py-4 text-sm font-semibold no-underline transition-all duration-300 hover:-translate-y-0.5"
-              style={{ border: '1px solid #7c3aed', background: 'rgba(255,255,255,0.8)', color: '#0f1129', fontFamily: 'var(--font-display)' }}
+              style={{ border: '1px solid #3859a8', background: 'rgba(255,255,255,0.8)', color: '#0f1129', fontFamily: 'var(--font-display)' }}
             >
               See How It Works
             </Link>

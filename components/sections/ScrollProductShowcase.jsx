@@ -18,7 +18,7 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 function SectionHeading() {
   return (
     <AnimatedSection className="text-center pt-24 pb-12 px-6">
-      <p className="text-sm font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#7c3aed' }}>
+      <p className="text-sm font-semibold tracking-[0.18em] uppercase mb-3" style={{ color: '#3859a8' }}>
         What Changes for Your Business
       </p>
       <h2

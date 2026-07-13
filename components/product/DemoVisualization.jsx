@@ -651,7 +651,7 @@ function SpaceDemo() {
 function FlowDemo() {
   const nodes = [
     { label: 'New Lead', sub: 'Webhook Trigger', icon: Zap, color: 'from-[#3859a8] to-[#2a4688]' },
-    { label: 'AI Classify', sub: 'Score & Route', icon: GitBranch, color: 'from-[#3B82F6] to-[#4F46E5]' },
+    { label: 'AI Classify', sub: 'Score & Route', icon: GitBranch, color: 'from-[#3B82F6] to-[#2a4688]' },
     { label: 'CRM Update', sub: 'Create Record', icon: Database, color: 'from-[#3B82F6] to-[#0284C7]' },
     { label: 'Notify Team', sub: 'Slack + Email', icon: CheckCircle, color: 'from-emerald-500 to-emerald-600' },
   ]

@@ -120,15 +120,15 @@ export function AIWidget() {
         transition={open || reduced ? { duration: 0.2 } : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
         className="relative w-14 h-14 rounded-full border-none cursor-pointer flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #3B82F6 0%, #7c3aed 55%, #06b6d4 100%)',
-          boxShadow: '0 12px 34px rgba(124,58,237,0.45), 0 4px 14px rgba(59,130,246,0.4)',
+          background: 'linear-gradient(135deg, #3859a8 0%, #3B82F6 55%, #06b6d4 100%)',
+          boxShadow: '0 12px 34px rgba(56,89,168,0.45), 0 4px 14px rgba(59,130,246,0.4)',
         }}
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
         {/* Vibrant pulse rings to draw the eye (only when closed) */}
         {!open && !reduced && (
           <>
-            <span aria-hidden="true" className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(124,58,237,0.40)', animationDuration: '2.4s' }} />
+            <span aria-hidden="true" className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(59,130,246,0.40)', animationDuration: '2.4s' }} />
             <span aria-hidden="true" className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(59,130,246,0.30)', animationDuration: '2.4s', animationDelay: '0.6s' }} />
           </>
         )}

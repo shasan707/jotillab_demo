@@ -12,10 +12,10 @@ const MONO = { fontFamily: 'var(--font-jetbrains), ui-monospace, monospace' }
 /* Syntax tokens (all palette colors already used elsewhere in the app) */
 const T = {
   comment: '#9da3c0',
-  keyword: '#a855f7',
+  keyword: '#2a4688',
   key: BRAND,
-  string: '#10b981',
-  value: '#f97316',
+  string: '#06b6d4',
+  value: '#3B82F6',
   plain: '#0f1129',
   punct: '#6B7098',
 }

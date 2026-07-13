@@ -1,42 +1,14 @@
 import { DeviceGlow } from './DeviceGlow'
 
+/* One consistent light phone frame for every mockup on the site: silver-white
+   bezel, subtle edge highlights, and a discreet light speaker slot instead of
+   a black notch/island. The `glass` prop is kept for API compatibility but
+   both variants render the same frame. */
 export function PhoneMockup({ children, vibrate = false, glass = false }) {
-  if (!glass) {
-    return (
-      <div className="relative" style={{ perspective: 1200 }}>
-        <DeviceGlow radius={62} inset={-22} />
-        <div className="absolute left-[-2.5px] top-[90px] w-[3px] h-[20px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #3a3a40, #2a2a30)' }} />
-        <div className="absolute left-[-2.5px] top-[124px] w-[3px] h-[32px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #3a3a40, #2a2a30)' }} />
-        <div className="absolute left-[-2.5px] top-[164px] w-[3px] h-[32px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #3a3a40, #2a2a30)' }} />
-        <div className="absolute right-[-2.5px] top-[130px] w-[3px] h-[40px] rounded-r-sm" style={{ background: 'linear-gradient(180deg, #3a3a40, #2a2a30)' }} />
-        <div className={`w-[320px] h-[660px] rounded-[46px] p-[10px] relative ${vibrate ? 'animate-phone-vibrate' : ''}`}
-          style={{
-            background: 'linear-gradient(160deg, #2c2c30 0%, #1c1c20 40%, #0e0e12 100%)',
-            boxShadow: [
-              'inset 0 1px 0 rgba(255,255,255,0.08)',
-              'inset 0 -1px 0 rgba(0,0,0,0.3)',
-              '0 1px 2px rgba(0,0,0,0.15)',
-              '0 4px 12px rgba(15,17,41,0.15)',
-              '0 12px 32px rgba(15,17,41,0.2)',
-              '0 32px 64px rgba(15,17,41,0.18)',
-            ].join(', '),
-          }}>
-          <div className="absolute top-0 left-[25%] right-[25%] h-px rounded-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)' }} />
-          <div className="absolute top-[12px] left-1/2 -translate-x-1/2 z-10 flex items-center justify-center" style={{ width: 92, height: 26, borderRadius: 13, background: '#0a0a0e' }}>
-            <div className="rounded-full" style={{ width: 8, height: 8, background: 'radial-gradient(circle at 35% 35%, #1e1e3a, #0a0a0e)', boxShadow: 'inset 0 0 2px rgba(100,100,180,0.2)' }} />
-          </div>
-          <div className="w-full h-full rounded-[36px] overflow-hidden bg-white relative">
-            {children}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="relative" style={{ perspective: 1200 }}>
       <DeviceGlow radius={62} inset={-22} intensity={0.85} />
-      {/* Side buttons -- light silver for glass variant */}
+      {/* Side buttons — light silver */}
       <div className="absolute left-[-2px] top-[90px] w-[2.5px] h-[20px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #d8d8dc, #c0c0c4)' }} />
       <div className="absolute left-[-2px] top-[124px] w-[2.5px] h-[32px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #d8d8dc, #c0c0c4)' }} />
       <div className="absolute left-[-2px] top-[164px] w-[2.5px] h-[32px] rounded-l-sm" style={{ background: 'linear-gradient(180deg, #d8d8dc, #c0c0c4)' }} />
@@ -58,7 +30,7 @@ export function PhoneMockup({ children, vibrate = false, glass = false }) {
           ].join(', '),
         }}
       >
-        {/* Top edge highlight -- brighter for glass */}
+        {/* Top edge highlight */}
         <div className="absolute top-0 left-[15%] right-[15%] h-[1px] rounded-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,1), transparent)' }} />
 
         {/* Left edge highlight */}
@@ -67,10 +39,17 @@ export function PhoneMockup({ children, vibrate = false, glass = false }) {
         {/* Bottom subtle reflection */}
         <div className="absolute bottom-0 left-[20%] right-[20%] h-[1px] rounded-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)' }} />
 
-        {/* Dynamic Island */}
-        <div className="absolute top-[12px] left-1/2 -translate-x-1/2 z-10 flex items-center justify-center" style={{ width: 92, height: 26, borderRadius: 13, background: '#0a0a0e' }}>
-          <div className="rounded-full" style={{ width: 8, height: 8, background: 'radial-gradient(circle at 35% 35%, #1e1e3a, #0a0a0e)', boxShadow: 'inset 0 0 2px rgba(100,100,180,0.2)' }} />
-        </div>
+        {/* Discreet light speaker slot (no black island) */}
+        <div
+          className="absolute top-[16px] left-1/2 -translate-x-1/2 z-10"
+          style={{
+            width: 56,
+            height: 6,
+            borderRadius: 3,
+            background: 'linear-gradient(180deg, #dfe3ec, #eef1f7)',
+            boxShadow: 'inset 0 1px 2px rgba(15,17,41,0.10)',
+          }}
+        />
 
         {/* Screen area */}
         <div className="w-full h-full rounded-[36px] overflow-hidden bg-white relative">

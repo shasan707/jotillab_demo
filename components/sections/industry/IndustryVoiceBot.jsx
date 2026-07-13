@@ -12,7 +12,7 @@ import { Mic, AudioLines } from 'lucide-react'
    flips from mic to waveform. Tap again to rest. */
 
 const RING_GRADIENT =
-  'conic-gradient(from 210deg, #7c3aed 0deg, #a855f7 70deg, #3B82F6 160deg, #06b6d4 250deg, #7c3aed 360deg)'
+  'conic-gradient(from 210deg, #22396E 0deg, #3859a8 90deg, #3B82F6 180deg, #06b6d4 265deg, #22396E 360deg)'
 
 const CSS = `
 @keyframes jvb-spin { to { transform: rotate(360deg); } }
@@ -90,7 +90,7 @@ export function IndustryVoiceBot() {
                 background:
                   'radial-gradient(120% 120% at 68% 26%, #ffffff 0%, #f6f9ff 45%, #eef2fb 75%, #e6ecf9 100%)',
                 boxShadow:
-                  'inset 0 3px 12px rgba(255,255,255,0.95), inset 0 -12px 28px rgba(124,58,237,0.14), inset 10px 0 24px rgba(6,182,212,0.10)',
+                  'inset 0 3px 12px rgba(255,255,255,0.95), inset 0 -12px 28px rgba(56,89,168,0.14), inset 10px 0 24px rgba(6,182,212,0.10)',
                 animation: `jvb-wobble ${awake ? '3.5s' : '7s'} ease-in-out infinite`,
               }}
             />
@@ -99,7 +99,7 @@ export function IndustryVoiceBot() {
               <span
                 aria-hidden="true"
                 className="absolute inset-0 rounded-full animate-ping"
-                style={{ background: 'rgba(124,58,237,0.16)', animationDuration: '2s' }}
+                style={{ background: 'rgba(56,89,168,0.16)', animationDuration: '2s' }}
               />
             )}
             {/* Voice icon at the center */}

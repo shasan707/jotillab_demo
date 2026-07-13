@@ -6,13 +6,13 @@
 const COLORS = {
   receptionist: { color: '#3B82F6', c2: '#06b6d4' },
   messenger: { color: '#06b6d4', c2: '#3B82F6' },
-  outreach: { color: '#f97316', c2: '#ec4899' },
-  space: { color: '#a855f7', c2: '#3B82F6' },
-  flow: { color: '#10b981', c2: '#06b6d4' },
-  avatar: { color: '#ec4899', c2: '#a855f7' },
-  jotildevs: { color: '#f97316', c2: '#a855f7' },
-  jotilconsult: { color: '#a855f7', c2: '#06b6d4' },
-  jotileducation: { color: '#10b981', c2: '#3B82F6' },
+  outreach: { color: '#3859a8', c2: '#06b6d4' },
+  space: { color: '#22396E', c2: '#3B82F6' },
+  flow: { color: '#06b6d4', c2: '#3859a8' },
+  avatar: { color: '#3B82F6', c2: '#22396E' },
+  jotildevs: { color: '#2a4688', c2: '#06b6d4' },
+  jotilconsult: { color: '#3859a8', c2: '#3B82F6' },
+  jotileducation: { color: '#06b6d4', c2: '#22396E' },
 }
 
 function Glyph({ slug, stroke }) {

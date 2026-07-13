@@ -70,7 +70,7 @@ export function SlideText({ product }) {
           >
             <span
               className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #7c3aed)' }}
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #06b6d4)' }}
             />
             {f}
           </li>

@@ -297,7 +297,7 @@ export default function JotilFlowPipeline({ gapMs = 1100, className = "" }) {
 
 const CSS = `
 .jf-pipeline{
-  --trigger:#2f6fed; --ai:#6b57e0; --action:#12a06b;
+  --trigger:#3B82F6; --ai:#3859a8; --action:#12a06b;
   --slate:#3a4160; --muted:#9aa0b6; --faint:#b7bccd;
   --card:#fff; --wash:#f7f8fc; --line:#e8eaf2;
   --grid:rgba(40,52,110,0.055);
@@ -317,7 +317,7 @@ const CSS = `
 
 .jf-pipeline .canvas{position:relative;height:360px;
   background:
-    radial-gradient(460px 260px at 50% 42%, rgba(107,92,214,.07), transparent 72%),
+    radial-gradient(460px 260px at 50% 42%, rgba(56,89,168,.07), transparent 72%),
     radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0) 0 0 / 22px 22px}
 .jf-pipeline #wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .jf-pipeline #wires .flow{animation:jf-flow 1.3s linear infinite}
@@ -340,14 +340,14 @@ const CSS = `
   color:#565f7d;padding:3px 9px;border-radius:6px;background:var(--wash)}
 .jf-pipeline .node .state i{width:5px;height:5px;border-radius:50%;background:var(--faint);transition:background .3s}
 
-.jf-pipeline .node[data-accent="trigger"].fire{border-color:var(--trigger);box-shadow:0 0 0 1px var(--trigger),0 10px 26px -10px rgba(47,111,237,.55)}
-.jf-pipeline .node[data-accent="ai"].fire{border-color:var(--ai);box-shadow:0 0 0 1px var(--ai),0 10px 26px -10px rgba(107,87,224,.55)}
+.jf-pipeline .node[data-accent="trigger"].fire{border-color:var(--trigger);box-shadow:0 0 0 1px var(--trigger),0 10px 26px -10px rgba(59,130,246,.55)}
+.jf-pipeline .node[data-accent="ai"].fire{border-color:var(--ai);box-shadow:0 0 0 1px var(--ai),0 10px 26px -10px rgba(56,89,168,.55)}
 .jf-pipeline .node[data-accent="action"].fire{border-color:var(--action);box-shadow:0 0 0 1px var(--action),0 10px 26px -10px rgba(18,160,107,.5)}
 .jf-pipeline .node[data-accent="trigger"].fire .ic{background:#eaf1fe;color:var(--trigger)}
-.jf-pipeline .node[data-accent="ai"].fire .ic{background:#efecfd;color:var(--ai)}
+.jf-pipeline .node[data-accent="ai"].fire .ic{background:#e8eefb;color:var(--ai)}
 .jf-pipeline .node[data-accent="action"].fire .ic{background:#e6f7f0;color:var(--action)}
 .jf-pipeline .node[data-accent="trigger"].fire .state{color:var(--trigger);background:#eaf1fe}
-.jf-pipeline .node[data-accent="ai"].fire .state{color:var(--ai);background:#efecfd}
+.jf-pipeline .node[data-accent="ai"].fire .state{color:var(--ai);background:#e8eefb}
 .jf-pipeline .node[data-accent="action"].fire .state{color:var(--action);background:#e6f7f0}
 .jf-pipeline .node.fire .state i{background:currentColor}
 
@@ -358,7 +358,7 @@ const CSS = `
   background:conic-gradient(from var(--jf-a, 0deg), transparent 0deg, var(--ai) 68deg, transparent 150deg);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
-  filter:drop-shadow(0 0 4px rgba(107,87,224,.5))}
+  filter:drop-shadow(0 0 4px rgba(56,89,168,.5))}
 .jf-pipeline .node.think .ic-ring{opacity:1;animation:jf-rot 1.1s linear infinite}
 @keyframes jf-rot{to{--jf-a:360deg}}
 
