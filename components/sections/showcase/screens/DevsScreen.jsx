@@ -84,7 +84,7 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
       {/* Header: project + live readouts */}
       <div className="flex items-center justify-between border-b border-black/5 bg-[#F8FAFF] px-5 py-2.5">
         <div className="min-w-0">
-          <p className="text-[16px] font-bold leading-tight text-text">Meridian client portal</p>
+          <p className="text-[16px] font-bold leading-tight text-text">Client portal</p>
           <p className="text-[13px] text-text-secondary">Custom software development</p>
         </div>
         <div className="flex items-stretch overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">

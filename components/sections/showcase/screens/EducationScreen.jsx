@@ -1,117 +1,198 @@
 'use client'
 
-import { GraduationCap, Check, Play, Award } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Award, Check } from 'lucide-react'
 
-/* JotilEducation — static course-progress view. One clean frozen moment: a
-   course with a rounded progress bar, module rows, and a certificate chip.
-   No animation. */
+/* JotilEducation — credential ceremony. When the slide becomes active the
+   certificate assembles itself: the card rises in, the seal stamps down with
+   a ripple, the verified check pops, a shine sweeps across, and the text
+   lines fade in one after another. Plays once per visit; fully static under
+   reduced motion. */
 
 const BRAND = '#3859a8'
+const NAVY = '#22396E'
+const BLUE = '#3B82F6'
+const GREEN = '#12a06b'
 const MONO = { fontFamily: 'var(--font-jetbrains), ui-monospace, monospace' }
+const EASE = 'cubic-bezier(0.22,0.61,0.36,1)'
 
-const MODULES = [
-  { name: 'Working with your AI receptionist', lessons: '6 lessons', status: 'complete' },
-  { name: 'Handling handoffs and escalations', lessons: '6 lessons', status: 'complete' },
-  { name: 'Automating follow-ups in your CRM', lessons: '6 lessons', status: 'progress' },
-]
+const CSS = `
+@keyframes jed-credin {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes jed-seal {
+  0% { opacity: 0; transform: scale(0.4); }
+  60% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes jed-ripple {
+  0% { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+@keyframes jed-vpop {
+  0% { opacity: 0; transform: scale(0.3); }
+  60% { transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes jed-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes jed-shine {
+  0% { left: -70%; }
+  100% { left: 130%; }
+}
+`
 
 export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
+  const [started, setStarted] = useState(false)
+  const [reduced, setReduced] = useState(false)
+
+  useEffect(() => {
+    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
+
+  useEffect(() => {
+    if (isActive) setStarted(true)
+  }, [isActive])
+
+  /* Static final state under reduced motion; hidden until the slide first
+     activates so the ceremony plays from the top; animated once started. */
+  const anim = (name, dur, delay) =>
+    reduced
+      ? {}
+      : started
+        ? { animation: `${name} ${dur}s ${delay}s ${EASE} both` }
+        : { opacity: 0 }
+
   return (
-    <div className="flex h-full w-full flex-col bg-white text-[12px]">
-      {/* Top bar */}
-      <div className="flex items-center justify-between border-b border-black/5 bg-[#F8FAFF] px-5 py-2.5">
-        <div className="flex items-center gap-2.5">
-          <span
-            className="flex h-6 w-6 items-center justify-center rounded-md"
-            style={{ background: 'rgba(56,89,168,0.10)', border: '1px solid rgba(56,89,168,0.18)' }}
-          >
-            <GraduationCap size={13} strokeWidth={1.8} style={{ color: BRAND }} />
-          </span>
-          <span className="text-[13px] font-semibold text-text">Team training</span>
-          <span className="text-[11px] text-text-secondary" style={MONO}>front-desk track</span>
-        </div>
+    <div
+      className="relative flex h-full w-full items-center justify-center"
+      style={{
+        background:
+          'radial-gradient(600px 300px at 50% -10%, rgba(59,130,246,0.10), transparent 65%), linear-gradient(180deg, #ffffff, #f6f8fc)',
+      }}
+    >
+      <style>{CSS}</style>
+
+      {/* Brand tag */}
+      <div className="absolute left-6 top-5 flex items-center gap-2.5 text-[13px] font-bold" style={{ color: BRAND }}>
         <span
-          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold"
-          style={{ background: 'rgba(56,89,168,0.08)', border: '1px solid rgba(56,89,168,0.18)', color: BRAND }}
+          className="grid h-[22px] w-[22px] place-items-center rounded-[7px]"
+          style={{ background: `linear-gradient(160deg, ${BLUE}, ${BRAND})` }}
         >
-          <Award size={11} strokeWidth={2} />
-          Certificate
+          <span className="h-[5px] w-[5px] rounded-full bg-white" />
         </span>
+        JotilEducation
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4 px-6 py-4">
-        {/* Course header + progress */}
+      {/* Issued status */}
+      <div
+        className="absolute right-6 top-5 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.06em]"
+        style={{ color: GREEN }}
+      >
+        <span className="h-[7px] w-[7px] rounded-full" style={{ background: GREEN, boxShadow: '0 0 8px rgba(18,160,107,0.6)' }} />
+        Credential issued
+      </div>
+
+      {/* Credential card */}
+      <div
+        className="relative w-[470px] overflow-hidden rounded-[20px] px-9 pb-6 pt-9 text-center"
+        style={{
+          background: 'linear-gradient(170deg, #ffffff, #f7f9ff)',
+          border: '1px solid #e4e8f4',
+          boxShadow: '0 24px 54px -30px rgba(15,17,41,0.4), inset 0 1px 0 rgba(255,255,255,0.9)',
+          ...anim('jed-credin', 0.8, 0.25),
+        }}
+      >
+        {/* Top accent bar */}
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[4px]"
+          style={{ background: `linear-gradient(90deg, ${BRAND}, ${BLUE}, ${BRAND})` }}
+        />
+
+        {/* Shine sweep */}
+        {started && !reduced && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 top-0 w-[60%]"
+            style={{
+              left: '-70%',
+              background: 'linear-gradient(105deg, transparent, rgba(255,255,255,0.65), transparent)',
+              transform: 'skewX(-18deg)',
+              animation: `jed-shine 1.5s 1.1s ${EASE}`,
+            }}
+          />
+        )}
+
+        {/* Seal */}
         <div
-          className="rounded-xl bg-white px-5 py-4"
-          style={{ border: '1px solid rgba(15,17,41,0.06)', boxShadow: '0 4px 14px rgba(56,89,168,0.07)' }}
+          className="relative mx-auto grid h-[78px] w-[78px] place-items-center rounded-full text-white"
+          style={{
+            background: `radial-gradient(circle at 34% 30%, ${BLUE}, ${BRAND} 52%, ${NAVY})`,
+            boxShadow: '0 14px 30px -10px rgba(56,89,168,0.65), inset 0 2px 3px rgba(255,255,255,0.4)',
+            ...anim('jed-seal', 0.6, 0.6),
+          }}
         >
-          <div className="mb-2.5 flex items-center justify-between">
-            <div>
-              <p className="text-[14px] font-bold text-text">AI at the front desk</p>
-              <p className="mt-0.5 text-[11px] text-text-secondary">
-                Taught on your real workflows, with your own tools
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-[17px] font-bold leading-none" style={{ ...MONO, color: BRAND }}>68%</p>
-              <p className="mt-1 text-[10.5px] text-text-secondary" style={MONO}>12 of 18 lessons</p>
-            </div>
-          </div>
-          <div className="h-2.5 w-full overflow-hidden rounded-full" style={{ background: 'rgba(56,89,168,0.10)' }}>
-            <div
-              className="h-full rounded-full"
-              style={{ width: '68%', background: `linear-gradient(90deg, ${BRAND}, #3B82F6)` }}
+          {started && !reduced && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-[-6px] rounded-full"
+              style={{ border: `2px solid ${BLUE}`, opacity: 0, animation: `jed-ripple 1s 1.05s ${EASE}` }}
             />
-          </div>
+          )}
+          <Award size={38} strokeWidth={2} />
+          <span
+            className="absolute bottom-[-2px] right-[-2px] grid h-[26px] w-[26px] place-items-center rounded-full text-white"
+            style={{ background: GREEN, border: '3px solid #ffffff', ...anim('jed-vpop', 0.5, 1.25) }}
+          >
+            <Check size={13} strokeWidth={3.5} />
+          </span>
         </div>
 
-        {/* Module rows */}
-        <div
-          className="flex-1 rounded-xl bg-white"
-          style={{ border: '1px solid rgba(15,17,41,0.06)', boxShadow: '0 4px 14px rgba(56,89,168,0.07)' }}
+        <p
+          className="mt-4 text-[12px] font-semibold tracking-[0.28em] text-text-secondary"
+          style={{ ...MONO, ...anim('jed-fade', 0.7, 0.9) }}
         >
-          <div className="border-b border-black/5 px-4 py-2">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary">Modules</span>
-          </div>
-          <div className="divide-y divide-black/[0.04]">
-            {MODULES.map((m) => {
-              const done = m.status === 'complete'
-              return (
-                <div key={m.name} className="flex items-center gap-3 px-4 py-3">
-                  <span
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-                    style={
-                      done
-                        ? { background: 'rgba(18,160,107,0.12)', color: '#12a06b' }
-                        : { background: 'rgba(56,89,168,0.10)', color: BRAND }
-                    }
-                  >
-                    {done ? <Check size={12} strokeWidth={2.6} /> : <Play size={10} strokeWidth={2.4} />}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[12px] font-medium text-text">{m.name}</p>
-                    <p className="text-[10.5px] text-text-secondary" style={MONO}>{m.lessons}</p>
-                  </div>
-                  <span
-                    className="shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-                    style={
-                      done
-                        ? { background: 'rgba(18,160,107,0.10)', border: '1px solid rgba(18,160,107,0.25)', color: '#12a06b' }
-                        : { background: 'rgba(56,89,168,0.08)', border: '1px solid rgba(56,89,168,0.20)', color: BRAND }
-                    }
-                  >
-                    {done ? 'Complete' : 'In progress'}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+          JOTILLABS&nbsp;&middot;&nbsp;CERTIFIED
+        </p>
+        <p
+          className="mt-2.5 text-[32px] font-semibold leading-[1.08] tracking-[-0.01em] text-text"
+          style={{ fontFamily: 'var(--font-fraunces), Fraunces, serif', ...anim('jed-fade', 0.7, 1.0) }}
+        >
+          AI at the Front Desk
+        </p>
+        <p className="mt-2 text-[14px] text-text-secondary" style={anim('jed-fade', 0.7, 1.1)}>
+          Front-desk track&nbsp;&middot;&nbsp;18 lessons&nbsp;&middot;&nbsp;live role-play
+        </p>
 
-        {/* Footer note */}
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[10.5px] text-text-secondary">Next session: role-play with live calls</span>
-          <span className="text-[10.5px] font-semibold" style={{ ...MONO, color: BRAND }}>8 team members enrolled</span>
+        <div
+          className="my-4 h-px"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(15,17,41,0.10), transparent)',
+            ...anim('jed-fade', 0.7, 1.15),
+          }}
+        />
+
+        <div className="flex items-center justify-between gap-3" style={anim('jed-fade', 0.7, 1.2)}>
+          <div className="text-left">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">Issued to</p>
+            <p className="mt-0.5 text-[15px] font-bold text-text">Front desk team</p>
+          </div>
+          <div>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-bold"
+              style={{ color: GREEN, background: 'rgba(18,160,107,0.09)', border: '1px solid rgba(18,160,107,0.25)' }}
+            >
+              <Check size={14} strokeWidth={2.5} />
+              Verified
+            </span>
+            <p className="mt-1.5 text-right text-[12px] text-text-secondary" style={MONO}>
+              JL-4F2A&nbsp;&middot;&nbsp;Jul 2026
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -130,8 +130,8 @@ export function ConsultScreen({ isActive, onAction, onStep, progressRef }) {
       {/* Header */}
       <div className="flex items-center justify-between px-6 pb-0.5 pt-3">
         <div>
-          <p className="text-[17px] font-extrabold leading-tight tracking-[-0.02em] text-text">Northwind Audit</p>
-          <p className="mt-0.5 text-[12.5px] text-text-secondary">Operations audit, 6 findings</p>
+          <p className="text-[17px] font-extrabold leading-tight tracking-[-0.02em] text-text">Operations Audit</p>
+          <p className="mt-0.5 text-[12.5px] text-text-secondary">6 findings, ranked by impact</p>
         </div>
         <span
           className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11.5px] font-bold tracking-[0.06em]"
