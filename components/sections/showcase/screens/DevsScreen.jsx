@@ -84,13 +84,13 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
       {/* Header: project + live readouts */}
       <div className="flex items-center justify-between border-b border-black/5 bg-[#F8FAFF] px-5 py-2.5">
         <div className="min-w-0">
-          <p className="text-[13px] font-bold leading-tight text-text">Meridian client portal</p>
-          <p className="text-[10.5px] text-text-secondary">Custom software development</p>
+          <p className="text-[16px] font-bold leading-tight text-text">Meridian client portal</p>
+          <p className="text-[13px] text-text-secondary">Custom software development</p>
         </div>
         <div className="flex items-stretch overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
           {/* Progress ring */}
           <div className="flex items-center gap-1.5 border-r border-black/5 px-3 py-1.5">
-            <span className="text-[12px] font-bold text-text" style={MONO}>{progress}%</span>
+            <span className="text-[14px] font-bold text-text" style={MONO}>{progress}%</span>
             <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
               <circle cx="11" cy="11" r={R} fill="none" stroke="rgba(56,89,168,0.15)" strokeWidth="3" />
               <circle
@@ -104,12 +104,12 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
           </div>
           {/* Current phase */}
           <div className="flex items-center gap-1.5 border-r border-black/5 px-3 py-1.5">
-            <span className="text-[12px] font-semibold text-text">{STEPS[active].label.split(' /')[0]}</span>
+            <span className="text-[14px] font-semibold text-text">{STEPS[active].label.split(' /')[0]}</span>
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#3B82F6', animation: reduced ? 'none' : 'jds-blink 1.4s ease-in-out infinite' }} />
           </div>
           {/* Target date */}
           <div className="flex items-center gap-1.5 px-3 py-1.5">
-            <span className="text-[12px] font-semibold text-text" style={MONO}>Aug 15, 2026</span>
+            <span className="text-[14px] font-semibold text-text" style={MONO}>Aug 15, 2026</span>
             <Calendar size={12} strokeWidth={1.8} style={{ color: BRAND }} />
           </div>
         </div>
@@ -172,15 +172,15 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
                       <Icon
                         size={21}
                         strokeWidth={1.6}
-                        style={{ color: isNow ? '#ffffff' : done ? BRAND : '#6B7098' }}
+                        style={{ color: isNow ? '#ffffff' : done ? BRAND : '#4A4D6A' }}
                       />
                     </span>
                   </button>
 
-                  <p className="mt-2 text-[13px] font-bold leading-none" style={{ ...MONO, color: isNow ? '#3B82F6' : '#0f1129' }}>
+                  <p className="mt-2 text-[18px] font-bold leading-none" style={{ ...MONO, color: isNow ? '#3B82F6' : '#0f1129' }}>
                     {step.n}
                   </p>
-                  <p className="mt-1 min-h-[26px] px-0.5 text-center text-[10px] font-medium leading-tight text-text-secondary">
+                  <p className="mt-1.5 min-h-[32px] px-0.5 text-center text-[14px] font-semibold leading-tight text-text">
                     {step.label}
                   </p>
 
@@ -241,10 +241,10 @@ export function DevsScreen({ isActive, onAction, onStep, progressRef }) {
 
       {/* Footer status line */}
       <div className="flex items-center justify-between border-t border-black/5 bg-[#F8FAFF] px-5 py-2">
-        <span className="text-[11px] font-medium text-text-secondary">
+        <span className="text-[13px] font-semibold text-text">
           Phase {STEPS[active].n} of 07 · {STEPS[active].label}
         </span>
-        <span className="text-[11px] text-text-secondary" style={MONO}>
+        <span className="text-[13px] text-text-secondary" style={MONO}>
           {active} of 7 phases complete
         </span>
       </div>
