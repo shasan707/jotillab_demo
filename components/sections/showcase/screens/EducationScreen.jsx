@@ -77,19 +77,19 @@ export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
       <style>{CSS}</style>
 
       {/* Brand tag */}
-      <div className="absolute left-6 top-5 flex items-center gap-2.5 text-[13px] font-bold" style={{ color: BRAND }}>
+      <div className="absolute left-6 top-5 flex items-center gap-2.5 text-[15px] font-bold" style={{ color: BRAND }}>
         <span
-          className="grid h-[22px] w-[22px] place-items-center rounded-[7px]"
+          className="grid h-[26px] w-[26px] place-items-center rounded-[8px]"
           style={{ background: `linear-gradient(160deg, ${BLUE}, ${BRAND})` }}
         >
-          <span className="h-[5px] w-[5px] rounded-full bg-white" />
+          <span className="h-[6px] w-[6px] rounded-full bg-white" />
         </span>
         JotilEducation
       </div>
 
       {/* Issued status */}
       <div
-        className="absolute right-6 top-5 flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.06em]"
+        className="absolute right-6 top-5 flex items-center gap-2 text-[13.5px] font-bold uppercase tracking-[0.06em]"
         style={{ color: GREEN }}
       >
         <span className="h-[7px] w-[7px] rounded-full" style={{ background: GREEN, boxShadow: '0 0 8px rgba(18,160,107,0.6)' }} />
@@ -98,7 +98,7 @@ export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
 
       {/* Credential card */}
       <div
-        className="relative w-[470px] overflow-hidden rounded-[20px] px-9 pb-6 pt-9 text-center"
+        className="relative w-[560px] overflow-hidden rounded-[22px] px-10 pb-7 pt-9 text-center"
         style={{
           background: 'linear-gradient(170deg, #ffffff, #f7f9ff)',
           border: '1px solid #e4e8f4',
@@ -129,7 +129,7 @@ export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
 
         {/* Seal */}
         <div
-          className="relative mx-auto grid h-[78px] w-[78px] place-items-center rounded-full text-white"
+          className="relative mx-auto grid h-[88px] w-[88px] place-items-center rounded-full text-white"
           style={{
             background: `radial-gradient(circle at 34% 30%, ${BLUE}, ${BRAND} 52%, ${NAVY})`,
             boxShadow: '0 14px 30px -10px rgba(56,89,168,0.65), inset 0 2px 3px rgba(255,255,255,0.4)',
@@ -143,28 +143,28 @@ export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
               style={{ border: `2px solid ${BLUE}`, opacity: 0, animation: `jed-ripple 1s 1.05s ${EASE}` }}
             />
           )}
-          <Award size={38} strokeWidth={2} />
+          <Award size={44} strokeWidth={2} />
           <span
-            className="absolute bottom-[-2px] right-[-2px] grid h-[26px] w-[26px] place-items-center rounded-full text-white"
+            className="absolute bottom-[-2px] right-[-2px] grid h-[30px] w-[30px] place-items-center rounded-full text-white"
             style={{ background: GREEN, border: '3px solid #ffffff', ...anim('jed-vpop', 0.5, 1.25) }}
           >
-            <Check size={13} strokeWidth={3.5} />
+            <Check size={16} strokeWidth={3.5} />
           </span>
         </div>
 
         <p
-          className="mt-4 text-[12px] font-semibold tracking-[0.28em] text-text-secondary"
+          className="mt-4 text-[13.5px] font-semibold tracking-[0.24em] text-text-secondary"
           style={{ ...MONO, ...anim('jed-fade', 0.7, 0.9) }}
         >
           JOTILLABS&nbsp;&middot;&nbsp;CERTIFIED
         </p>
         <p
-          className="mt-2.5 text-[32px] font-semibold leading-[1.08] tracking-[-0.01em] text-text"
+          className="mt-2.5 text-[38px] font-semibold leading-[1.08] tracking-[-0.01em] text-text"
           style={{ fontFamily: 'var(--font-fraunces), Fraunces, serif', ...anim('jed-fade', 0.7, 1.0) }}
         >
           AI at the Front Desk
         </p>
-        <p className="mt-2 text-[14px] text-text-secondary" style={anim('jed-fade', 0.7, 1.1)}>
+        <p className="mt-2 text-[16px] font-medium text-text-secondary" style={anim('jed-fade', 0.7, 1.1)}>
           Front-desk track&nbsp;&middot;&nbsp;18 lessons&nbsp;&middot;&nbsp;live role-play
         </p>
 
@@ -178,18 +178,18 @@ export function EducationScreen({ isActive, onAction, onStep, progressRef }) {
 
         <div className="flex items-center justify-between gap-3" style={anim('jed-fade', 0.7, 1.2)}>
           <div className="text-left">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">Issued to</p>
-            <p className="mt-0.5 text-[15px] font-bold text-text">Front desk team</p>
+            <p className="text-[12.5px] font-semibold uppercase tracking-[0.1em] text-text-secondary">Issued to</p>
+            <p className="mt-0.5 text-[17px] font-bold text-text">Front desk team</p>
           </div>
           <div>
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-bold"
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[14.5px] font-bold"
               style={{ color: GREEN, background: 'rgba(18,160,107,0.09)', border: '1px solid rgba(18,160,107,0.25)' }}
             >
               <Check size={14} strokeWidth={2.5} />
               Verified
             </span>
-            <p className="mt-1.5 text-right text-[12px] text-text-secondary" style={MONO}>
+            <p className="mt-1.5 text-right text-[13.5px] font-medium text-text-secondary" style={MONO}>
               JL-4F2A&nbsp;&middot;&nbsp;Jul 2026
             </p>
           </div>
