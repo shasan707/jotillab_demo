@@ -143,8 +143,17 @@ export const PRODUCT_STEPS = {
     'AI explains the plan',
     'Guides them to a demo',
   ],
+  // Live delivery pipeline: caption follows the active phase.
+  jotildevs: [
+    'Shaping the idea',
+    'Wireframes and mockups',
+    'Clickable prototype',
+    'Building the real thing',
+    'Loading data and content',
+    'Quality assurance',
+    'Shipped and delivered',
+  ],
   // Static mockups: a single frozen caption, no step animation.
-  jotildevs: ['From idea to shipped'],
   jotilconsult: ['Know exactly what to fix first'],
   jotileducation: ['Your team, leveled up'],
 }
