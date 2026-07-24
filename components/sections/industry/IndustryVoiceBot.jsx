@@ -37,6 +37,12 @@ const CSS = `
   50% { border-radius: 45% 55% 57% 43% / 43% 53% 47% 57%; }
   75% { border-radius: 57% 43% 47% 53% / 53% 45% 55% 47%; }
 }
+/* Contained awake ripple: expands just past the rim and fades, staying
+   well inside the section instead of washing over neighboring sections. */
+@keyframes jvb-ping {
+  0% { transform: scale(1); opacity: 0.5; }
+  80%, 100% { transform: scale(1.26); opacity: 0; }
+}
 /* Gentler version for the inner face so the ring never breaks open. */
 @keyframes jvb-blob-soft {
   0%, 100% { border-radius: 48% 52% 51% 49% / 52% 48% 52% 48%; }
@@ -114,8 +120,8 @@ export function IndustryVoiceBot() {
             {awake && (
               <span
                 aria-hidden="true"
-                className="absolute inset-0 rounded-full animate-ping"
-                style={{ background: 'rgba(56,89,168,0.16)', animationDuration: '2s' }}
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'rgba(56,89,168,0.16)', animation: 'jvb-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }}
               />
             )}
             {/* Voice icon at the center */}
