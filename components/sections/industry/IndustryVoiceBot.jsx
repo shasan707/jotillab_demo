@@ -28,6 +28,22 @@ const CSS = `
   50% { transform: translate(0.5%, 0.9%) scale(0.995); }
   75% { transform: translate(-0.9%, -0.4%) scale(1.005); }
 }
+/* Wavy outline: the ring's silhouette morphs between organic blob shapes
+   instead of staying a perfect circle. The spin carries the waves around
+   the rim while the radii keep shifting on their own clock. */
+@keyframes jvb-blob {
+  0%, 100% { border-radius: 44% 56% 53% 47% / 55% 44% 56% 45%; }
+  25% { border-radius: 56% 44% 43% 57% / 47% 56% 44% 53%; }
+  50% { border-radius: 45% 55% 57% 43% / 43% 53% 47% 57%; }
+  75% { border-radius: 57% 43% 47% 53% / 53% 45% 55% 47%; }
+}
+/* Gentler version for the inner face so the ring never breaks open. */
+@keyframes jvb-blob-soft {
+  0%, 100% { border-radius: 48% 52% 51% 49% / 52% 48% 52% 48%; }
+  25% { border-radius: 52% 48% 47% 53% / 49% 52% 48% 51%; }
+  50% { border-radius: 48% 52% 53% 47% / 47% 51% 49% 53%; }
+  75% { border-radius: 53% 47% 49% 51% / 51% 48% 52% 49%; }
+}
 `
 
 export function IndustryVoiceBot() {
@@ -55,7 +71,7 @@ export function IndustryVoiceBot() {
                 filter: 'blur(20px)',
                 opacity: awake ? 0.55 : 0.32,
                 transition: 'opacity 0.5s ease',
-                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite`,
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite, jvb-blob ${awake ? '4s' : '9s'} ease-in-out infinite`,
               }}
             />
             {/* Turning gradient disc (becomes the ring once the face covers it) */}
@@ -64,7 +80,7 @@ export function IndustryVoiceBot() {
               className="absolute inset-0 rounded-full"
               style={{
                 background: RING_GRADIENT,
-                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite`,
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite, jvb-blob ${awake ? '4s' : '9s'} ease-in-out infinite`,
               }}
             />
             {/* Bright highlight travelling around the rim (counter-rotating) */}
@@ -85,13 +101,13 @@ export function IndustryVoiceBot() {
             {/* Inner face — offset wobble makes the ring thickness organic */}
             <span
               aria-hidden="true"
-              className="absolute inset-[10%] rounded-full"
+              className="absolute inset-[11.5%] rounded-full"
               style={{
                 background:
                   'radial-gradient(120% 120% at 68% 26%, #ffffff 0%, #f6f9ff 45%, #eef2fb 75%, #e6ecf9 100%)',
                 boxShadow:
                   'inset 0 3px 12px rgba(255,255,255,0.95), inset 0 -12px 28px rgba(56,89,168,0.14), inset 10px 0 24px rgba(6,182,212,0.10)',
-                animation: `jvb-wobble ${awake ? '3.5s' : '7s'} ease-in-out infinite`,
+                animation: `jvb-wobble ${awake ? '3.5s' : '7s'} ease-in-out infinite, jvb-blob-soft ${awake ? '5s' : '11s'} ease-in-out infinite`,
               }}
             />
             {/* Awake halo */}
