@@ -136,8 +136,10 @@ export default async function IndustryPage({ params }) {
         </div>
       </section>
 
-      {/* ── Voice AI bot (interactive orb, before the demo video) ── */}
-      <IndustryVoiceBot />
+      {/* ── Voice AI bot (interactive orb, before the demo video).
+           Industries with a dedicated Retell agent get a LIVE voice call;
+           the rest keep the decorative wake/rest orb. ── */}
+      <IndustryVoiceBot agent={slug === 'beauty-spa' ? 'beauty-spa' : undefined} />
 
       {/* ── Product dashboard promo ── */}
       <section className="pb-16">

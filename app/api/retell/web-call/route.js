@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server'
 
 /* Creates a Retell web-call session server-side and hands ONLY the short-lived
-   access token to the browser. The API key and agent id stay on the server
-   (RETELL_API_KEY / RETELL_AGENT_ID env vars — never NEXT_PUBLIC). */
-export async function POST() {
+   access token to the browser. The API key and agent ids stay on the server
+   (RETELL_* env vars — never NEXT_PUBLIC). The client may send an industry
+   key; it is resolved against this server-side map, so agent ids are never
+   accepted from or exposed to the browser. */
+const INDUSTRY_AGENTS = {
+  'beauty-spa': process.env.RETELL_AGENT_ID_BEAUTY_SPA,
+}
+
+export async function POST(request) {
   try {
     const apiKey = process.env.RETELL_API_KEY
-    const agentId = process.env.RETELL_AGENT_ID
+    const body = await request.json().catch(() => ({}))
+    const agentId = INDUSTRY_AGENTS[body?.agent] || process.env.RETELL_AGENT_ID
 
     if (!apiKey || !agentId) {
       console.error('[retell/web-call] RETELL_API_KEY or RETELL_AGENT_ID is not set')

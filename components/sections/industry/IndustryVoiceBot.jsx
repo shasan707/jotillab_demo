@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Mic, AudioLines } from 'lucide-react'
 
@@ -9,7 +9,12 @@ import { Mic, AudioLines } from 'lucide-react'
    organic glowing ring in purple / blue / cyan with a soft bloom, a bright
    highlight travelling around the rim, and a gentle morphing wobble.
    Tap or click to wake it: everything speeds up and breathes; the icon
-   flips from mic to waveform. Tap again to rest. */
+   flips from mic to waveform. Tap again to rest.
+
+   With an `agent` prop (an industry key resolved server-side, e.g.
+   "beauty-spa"), waking the orb starts a REAL Retell voice call through
+   /api/retell/web-call — same secure flow as the voice widget: the browser
+   only ever sees a short-lived access token. Tapping again ends the call. */
 
 const RING_GRADIENT =
   'conic-gradient(from 210deg, #22396E 0deg, #3859a8 90deg, #3B82F6 180deg, #06b6d4 265deg, #22396E 360deg)'
@@ -52,8 +57,92 @@ const CSS = `
 }
 `
 
-export function IndustryVoiceBot() {
+export function IndustryVoiceBot({ agent }) {
   const [awake, setAwake] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | connecting | live | error
+  const [agentTalking, setAgentTalking] = useState(false)
+  const clientRef = useRef(null)
+
+  // End any live call when leaving the page.
+  useEffect(() => {
+    return () => {
+      try { clientRef.current?.stopCall() } catch {}
+      clientRef.current = null
+    }
+  }, [])
+
+  async function startCall() {
+    setStatus('connecting')
+    setAwake(true)
+    try {
+      const res = await fetch('/api/retell/web-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not start the call.')
+
+      const { RetellWebClient } = await import('retell-client-js-sdk')
+      const client = new RetellWebClient()
+      clientRef.current = client
+
+      client.on('call_started', () => setStatus('live'))
+      client.on('call_ended', () => {
+        clientRef.current = null
+        setStatus('idle')
+        setAgentTalking(false)
+        setAwake(false)
+      })
+      client.on('agent_start_talking', () => setAgentTalking(true))
+      client.on('agent_stop_talking', () => setAgentTalking(false))
+      client.on('error', () => {
+        try { client.stopCall() } catch {}
+        clientRef.current = null
+        setStatus('error')
+        setAgentTalking(false)
+        setAwake(false)
+      })
+
+      await client.startCall({ accessToken: data.accessToken })
+    } catch {
+      clientRef.current = null
+      setStatus('error')
+      setAgentTalking(false)
+      setAwake(false)
+    }
+  }
+
+  function endCall() {
+    try { clientRef.current?.stopCall() } catch {}
+    clientRef.current = null
+    setStatus('idle')
+    setAgentTalking(false)
+    setAwake(false)
+  }
+
+  const handleTap = () => {
+    if (!agent) {
+      setAwake((v) => !v)
+      return
+    }
+    if (status === 'connecting' || status === 'live') endCall()
+    else startCall()
+  }
+
+  const pillText = !agent
+    ? awake
+      ? 'Awake and listening. Tap to rest.'
+      : 'Tap the orb to wake your assistant'
+    : status === 'connecting'
+      ? 'Connecting...'
+      : status === 'live'
+        ? agentTalking
+          ? 'Assistant is speaking. Tap to end.'
+          : 'Live. Speak whenever you like.'
+        : status === 'error'
+          ? 'Could not start the call. Tap to try again.'
+          : 'Tap the orb to talk to our AI'
 
   return (
     <section className="py-8">
@@ -62,9 +151,13 @@ export function IndustryVoiceBot() {
         <AnimatedSection>
           <button
             type="button"
-            onClick={() => setAwake((v) => !v)}
+            onClick={handleTap}
             aria-pressed={awake}
-            aria-label={awake ? 'Let the assistant rest' : 'Wake the assistant'}
+            aria-label={
+              !agent
+                ? awake ? 'Let the assistant rest' : 'Wake the assistant'
+                : awake ? 'End the voice call' : 'Start a voice call'
+            }
             className="relative mx-auto block h-[150px] w-[150px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4 sm:h-[190px] sm:w-[190px]"
             style={{ touchAction: 'manipulation', animation: awake ? 'jvb-breathe 2.2s ease-in-out infinite' : 'none' }}
           >
@@ -144,11 +237,9 @@ export function IndustryVoiceBot() {
             >
               <span
                 className="h-2 w-2 rounded-full"
-                style={{ background: awake ? '#12a06b' : '#3B82F6' }}
+                style={{ background: status === 'error' ? '#DC2626' : awake ? '#12a06b' : '#3B82F6' }}
               />
-              <span className="text-text-secondary">
-                {awake ? 'Awake and listening. Tap to rest.' : 'Tap the orb to wake your assistant'}
-              </span>
+              <span className="text-text-secondary">{pillText}</span>
             </span>
           </div>
         </AnimatedSection>
