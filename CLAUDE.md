@@ -29,6 +29,7 @@ JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Found
 - `RESEND_API_KEY` — contact form email delivery; the API route returns 503 without it (build still works)
 - `NEXT_PUBLIC_GA_ID` — Google Analytics 4; GA scripts only injected when set
 - `RETELL_API_KEY` + `RETELL_AGENT_ID` — live voice agent (widget Voice tab). Server-side only (app/api/retell/web-call); the route returns 503 without them. NEVER expose with NEXT_PUBLIC_
+- `RETELL_CHAT_AGENT_ID` — Retell chat agent behind the chatbot widget (app/api/retell/chat proxies messages server-side; browser sees only text + an opaque chat id)
 - `RETELL_AGENT_ID_<INDUSTRY>` — per-industry agents for the /use-cases voice orbs (BEAUTY_SPA, FINANCE_INSURANCE, HEALTH_WELLNESS, HOME_SERVICES, LEGAL, PERSONAL_SECRETARY, REAL_ESTATE, RESTAURANT, SMALL_BUSINESS); resolved server-side in the same route (client sends only the industry slug, falls back to RETELL_AGENT_ID)
 
 ## File Structure (key areas)

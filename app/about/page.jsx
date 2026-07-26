@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Target, Eye, Lightbulb, Shield, Zap, Users } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { CountUp } from '@/components/ui/CountUp'
@@ -48,19 +49,19 @@ const VALUES = [
 
 const TEAM = [
   {
-    initials: 'SS',
+    photo: '/founders/sayeed-sajal.jpg',
     name: 'Sayeed Sajal',
     title: 'CEO & Co-Founder',
     bio: 'Sayeed drives the overall vision and product strategy at JotilLabs, combining deep expertise in AI systems with a relentless focus on delivering measurable business outcomes for clients.',
   },
   {
-    initials: 'SD',
+    photo: '/founders/saikat-das.jpg',
     name: 'Saikat Das',
     title: 'COO & Co-Founder',
     bio: 'Saikat leads operations, partnerships, and go-to-market. He ensures that every client deployment runs smoothly from kickoff through scaling, with a strong background in enterprise operations.',
   },
   {
-    initials: 'QR',
+    photo: '/founders/qudrat-ratul.jpg',
     name: 'Qudrat E Alahy Ratul',
     title: 'CTO & Co-Founder',
     bio: 'Ratul architects the technical foundation of the Jotil platform, from voice AI infrastructure to real-time communication pipelines, with a philosophy of building systems that are both powerful and maintainable.',
@@ -308,13 +309,20 @@ export default function AboutPage() {
               <AnimatedSection key={member.name} delay={i * 0.1}>
                 <div className="card text-center h-full flex flex-col items-center p-8">
                   <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mb-4 font-bold text-white text-lg tracking-tight shrink-0"
+                    className="relative w-24 h-24 rounded-full overflow-hidden mb-4 shrink-0"
                     style={{
-                      background: 'linear-gradient(135deg, #3859a8, #3B82F6)',
+                      border: '3px solid #ffffff',
+                      outline: '2px solid rgba(56,89,168,0.30)',
                       boxShadow: '0 8px 24px rgba(56, 89, 168,0.3)',
                     }}
                   >
-                    {member.initials}
+                    <Image
+                      src={member.photo}
+                      alt={member.name}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
                   </div>
 
                   <h3 className="font-semibold text-text text-base mb-0.5">{member.name}</h3>

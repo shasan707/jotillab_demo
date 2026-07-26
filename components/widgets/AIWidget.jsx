@@ -1,45 +1,129 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { MessageSquare, X, Send } from 'lucide-react'
 
-/* Chat-only widget (bottom-right). The live voice assistant has its own
-   widget at bottom-left (VoiceWidget). */
+/* Chat widget (bottom-right), wired to the live Retell chat agent through
+   /api/retell/chat — the browser only exchanges plain messages and an opaque
+   chat id; the API key and agent id never leave the server. The live voice
+   assistant has its own widget at bottom-left (VoiceWidget). */
+
+const TRIGGER_CSS = `
+@keyframes jw-orbit { to { transform: rotate(360deg); } }
+@keyframes jw-dots {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
+  40% { transform: translateY(-3px); opacity: 1; }
+}
+`
+
+function TypingDots() {
+  return (
+    <span className="flex items-center gap-1 px-1 py-1" aria-label="Assistant is typing">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full"
+          style={{ background: '#3859a8', animation: `jw-dots 1.1s ${i * 0.15}s ease-in-out infinite` }}
+        />
+      ))}
+    </span>
+  )
+}
 
 function ChatPanel() {
+  const [messages, setMessages] = useState([
+    {
+      role: 'bot',
+      text: "Hi! I'm Jotil AI. How can I help you today? Ask me about our products, pricing, or how we can automate your business.",
+    },
+  ])
   const [input, setInput] = useState('')
+  const [sending, setSending] = useState(false)
+  const chatIdRef = useRef('')
+  const scrollRef = useRef(null)
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages, sending])
+
+  async function send(e) {
+    e.preventDefault()
+    const text = input.trim()
+    if (!text || sending) return
+    setInput('')
+    setMessages((m) => [...m, { role: 'user', text }])
+    setSending(true)
+    try {
+      const res = await fetch('/api/retell/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId: chatIdRef.current || undefined, message: text }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not send that.')
+      chatIdRef.current = data.chatId
+      setMessages((m) => [
+        ...m,
+        { role: 'bot', text: data.reply || 'Sorry, I did not catch that. Could you rephrase?' },
+      ])
+    } catch {
+      setMessages((m) => [
+        ...m,
+        { role: 'bot', text: 'Sorry, something went wrong on my side. Please try again in a moment.' },
+      ])
+    } finally {
+      setSending(false)
+    }
+  }
 
   return (
     <div className="flex flex-col h-full">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {/* Bot greeting */}
-        <div className="flex gap-2.5">
-          <div
-            className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
-            style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
-          >
-            J
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+        {messages.map((m, i) =>
+          m.role === 'bot' ? (
+            <div key={i} className="flex gap-2.5">
+              <div
+                className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
+                style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
+              >
+                J
+              </div>
+              <div className="bg-[#F0F4FF] rounded-2xl rounded-tl-md px-3.5 py-2.5 max-w-[85%]">
+                <p className="text-sm text-text leading-relaxed whitespace-pre-line m-0">{m.text}</p>
+              </div>
+            </div>
+          ) : (
+            <div key={i} className="flex justify-end">
+              <div
+                className="rounded-2xl rounded-tr-md px-3.5 py-2.5 max-w-[85%]"
+                style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
+              >
+                <p className="text-sm text-white leading-relaxed whitespace-pre-line m-0">{m.text}</p>
+              </div>
+            </div>
+          )
+        )}
+        {sending && (
+          <div className="flex gap-2.5">
+            <div
+              className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
+              style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
+            >
+              J
+            </div>
+            <div className="bg-[#F0F4FF] rounded-2xl rounded-tl-md px-3 py-2">
+              <TypingDots />
+            </div>
           </div>
-          <div className="bg-[#F0F4FF] rounded-2xl rounded-tl-md px-3.5 py-2.5 max-w-[85%]">
-            <p className="text-sm text-text leading-relaxed">
-              Hi! I&apos;m Jotil AI. How can I help you today? Ask me about our products, pricing, or how we can automate your business.
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Input */}
       <div className="border-t border-black/5 p-3">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            // TODO: Connect to Vercel AI SDK
-            setInput('')
-          }}
-          className="flex items-center gap-2"
-        >
+        <form onSubmit={send} className="flex items-center gap-2">
           <label htmlFor="ai-chat-input" className="sr-only">Type a message</label>
           <input
             id="ai-chat-input"
@@ -51,7 +135,7 @@ function ChatPanel() {
           />
           <button
             type="submit"
-            disabled={!input.trim()}
+            disabled={!input.trim() || sending}
             aria-label="Send message"
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 border-none cursor-pointer disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
@@ -73,6 +157,7 @@ export function AIWidget() {
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50">
+      <style>{TRIGGER_CSS}</style>
       {/* Widget panel */}
       <AnimatePresence>
         {open && (
@@ -111,26 +196,55 @@ export function AIWidget() {
         )}
       </AnimatePresence>
 
-      {/* Floating trigger button — vibrant gradient, gentle float, pulse glow */}
+      {/* Floating trigger — 3D glossy sphere with an orbiting light ring */}
       <motion.button
         onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.1, rotate: 3 }}
+        whileTap={{ scale: 0.94 }}
         animate={open || reduced ? { y: 0 } : { y: [0, -7, 0] }}
         transition={open || reduced ? { duration: 0.2 } : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
         className="relative w-14 h-14 rounded-full border-none cursor-pointer flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #3859a8 0%, #3B82F6 55%, #06b6d4 100%)',
-          boxShadow: '0 12px 34px rgba(56,89,168,0.45), 0 4px 14px rgba(59,130,246,0.4)',
+          background:
+            'radial-gradient(120% 120% at 30% 24%, #7db2ff 0%, #3B82F6 38%, #3859a8 72%, #22396E 100%)',
+          boxShadow: [
+            'inset 0 2px 4px rgba(255,255,255,0.5)',
+            'inset 0 -7px 14px rgba(15,17,41,0.35)',
+            '0 14px 34px rgba(56,89,168,0.5)',
+            '0 5px 14px rgba(59,130,246,0.4)',
+          ].join(', '),
         }}
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
-        {/* Vibrant pulse rings to draw the eye (only when closed) */}
+        {/* Orbiting light ring */}
+        {!reduced && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-[-5px] rounded-full"
+            style={{
+              padding: 2,
+              background:
+                'conic-gradient(from 0deg, rgba(59,130,246,0) 0deg, rgba(59,130,246,0.9) 120deg, rgba(6,182,212,0.9) 190deg, rgba(59,130,246,0) 300deg)',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              animation: 'jw-orbit 3.4s linear infinite',
+            }}
+          />
+        )}
+        {/* Glass highlight */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[7%] h-[38%] w-[64%] -translate-x-1/2 rounded-full"
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0))' }}
+        />
+        {/* Soft pulse to draw the eye (only when closed) */}
         {!open && !reduced && (
-          <>
-            <span aria-hidden="true" className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(59,130,246,0.40)', animationDuration: '2.4s' }} />
-            <span aria-hidden="true" className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(59,130,246,0.30)', animationDuration: '2.4s', animationDelay: '0.6s' }} />
-          </>
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full animate-ping"
+            style={{ background: 'rgba(59,130,246,0.35)', animationDuration: '2.6s' }}
+          />
         )}
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
@@ -155,7 +269,7 @@ export function AIWidget() {
             >
               <MessageSquare size={22} color="#fff" strokeWidth={1.5} />
             </motion.span>
-          ) }
+          )}
         </AnimatePresence>
       </motion.button>
     </div>
