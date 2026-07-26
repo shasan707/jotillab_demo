@@ -7,6 +7,14 @@ import { NextResponse } from 'next/server'
    accepted from or exposed to the browser. */
 const INDUSTRY_AGENTS = {
   'beauty-spa': process.env.RETELL_AGENT_ID_BEAUTY_SPA,
+  'finance-insurance': process.env.RETELL_AGENT_ID_FINANCE_INSURANCE,
+  'health-wellness': process.env.RETELL_AGENT_ID_HEALTH_WELLNESS,
+  'home-services': process.env.RETELL_AGENT_ID_HOME_SERVICES,
+  legal: process.env.RETELL_AGENT_ID_LEGAL,
+  'personal-secretary': process.env.RETELL_AGENT_ID_PERSONAL_SECRETARY,
+  'real-estate': process.env.RETELL_AGENT_ID_REAL_ESTATE,
+  restaurant: process.env.RETELL_AGENT_ID_RESTAURANT,
+  'small-business': process.env.RETELL_AGENT_ID_SMALL_BUSINESS,
 }
 
 export async function POST(request) {
