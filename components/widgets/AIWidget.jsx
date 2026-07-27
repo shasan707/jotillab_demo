@@ -10,7 +10,10 @@ import { MessageSquare, X, Send } from 'lucide-react'
    assistant has its own widget at bottom-left (VoiceWidget). */
 
 const TRIGGER_CSS = `
-@keyframes jw-orbit { to { transform: rotate(360deg); } }
+@keyframes jw-glow {
+  0%, 100% { box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+  50% { box-shadow: 0 4px 22px rgba(59,130,246,0.55), 0 0 10px rgba(6,182,212,0.3); }
+}
 @keyframes jw-dots {
   0%, 60%, 100% { transform: translateY(0) scale(0.8); opacity: 0.5; }
   30% { transform: translateY(-4px) scale(1); opacity: 1; }
@@ -164,11 +167,42 @@ function ChatPanel() {
 
 export function AIWidget() {
   const [open, setOpen] = useState(false)
+  const [peek, setPeek] = useState(false)
+  const everOpened = useRef(false)
   const reduced = useReducedMotion()
+
+  // Peek invitation appears after a moment, and never again once opened.
+  useEffect(() => {
+    const t = setTimeout(() => setPeek(true), 2600)
+    return () => clearTimeout(t)
+  }, [])
+
+  const openChat = () => {
+    everOpened.current = true
+    setPeek(false)
+    setOpen(true)
+  }
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50">
       <style>{TRIGGER_CSS}</style>
+
+      {/* Peek invitation */}
+      <AnimatePresence>
+        {peek && !open && !everOpened.current && (
+          <motion.button
+            onClick={openChat}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute bottom-16 right-0 w-[210px] cursor-pointer rounded-lg border border-black/5 bg-white px-3.5 py-2.5 text-left shadow-[0_4px_16px_rgba(15,17,41,0.12)]"
+          >
+            <p className="m-0 text-[13px] font-semibold text-text">Jotil AI</p>
+            <p className="m-0 mt-0.5 text-[13px] text-text-secondary">Questions? Chat with me.</p>
+          </motion.button>
+        )}
+      </AnimatePresence>
       {/* Widget panel */}
       <AnimatePresence>
         {open && (
@@ -214,56 +248,21 @@ export function AIWidget() {
         )}
       </AnimatePresence>
 
-      {/* Floating trigger — 3D glossy sphere with an orbiting light ring */}
+      {/* Floating trigger — reference style: gradient disc, white ring, float + glow */}
       <motion.button
-        onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.1, rotate: 3 }}
+        onClick={() => (open ? setOpen(false) : openChat())}
+        whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        animate={open || reduced ? { y: 0 } : { y: [0, -7, 0] }}
-        transition={open || reduced ? { duration: 0.2 } : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative w-14 h-14 rounded-full border-none cursor-pointer flex items-center justify-center"
+        animate={open || reduced ? { y: 0 } : { y: [0, -6, 0] }}
+        transition={open || reduced ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative w-14 h-14 rounded-full cursor-pointer flex items-center justify-center"
         style={{
-          background:
-            'radial-gradient(120% 120% at 30% 24%, #7db2ff 0%, #3B82F6 38%, #3859a8 72%, #22396E 100%)',
-          boxShadow: [
-            'inset 0 2px 4px rgba(255,255,255,0.5)',
-            'inset 0 -7px 14px rgba(15,17,41,0.35)',
-            '0 14px 34px rgba(56,89,168,0.5)',
-            '0 5px 14px rgba(59,130,246,0.4)',
-          ].join(', '),
+          background: 'linear-gradient(135deg, #3B82F6 0%, #3859a8 55%, #22396E 100%)',
+          border: '3px solid #ffffff',
+          animation: reduced ? 'none' : 'jw-glow 2s ease-in-out infinite',
         }}
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
-        {/* Orbiting light ring */}
-        {!reduced && (
-          <span
-            aria-hidden="true"
-            className="absolute inset-[-5px] rounded-full"
-            style={{
-              padding: 2,
-              background:
-                'conic-gradient(from 0deg, rgba(59,130,246,0) 0deg, rgba(59,130,246,0.9) 120deg, rgba(6,182,212,0.9) 190deg, rgba(59,130,246,0) 300deg)',
-              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-              WebkitMaskComposite: 'xor',
-              maskComposite: 'exclude',
-              animation: 'jw-orbit 3.4s linear infinite',
-            }}
-          />
-        )}
-        {/* Glass highlight */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[7%] h-[38%] w-[64%] -translate-x-1/2 rounded-full"
-          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0))' }}
-        />
-        {/* Soft pulse to draw the eye (only when closed) */}
-        {!open && !reduced && (
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 rounded-full animate-ping"
-            style={{ background: 'rgba(59,130,246,0.35)', animationDuration: '2.6s' }}
-          />
-        )}
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
             <motion.span
