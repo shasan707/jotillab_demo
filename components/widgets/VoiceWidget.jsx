@@ -5,21 +5,29 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Mic, X, Volume2, Phone } from 'lucide-react'
 
 /* Voice-only widget at bottom-LEFT (mirrors the chat widget at bottom-right).
-   Opening it goes straight to the live Retell voice call UI — no tabs.
-   The browser only ever sees a short-lived access token from our own API
-   route; the Retell API key stays on the server. */
+   Tapping the trigger connects the call IMMEDIATELY — the panel opens
+   already dialing, like the chat agent opens ready to type. Closing the
+   panel ends the call. The browser only ever sees a short-lived access
+   token from our own API route; the Retell API key stays on the server. */
 
 function VoiceCall() {
-  const [status, setStatus] = useState('idle') // idle | connecting | live | error
+  const [status, setStatus] = useState('connecting') // connecting | live | idle | error
   const [agentTalking, setAgentTalking] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const clientRef = useRef(null)
+  const autoStarted = useRef(false)
 
+  // Connect as soon as the panel opens; end the call when it closes.
   useEffect(() => {
+    if (!autoStarted.current) {
+      autoStarted.current = true
+      startCall()
+    }
     return () => {
       try { clientRef.current?.stopCall() } catch {}
       clientRef.current = null
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function startCall() {
@@ -70,26 +78,56 @@ function VoiceCall() {
   const connecting = status === 'connecting'
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-5 p-6">
+    <div
+      className="flex flex-col items-center justify-center h-full gap-4 p-6"
+      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f5f8fd 100%)' }}
+    >
+      <style>{`
+        @keyframes vwc-ring {
+          0% { transform: scale(1); opacity: 0.45; }
+          80%, 100% { transform: scale(1.55); opacity: 0; }
+        }
+      `}</style>
+
+      {/* Call sphere — mirrors the 3D trigger; tap ends (or retries) the call */}
       <button
         onClick={live || connecting ? endCall : startCall}
         aria-label={live ? 'End the call' : connecting ? 'Cancel' : 'Start a voice call'}
-        className="relative w-20 h-20 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 disabled:opacity-60"
+        className="relative w-20 h-20 rounded-full border-none cursor-pointer flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
         style={{
           background: live
-            ? 'linear-gradient(135deg, #22396E, #3859a8)'
-            : 'linear-gradient(135deg, #3859a8, #2a4688)',
-          boxShadow: live
-            ? '0 0 40px rgba(56, 89, 168,0.4)'
-            : '0 8px 24px rgba(56, 89, 168,0.3)',
+            ? 'radial-gradient(120% 120% at 30% 24%, #6a94e8 0%, #3859a8 40%, #22396E 78%, #171f3d 100%)'
+            : 'radial-gradient(120% 120% at 30% 24%, #7db2ff 0%, #3B82F6 40%, #3859a8 74%, #22396E 100%)',
+          boxShadow: [
+            'inset 0 2px 4px rgba(255,255,255,0.45)',
+            'inset 0 -6px 12px rgba(15,17,41,0.35)',
+            live ? '0 0 44px rgba(59,130,246,0.45)' : '0 10px 26px rgba(56,89,168,0.4)',
+          ].join(', '),
         }}
       >
+        {/* Live pulse rings — a second, delayed ring while the agent speaks */}
         {(live || connecting) && (
-          <span
-            className="absolute inset-0 rounded-full animate-ping"
-            style={{ background: 'rgba(56, 89, 168,0.2)' }}
-          />
+          <>
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full"
+              style={{ background: 'rgba(59,130,246,0.22)', animation: 'vwc-ring 1.8s ease-out infinite' }}
+            />
+            {agentTalking && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'rgba(6,182,212,0.20)', animation: 'vwc-ring 1.8s 0.55s ease-out infinite' }}
+              />
+            )}
+          </>
         )}
+        {/* Glass highlight */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[8%] h-[36%] w-[62%] -translate-x-1/2 rounded-full"
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0))' }}
+        />
         {connecting ? (
           <span className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
         ) : live ? (
@@ -99,38 +137,56 @@ function VoiceCall() {
         )}
       </button>
 
-      <p className="text-sm font-medium text-text-secondary">
-        {connecting
-          ? 'Connecting...'
-          : live
-            ? agentTalking
-              ? 'Jotil AI is speaking. Tap to end.'
-              : 'Live. Speak whenever you like.'
-            : 'Tap to talk to our AI'}
-      </p>
+      {/* Status pill */}
+      <span
+        className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12.5px] font-medium"
+        style={{ background: 'rgba(56,89,168,0.06)', border: '1px solid rgba(56,89,168,0.14)' }}
+      >
+        <span
+          className="h-2 w-2 rounded-full"
+          style={{
+            background: status === 'error' ? '#DC2626' : live ? '#12a06b' : '#3B82F6',
+            animation: connecting ? 'vwc-ring 1.2s ease-out infinite' : 'none',
+          }}
+        />
+        <span className="text-text-secondary">
+          {connecting
+            ? 'Connecting you now...'
+            : live
+              ? agentTalking
+                ? 'Jotil AI is speaking. Tap to end.'
+                : 'Live. Speak whenever you like.'
+              : status === 'error'
+                ? 'Something went wrong.'
+                : 'Call ended. Tap to talk again.'}
+        </span>
+      </span>
 
       {status === 'error' && (
-        <p className="text-xs text-red-500 text-center max-w-[220px]">{errorMessage}</p>
+        <p className="text-xs text-red-500 text-center max-w-[220px] m-0">
+          {errorMessage} <button onClick={startCall} className="border-none bg-transparent p-0 text-xs font-semibold text-primary cursor-pointer underline">Retry</button>
+        </p>
       )}
 
       {/* Or call the same AI on the phone */}
-      <div className="w-full max-w-[240px]">
+      <div className="w-full max-w-[248px] mt-1">
         <div className="flex items-center gap-3 mb-3" aria-hidden="true">
-          <span className="h-px flex-1 bg-black/8" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary">or</span>
-          <span className="h-px flex-1 bg-black/8" />
+          <span className="h-px flex-1" style={{ background: 'linear-gradient(90deg, transparent, rgba(15,17,41,0.14))' }} />
+          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-secondary">or</span>
+          <span className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(15,17,41,0.14), transparent)' }} />
         </div>
         <a
           href="tel:+18669307859"
-          className="flex items-center justify-center gap-2 w-full rounded-xl px-4 py-2.5 text-sm font-semibold no-underline transition-all duration-200 hover:-translate-y-[1px]"
+          className="group flex items-center justify-center gap-2.5 w-full rounded-xl px-4 py-3 text-sm font-semibold no-underline transition-all duration-200 hover:-translate-y-[2px] active:translate-y-0"
           style={{
-            color: '#3859a8',
-            background: 'rgba(56,89,168,0.07)',
-            border: '1px solid rgba(56,89,168,0.22)',
-            boxShadow: '0 2px 8px rgba(56,89,168,0.10)',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #3859a8 0%, #3B82F6 100%)',
+            boxShadow: '0 6px 18px rgba(56,89,168,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
           }}
         >
-          <Phone size={15} strokeWidth={2} />
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-200 group-hover:rotate-12">
+            <Phone size={13} strokeWidth={2.2} />
+          </span>
           Call +1 (866) 930-7859
         </a>
         <p className="text-[11px] text-text-secondary/70 text-center mt-2 m-0">
