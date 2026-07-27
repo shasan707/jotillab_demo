@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { MessageSquare, X, Send } from 'lucide-react'
+import { VoiceOrbGL } from './VoiceOrbGL'
 
 /* Chat widget (bottom-right), wired to the live Retell chat agent through
    /api/retell/chat — the browser only exchanges plain messages and an opaque
@@ -248,46 +249,50 @@ export function AIWidget() {
         )}
       </AnimatePresence>
 
-      {/* Floating trigger — reference style: gradient disc, white ring, float + glow */}
+      {/* Floating trigger — the orb itself, mini size, matching the voice side */}
       <motion.button
         onClick={() => (open ? setOpen(false) : openChat())}
-        whileHover={{ scale: 1.08 }}
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.94 }}
         animate={open || reduced ? { y: 0 } : { y: [0, -6, 0] }}
         transition={open || reduced ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative w-14 h-14 rounded-full cursor-pointer flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, #3B82F6 0%, #3859a8 55%, #22396E 100%)',
-          border: '3px solid #ffffff',
-          animation: reduced ? 'none' : 'jw-glow 2s ease-in-out infinite',
-        }}
+        className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span
-              key="close"
-              initial={{ opacity: 0, rotate: -90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 90 }}
-              transition={{ duration: 0.15 }}
-              className="flex"
-            >
-              <X size={22} color="#fff" strokeWidth={1.5} />
-            </motion.span>
-          ) : (
-            <motion.span
-              key="open"
-              initial={{ opacity: 0, rotate: 90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: -90 }}
-              transition={{ duration: 0.15 }}
-              className="flex"
-            >
-              <MessageSquare size={22} color="#fff" strokeWidth={1.5} />
-            </motion.span>
-          )}
-        </AnimatePresence>
+        <VoiceOrbGL size={56} speed={open ? 1.8 : 1} className="absolute inset-0" />
+        <span
+          className="relative z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 35% 30%, #7db2ff 0%, #3B82F6 45%, #22396E 100%)',
+            boxShadow: '0 3px 10px rgba(56,89,168,0.5), inset 0 1px 2px rgba(255,255,255,0.4)',
+          }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {open ? (
+              <motion.span
+                key="close"
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.15 }}
+                className="flex"
+              >
+                <X size={15} color="#fff" strokeWidth={2.2} />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="open"
+                initial={{ opacity: 0, rotate: 90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: -90 }}
+                transition={{ duration: 0.15 }}
+                className="flex"
+              >
+                <MessageSquare size={15} color="#fff" strokeWidth={2.2} />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </span>
       </motion.button>
     </div>
   )
