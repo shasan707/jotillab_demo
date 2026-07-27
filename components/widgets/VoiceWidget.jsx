@@ -5,12 +5,12 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Mic, X, Volume2, Phone } from 'lucide-react'
 import { VoiceOrbGL } from './VoiceOrbGL'
 
-/* Voice agent at bottom-LEFT. No panel, no extra step: tapping the trigger
-   reveals the free-floating orb (WebGL, brand blues) which starts dialing
-   IMMEDIATELY, with the label, "Or call" line, and privacy note stacked
-   below it. Tapping the orb (or the trigger again) ends the call. The
-   browser only ever sees a short-lived access token from our own API
-   route; the Retell API key and agent id stay on the server. */
+/* Voice agent at bottom-LEFT. Tapping the trigger opens the panel already
+   dialing (no extra step): inside is the WebGL orb (reference shader in
+   brand blues) with the call button at its center, the state label, the
+   "Or call" line, and the privacy note. Tapping the orb (or closing the
+   panel) ends the call. The browser only ever sees a short-lived access
+   token from our own API route; the Retell API key stays on the server. */
 
 const CSS = `
 @keyframes vwt-glow {
@@ -26,10 +26,6 @@ const CSS = `
   50% { transform: scale(1.1); }
 }
 `
-
-const TEXT_HALO = {
-  textShadow: '0 1px 0 rgba(255,255,255,0.85), 0 0 14px rgba(255,255,255,0.9)',
-}
 
 function VoiceSession() {
   const [status, setStatus] = useState('connecting') // connecting | live | idle | error
@@ -109,18 +105,10 @@ function VoiceSession() {
         : 'Talk to Jotil AI'
 
   return (
-    <div className="relative flex w-[240px] select-none flex-col items-center">
-      {/* Soft halo so the free-floating stack reads on any page */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-10 -inset-y-8 rounded-[48px]"
-        style={{
-          background:
-            'radial-gradient(closest-side, rgba(250,251,253,0.98) 40%, rgba(250,251,253,0.85) 68%, transparent)',
-          backdropFilter: 'blur(2px)',
-        }}
-      />
-
+    <div
+      className="flex h-full select-none flex-col items-center justify-center gap-1 px-6 pb-5 pt-3"
+      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f2f6fd 100%)' }}
+    >
       {/* Orb — tap to end the live call, or to retry after an error */}
       <button
         onClick={live || connecting ? endCall : startCall}
@@ -156,12 +144,12 @@ function VoiceSession() {
         </span>
       </button>
 
-      <p className="relative m-0 mt-1.5 text-center text-[16px] font-semibold tracking-[0.01em] text-text" style={TEXT_HALO}>
+      <p className="relative m-0 mt-1.5 text-center text-[16px] font-semibold tracking-[0.01em] text-text">
         {label}
       </p>
 
       {status === 'error' ? (
-        <p className="relative m-0 mt-0.5 max-w-[230px] text-center text-xs text-red-500" style={TEXT_HALO}>
+        <p className="relative m-0 mt-0.5 max-w-[230px] text-center text-xs text-red-500">
           {errorMessage}{' '}
           <button
             onClick={startCall}
@@ -171,7 +159,7 @@ function VoiceSession() {
           </button>
         </p>
       ) : live ? (
-        <p className="relative m-0 mt-0.5 text-center text-[11.5px] text-text-secondary/80" style={TEXT_HALO}>
+        <p className="relative m-0 mt-0.5 text-center text-[11.5px] text-text-secondary/80">
           Tap the orb to end the call
         </p>
       ) : null}
@@ -179,13 +167,13 @@ function VoiceSession() {
       <a
         href="tel:+18669307859"
         className="relative mt-1.5 flex items-center justify-center gap-1.5 text-[13.5px] font-medium no-underline transition-colors hover:text-primary"
-        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums', ...TEXT_HALO }}
+        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums' }}
       >
         <Phone size={13} strokeWidth={2} />
         Or call +1 (866) 930-7859
       </a>
 
-      <p className="relative m-0 mt-1 text-center text-[11px] tracking-[0.03em] text-text-secondary/70" style={TEXT_HALO}>
+      <p className="relative m-0 mt-1 text-center text-[11px] tracking-[0.03em] text-text-secondary/70">
         Secure and confidential
       </p>
     </div>
@@ -200,17 +188,38 @@ export function VoiceWidget() {
     <div className="fixed bottom-4 left-4 sm:bottom-5 sm:left-5 z-50">
       <style>{CSS}</style>
 
-      {/* Free-floating voice session (no panel). Mount = dial, unmount = hang up. */}
+      {/* Voice panel. Mount = dial, unmount = hang up. */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.9 }}
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.92 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-[4.5rem] left-0"
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute bottom-16 left-0 flex h-[400px] w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-2xl border border-black/8 bg-white shadow-2xl shadow-black/10 sm:w-[320px]"
           >
-            <VoiceSession />
+            {/* Header */}
+            <div
+              className="flex items-center justify-between px-4 py-3"
+              style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
+                  <Mic size={12} color="#fff" strokeWidth={2} />
+                </div>
+                <span className="text-sm font-semibold text-white">Jotil Voice AI</span>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close voice assistant"
+                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border-none bg-white/10 transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                <X size={14} color="#fff" strokeWidth={2} />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1">
+              <VoiceSession />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
