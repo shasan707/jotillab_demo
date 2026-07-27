@@ -31,6 +31,8 @@ JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Found
 - `RETELL_API_KEY` + `RETELL_AGENT_ID` — live voice agent (widget Voice tab). Server-side only (app/api/retell/web-call); the route returns 503 without them. NEVER expose with NEXT_PUBLIC_
 - `RETELL_CHAT_AGENT_ID` — Retell chat agent behind the chatbot widget (app/api/retell/chat proxies messages server-side; browser sees only text + an opaque chat id)
 - `RETELL_AGENT_ID_<INDUSTRY>` — per-industry agents for the /use-cases voice orbs (BEAUTY_SPA, FINANCE_INSURANCE, HEALTH_WELLNESS, HOME_SERVICES, LEGAL, PERSONAL_SECRETARY, REAL_ESTATE, RESTAURANT, SMALL_BUSINESS); resolved server-side in the same route (client sends only the industry slug, falls back to RETELL_AGENT_ID)
+- `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_API_*`) — blog comments storage (Upstash Redis via Vercel Marketplace). Without them the comments API returns 503 and the blog CommentSection hides itself
+- `COMMENT_MODERATION_SECRET` — HMAC secret signing the approve/reject links in comment notification emails (see Blog comments below)
 
 ## File Structure (key areas)
 ```
@@ -130,6 +132,13 @@ tests/                  — Playwright visual specs + snapshots
 15. Beam line: `.beam-line` — 1px rail with a traveling highlight (CTA band top edge)
 16. Page transitions: app/template.jsx fades each route in, opacity ONLY (a transform would break GSAP ScrollTrigger pinning)
 17. NO canvas backgrounds, particles, blur reveals
+
+## Blog Comments (moderated)
+- One comment form per post (components/blog/CommentSection.jsx, client island under the share card; blog pages stay SSG)
+- POST /api/blog/comments stores the comment as PENDING in Upstash Redis (comments:pending:{id}, TTL 30d) and emails contact@jotillabs.com approve/reject links (HMAC-signed with COMMENT_MODERATION_SECRET); honeypot + link-blocking + 3/10min per-IP rate limit
+- GET /api/blog/comments?slug= returns ONLY approved comments (comments:approved:{slug} list, public fields only; commenter emails never leave the pending record)
+- /api/blog/comments/moderate?id=&action=&token= performs the one-click decision, idempotent via comments:decided:{id} (TTL 90d), responds with a small branded HTML page
+- Backend missing → API 503 → the section renders nothing (never a broken box)
 
 ## Homepage Section Order
 HeroConsole > SolutionsBento > HowItWorks > Stats > Testimonials > IntegrationStrip > CTASection

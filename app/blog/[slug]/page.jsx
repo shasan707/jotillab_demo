@@ -4,6 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getAllPosts, getPostBySlug } from '@/lib/mdx'
 import { Calendar, Clock, ArrowLeft, ArrowRight, Twitter, Linkedin, BookOpen } from 'lucide-react'
 import { CopyLinkButton } from '@/components/blog/CopyLinkButton'
+import { CommentSection } from '@/components/blog/CommentSection'
 
 export async function generateStaticParams() {
   const posts = getAllPosts()
@@ -262,6 +263,9 @@ export default async function BlogPost({ params }) {
             <CopyLinkButton postUrl={postUrl} />
           </div>
         </div>
+
+        {/* Reader comments (approved after review) */}
+        <CommentSection slug={slug} />
       </div>
 
       {/* Related posts */}
