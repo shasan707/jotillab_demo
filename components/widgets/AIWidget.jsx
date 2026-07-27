@@ -12,10 +12,31 @@ import { MessageSquare, X, Send } from 'lucide-react'
 const TRIGGER_CSS = `
 @keyframes jw-orbit { to { transform: rotate(360deg); } }
 @keyframes jw-dots {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
-  40% { transform: translateY(-3px); opacity: 1; }
+  0%, 60%, 100% { transform: translateY(0) scale(0.8); opacity: 0.5; }
+  30% { transform: translateY(-4px) scale(1); opacity: 1; }
+}
+@keyframes jw-online {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 `
+
+function BotAvatar({ size = 24 }) {
+  return (
+    <span
+      className="rounded-full shrink-0 flex items-center justify-center text-white font-bold"
+      style={{
+        width: size,
+        height: size,
+        fontSize: size * 0.42,
+        background: 'linear-gradient(135deg, #3B82F6, #22396E)',
+        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.35)',
+      }}
+    >
+      J
+    </span>
+  )
+}
 
 function TypingDots() {
   return (
@@ -84,21 +105,16 @@ function ChatPanel() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((m, i) =>
           m.role === 'bot' ? (
-            <div key={i} className="flex gap-2.5">
-              <div
-                className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
-                style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
-              >
-                J
-              </div>
-              <div className="bg-[#F0F4FF] rounded-2xl rounded-tl-md px-3.5 py-2.5 max-w-[85%]">
+            <div key={i} className="flex items-end gap-2">
+              <BotAvatar />
+              <div className="bg-[#F0F4FF] rounded-xl rounded-bl-[4px] px-3.5 py-2.5 max-w-[82%]">
                 <p className="text-sm text-text leading-relaxed whitespace-pre-line m-0">{m.text}</p>
               </div>
             </div>
           ) : (
             <div key={i} className="flex justify-end">
               <div
-                className="rounded-2xl rounded-tr-md px-3.5 py-2.5 max-w-[85%]"
+                className="rounded-xl rounded-br-[4px] px-3.5 py-2.5 max-w-[82%]"
                 style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
               >
                 <p className="text-sm text-white leading-relaxed whitespace-pre-line m-0">{m.text}</p>
@@ -107,14 +123,9 @@ function ChatPanel() {
           )
         )}
         {sending && (
-          <div className="flex gap-2.5">
-            <div
-              className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
-              style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
-            >
-              J
-            </div>
-            <div className="bg-[#F0F4FF] rounded-2xl rounded-tl-md px-3 py-2">
+          <div className="flex items-end gap-2">
+            <BotAvatar />
+            <div className="bg-[#F0F4FF] rounded-xl rounded-bl-[4px] px-4 py-3">
               <TypingDots />
             </div>
           </div>
@@ -173,11 +184,18 @@ export function AIWidget() {
               className="flex items-center justify-between px-4 py-3"
               style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
             >
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                  <MessageSquare size={12} color="#fff" strokeWidth={2} />
+              <div className="flex items-center gap-2.5">
+                <BotAvatar size={32} />
+                <div className="leading-tight">
+                  <p className="m-0 text-[15px] font-semibold text-white">Jotil AI</p>
+                  <p className="m-0 flex items-center gap-1.5 text-[11px] text-white/85">
+                    <span
+                      className="h-[7px] w-[7px] rounded-full"
+                      style={{ background: '#12a06b', animation: 'jw-online 2s ease-in-out infinite' }}
+                    />
+                    Online
+                  </p>
                 </div>
-                <span className="text-sm font-semibold text-white">Jotil AI</span>
               </div>
               <button
                 onClick={() => setOpen(false)}
