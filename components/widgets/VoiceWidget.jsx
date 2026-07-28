@@ -86,6 +86,17 @@ export function VoiceWidget() {
 
   async function startCall() {
     setStatus('connecting')
+
+    // Mic preflight: surface a blocked/broken microphone immediately instead
+    // of joining a call the agent can never hear ("error_no_audio_received").
+    try {
+      const probe = await navigator.mediaDevices.getUserMedia({ audio: true })
+      probe.getTracks().forEach((t) => t.stop())
+    } catch {
+      setStatus('mic')
+      return
+    }
+
     try {
       const res = await fetch('/api/retell/web-call', { method: 'POST' })
       const data = await res.json()
@@ -146,9 +157,11 @@ export function VoiceWidget() {
       ? agentTalking
         ? 'Jotil AI is speaking'
         : 'Live. Tap to end.'
-      : status === 'error'
-        ? 'Tap to try again'
-        : 'Talk to Jotil AI'
+      : status === 'mic'
+        ? 'Microphone is blocked. Allow mic access, then tap again.'
+        : status === 'error'
+          ? 'Tap to try again'
+          : 'Talk to Jotil AI'
 
   return (
     <div className="fixed bottom-4 left-4 z-50 flex w-[176px] select-none flex-col items-center sm:bottom-5 sm:left-5">
