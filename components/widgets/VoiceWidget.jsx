@@ -95,22 +95,33 @@ export function VoiceWidget() {
       const client = new RetellWebClient()
       clientRef.current = client
 
-      client.on('call_started', () => setStatus('live'))
+      // Only the CURRENT client may drive state: if the user cancelled while
+      // we were connecting, events from this stale client are ignored and
+      // the call is torn down instead of resurrecting the UI.
+      const isCurrent = () => clientRef.current === client
+
+      client.on('call_started', () => {
+        if (isCurrent()) setStatus('live')
+        else { try { client.stopCall() } catch {} }
+      })
       client.on('call_ended', () => {
+        if (!isCurrent()) return
         clientRef.current = null
         setStatus('idle')
         setAgentTalking(false)
       })
-      client.on('agent_start_talking', () => setAgentTalking(true))
-      client.on('agent_stop_talking', () => setAgentTalking(false))
+      client.on('agent_start_talking', () => { if (isCurrent()) setAgentTalking(true) })
+      client.on('agent_stop_talking', () => { if (isCurrent()) setAgentTalking(false) })
       client.on('error', () => {
         try { client.stopCall() } catch {}
+        if (!isCurrent()) return
         clientRef.current = null
         setStatus('error')
         setAgentTalking(false)
       })
 
-      await client.startCall({ accessToken: data.accessToken })
+      await client.startCall({ accessToken: data.accessToken, sampleRate: 24000 })
+      if (!isCurrent()) { try { client.stopCall() } catch {} }
     } catch {
       clientRef.current = null
       setStatus('error')

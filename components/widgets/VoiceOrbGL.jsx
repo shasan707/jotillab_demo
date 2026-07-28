@@ -61,7 +61,7 @@ const vec3 color3 = vec3(0.137, 0.224, 0.431); /* #22396E navy */
    canvas composites over the page with no visible disc behind it). */
 const vec3 backgroundColor = vec3(0.0, 0.0, 0.0);
 const float innerRadius = 0.6;
-const float noiseScale = 0.65;
+const float noiseScale = 1.05;
 
 float light1(float intensity, float attenuation, float dist) {
   return intensity / (1.0 + dist * attenuation);
@@ -74,8 +74,8 @@ vec4 draw(vec2 uv) {
   float len = length(uv);
   float invLen = len > 0.0 ? 1.0 / len : 0.0;
   float bgLuminance = dot(backgroundColor, vec3(0.299, 0.587, 0.114));
-  float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.5)) * 0.5 + 0.5;
-  float r0 = mix(mix(innerRadius, 1.0, 0.4), mix(innerRadius, 1.0, 0.6), n0);
+  float n0 = snoise3(vec3(uv * noiseScale, iTime * 0.7)) * 0.5 + 0.5;
+  float r0 = mix(mix(innerRadius, 1.0, 0.28), mix(innerRadius, 1.0, 0.74), n0);
   float d0 = distance(uv, (r0 * invLen) * uv);
   float v0 = light1(1.0, 10.0, d0);
   v0 *= smoothstep(r0 * 1.05, r0, len);
