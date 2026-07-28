@@ -111,7 +111,7 @@ function ChatPanel() {
           m.role === 'bot' ? (
             <div key={i} className="flex items-end gap-2">
               <BotAvatar />
-              <div className="bg-[#F0F4FF] rounded-xl rounded-bl-[4px] px-3.5 py-2.5 max-w-[82%]">
+              <div className="rounded-xl rounded-bl-[4px] px-3.5 py-2.5 max-w-[82%]" style={{ background: 'rgba(240,244,255,0.85)' }}>
                 <p className="text-sm text-text leading-relaxed whitespace-pre-line m-0">{m.text}</p>
               </div>
             </div>
@@ -129,7 +129,7 @@ function ChatPanel() {
         {sending && (
           <div className="flex items-end gap-2">
             <BotAvatar />
-            <div className="bg-[#F0F4FF] rounded-xl rounded-bl-[4px] px-4 py-3">
+            <div className="rounded-xl rounded-bl-[4px] px-4 py-3" style={{ background: 'rgba(240,244,255,0.85)' }}>
               <TypingDots />
             </div>
           </div>
@@ -146,7 +146,8 @@ function ChatPanel() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 text-sm bg-[#F8FAFF] rounded-xl px-3.5 py-2.5 outline-none border border-transparent focus:border-primary/20 transition-colors"
+            className="flex-1 text-sm rounded-xl px-3.5 py-2.5 outline-none border border-transparent focus:border-primary/20 transition-colors"
+            style={{ background: 'rgba(255,255,255,0.75)' }}
           />
           <button
             type="submit"
@@ -212,7 +213,8 @@ export function AIWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-16 right-0 w-[calc(100vw-2rem)] sm:w-[340px] h-[460px] max-h-[calc(100vh-6rem)] bg-white rounded-2xl border border-black/8 shadow-2xl shadow-black/10 overflow-hidden flex flex-col"
+            className="absolute bottom-16 right-0 w-[calc(100vw-2rem)] sm:w-[340px] h-[460px] max-h-[calc(100vh-6rem)] rounded-2xl border border-white/60 shadow-2xl shadow-black/10 overflow-hidden flex flex-col"
+            style={{ background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}
           >
             {/* Header */}
             <div

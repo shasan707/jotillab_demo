@@ -105,10 +105,7 @@ function VoiceSession() {
         : 'Talk to Jotil AI'
 
   return (
-    <div
-      className="flex h-full select-none flex-col items-center justify-center gap-1 px-6 pb-5 pt-3"
-      style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f2f6fd 100%)' }}
-    >
+    <div className="flex w-[240px] select-none flex-col items-center gap-1 bg-transparent">
       {/* Orb — tap to end the live call, or to retry after an error */}
       <button
         onClick={live || connecting ? endCall : startCall}
@@ -144,7 +141,7 @@ function VoiceSession() {
         </span>
       </button>
 
-      <p className="relative m-0 mt-1.5 text-center text-[16px] font-semibold tracking-[0.01em] text-text">
+      <p className="relative m-0 mt-1.5 text-center text-[16px] font-semibold tracking-[0.01em] text-text" style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}>
         {label}
       </p>
 
@@ -167,13 +164,16 @@ function VoiceSession() {
       <a
         href="tel:+18669307859"
         className="relative mt-1.5 flex items-center justify-center gap-1.5 text-[13.5px] font-medium no-underline transition-colors hover:text-primary"
-        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums' }}
+        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
       >
         <Phone size={13} strokeWidth={2} />
         Or call +1 (866) 930-7859
       </a>
 
-      <p className="relative m-0 mt-1 text-center text-[11px] tracking-[0.03em] text-text-secondary/70">
+      <p
+        className="relative m-0 mt-1 text-center text-[11px] tracking-[0.03em] text-text-secondary/70"
+        style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
+      >
         Secure and confidential
       </p>
     </div>
@@ -188,38 +188,18 @@ export function VoiceWidget() {
     <div className="fixed bottom-4 left-4 sm:bottom-5 sm:left-5 z-50">
       <style>{CSS}</style>
 
-      {/* Voice panel. Mount = dial, unmount = hang up. */}
+      {/* Transparent voice session (reference style: just the orb + text).
+          Mount = dial, unmount = hang up. */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            initial={{ opacity: 0, y: 16, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            exit={{ opacity: 0, y: 12, scale: 0.94 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-16 left-0 flex h-[400px] w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] flex-col overflow-hidden rounded-2xl border border-black/8 bg-white shadow-2xl shadow-black/10 sm:w-[320px]"
+            className="absolute bottom-[4.5rem] left-0"
           >
-            {/* Header */}
-            <div
-              className="flex items-center justify-between px-4 py-3"
-              style={{ background: 'linear-gradient(135deg, #3859a8, #2a4688)' }}
-            >
-              <div className="flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
-                  <Mic size={12} color="#fff" strokeWidth={2} />
-                </div>
-                <span className="text-sm font-semibold text-white">Jotil Voice AI</span>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close voice assistant"
-                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg border-none bg-white/10 transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-              >
-                <X size={14} color="#fff" strokeWidth={2} />
-              </button>
-            </div>
-            <div className="min-h-0 flex-1">
-              <VoiceSession />
-            </div>
+            <VoiceSession />
           </motion.div>
         )}
       </AnimatePresence>
