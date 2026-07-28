@@ -1,22 +1,18 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { Mic, X, Volume2, Phone } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Mic, Volume2, Phone } from 'lucide-react'
 import { VoiceOrbGL } from './VoiceOrbGL'
 
-/* Voice agent at bottom-LEFT. Tapping the trigger opens the panel already
-   dialing (no extra step): inside is the WebGL orb (reference shader in
-   brand blues) with the call button at its center, the state label, the
-   "Or call" line, and the privacy note. Tapping the orb (or closing the
-   panel) ends the call. The browser only ever sees a short-lived access
+/* Voice agent at bottom-LEFT, always visible on every page — the reference
+   layout at widget scale: the orb with the call button at its center, the
+   state label, the "Or call" line, and the privacy note floating beneath it.
+   No panel and no extra step: tapping the orb starts the call INSTANTLY;
+   tapping again ends it. The browser only ever sees a short-lived access
    token from our own API route; the Retell API key stays on the server. */
 
 const CSS = `
-@keyframes vwt-glow {
-  0%, 100% { box-shadow: 0 4px 15px rgba(56,89,168,0.3); }
-  50% { box-shadow: 0 4px 22px rgba(56,89,168,0.55), 0 0 10px rgba(59,130,246,0.3); }
-}
 @keyframes vwo-glow {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 0.85; }
@@ -27,29 +23,27 @@ const CSS = `
 }
 `
 
-function VoiceSession() {
-  const [status, setStatus] = useState('connecting') // connecting | live | idle | error
-  const [agentTalking, setAgentTalking] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const clientRef = useRef(null)
-  const autoStarted = useRef(false)
+const GLOW = {
+  textShadow:
+    '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)',
+}
 
-  // Dial as soon as the orb appears; hang up when it goes away.
+export function VoiceWidget() {
+  const [status, setStatus] = useState('idle') // idle | connecting | live | error
+  const [agentTalking, setAgentTalking] = useState(false)
+  const clientRef = useRef(null)
+  const reduced = useReducedMotion()
+
+  // End any live call when leaving the site.
   useEffect(() => {
-    if (!autoStarted.current) {
-      autoStarted.current = true
-      startCall()
-    }
     return () => {
       try { clientRef.current?.stopCall() } catch {}
       clientRef.current = null
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function startCall() {
     setStatus('connecting')
-    setErrorMessage('')
     try {
       const res = await fetch('/api/retell/web-call', { method: 'POST' })
       const data = await res.json()
@@ -72,15 +66,13 @@ function VoiceSession() {
         clientRef.current = null
         setStatus('error')
         setAgentTalking(false)
-        setErrorMessage('The call dropped. Please try again.')
       })
 
       await client.startCall({ accessToken: data.accessToken })
-    } catch (err) {
+    } catch {
       clientRef.current = null
       setStatus('error')
       setAgentTalking(false)
-      setErrorMessage(err.message || 'Could not start the call.')
     }
   }
 
@@ -93,32 +85,39 @@ function VoiceSession() {
 
   const live = status === 'live'
   const connecting = status === 'connecting'
+  const busy = live || connecting
 
   const label = connecting
-    ? 'Connecting you now...'
+    ? 'Connecting...'
     : live
       ? agentTalking
         ? 'Jotil AI is speaking'
-        : 'Live. Speak anytime.'
+        : 'Live. Tap to end.'
       : status === 'error'
-        ? 'Could not connect'
+        ? 'Tap to try again'
         : 'Talk to Jotil AI'
 
   return (
-    <div className="flex w-[240px] select-none flex-col items-center gap-1 bg-transparent">
-      {/* Orb — tap to end the live call, or to retry after an error */}
-      <button
-        onClick={live || connecting ? endCall : startCall}
-        aria-label={live ? 'End the call' : connecting ? 'Cancel' : 'Start a voice call'}
-        className="relative block h-[170px] w-[170px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4"
+    <div className="fixed bottom-4 left-4 z-50 flex w-[176px] select-none flex-col items-center sm:bottom-5 sm:left-5">
+      <style>{CSS}</style>
+
+      {/* Orb — tap to start the call instantly, tap again to end */}
+      <motion.button
+        onClick={busy ? endCall : startCall}
+        whileHover={{ scale: 1.07 }}
+        whileTap={{ scale: 0.94 }}
+        animate={busy || reduced ? { y: 0 } : { y: [0, -5, 0] }}
+        transition={busy || reduced ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.1 }}
+        className="relative flex h-[84px] w-[84px] cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        aria-label={live ? 'End the call' : connecting ? 'Cancel' : 'Talk to our voice AI'}
       >
-        <VoiceOrbGL size={170} speed={live ? 1.9 : connecting ? 1.5 : 1} className="absolute inset-0" />
+        <VoiceOrbGL size={84} speed={live ? 1.9 : connecting ? 1.5 : 1} className="absolute inset-0" />
         {/* Center call button */}
         <span
-          className="absolute left-1/2 top-1/2 z-10 flex h-[64px] w-[64px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full"
+          className="relative z-10 flex h-[38px] w-[38px] items-center justify-center rounded-full"
           style={{
             background: 'radial-gradient(circle at 35% 30%, #7db2ff 0%, #3B82F6 45%, #22396E 100%)',
-            boxShadow: '0 8px 22px rgba(56,89,168,0.5), inset 0 2px 3px rgba(255,255,255,0.4)',
+            boxShadow: '0 4px 14px rgba(56,89,168,0.5), inset 0 1px 2px rgba(255,255,255,0.4)',
           }}
         >
           <span
@@ -126,129 +125,38 @@ function VoiceSession() {
             className="absolute inset-0 rounded-full"
             style={{
               background: 'radial-gradient(circle, transparent, rgba(255,255,255,0.18), rgba(255,255,255,0.4))',
-              animation: 'vwo-glow 2s ease-in-out infinite',
+              animation: reduced ? 'none' : 'vwo-glow 2s ease-in-out infinite',
             }}
           />
           {connecting ? (
-            <span className="h-6 w-6 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-          ) : live ? (
-            agentTalking
-              ? <Volume2 size={24} color="#fff" strokeWidth={2} style={{ animation: 'vwo-icon 1.2s ease-in-out infinite' }} />
-              : <Mic size={24} color="#fff" strokeWidth={2} />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+          ) : live && agentTalking ? (
+            <Volume2 size={17} color="#fff" strokeWidth={2.2} style={{ animation: reduced ? 'none' : 'vwo-icon 1.2s ease-in-out infinite' }} />
           ) : (
-            <Mic size={24} color="#fff" strokeWidth={2} style={{ animation: 'vwo-icon 2s ease-in-out infinite' }} />
+            <Mic size={17} color="#fff" strokeWidth={2.2} style={{ animation: reduced || busy ? 'none' : 'vwo-icon 2s ease-in-out infinite' }} />
           )}
         </span>
-      </button>
+      </motion.button>
 
-      <p className="relative m-0 mt-1.5 text-center text-[16px] font-semibold tracking-[0.01em] text-text" style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}>
+      {/* Label */}
+      <p className="m-0 mt-1.5 text-center text-[13px] font-semibold leading-tight text-text" style={GLOW}>
         {label}
       </p>
 
-      {status === 'error' ? (
-        <p className="relative m-0 mt-0.5 max-w-[230px] text-center text-xs text-red-500">
-          {errorMessage}{' '}
-          <button
-            onClick={startCall}
-            className="cursor-pointer border-none bg-transparent p-0 text-xs font-semibold text-primary underline"
-          >
-            Retry
-          </button>
-        </p>
-      ) : live ? (
-        <p className="relative m-0 mt-0.5 text-center text-[11.5px] text-text-secondary/80">
-          Tap the orb to end the call
-        </p>
-      ) : null}
-
+      {/* Or call the phone line */}
       <a
         href="tel:+18669307859"
-        className="relative mt-1.5 flex items-center justify-center gap-1.5 text-[13.5px] font-medium no-underline transition-colors hover:text-primary"
-        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
+        className="mt-1 flex items-center justify-center gap-1 whitespace-nowrap text-[11.5px] font-medium leading-tight no-underline transition-colors hover:text-primary"
+        style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums', ...GLOW }}
       >
-        <Phone size={13} strokeWidth={2} />
+        <Phone size={10} strokeWidth={2.2} className="shrink-0" />
         Or call +1 (866) 930-7859
       </a>
 
-      <p
-        className="relative m-0 mt-1 text-center text-[11px] tracking-[0.03em] text-text-secondary/70"
-        style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
-      >
+      {/* Privacy note */}
+      <p className="m-0 mt-0.5 text-center text-[10px] tracking-[0.03em] leading-tight text-text-secondary/70" style={GLOW}>
         Secure and confidential
       </p>
-    </div>
-  )
-}
-
-export function VoiceWidget() {
-  const [open, setOpen] = useState(false)
-  const reduced = useReducedMotion()
-
-  return (
-    <div className="fixed bottom-4 left-4 sm:bottom-5 sm:left-5 z-50">
-      <style>{CSS}</style>
-
-      {/* Transparent voice session (reference style: just the orb + text).
-          Mount = dial, unmount = hang up. */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.92 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.94 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-[4.5rem] left-0"
-          >
-            <VoiceSession />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Trigger — the orb itself, mini size, on every page */}
-      <motion.button
-        onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.94 }}
-        animate={open || reduced ? { y: 0 } : { y: [0, -6, 0] }}
-        transition={open || reduced ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.1 }}
-        className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-        aria-label={open ? 'Close voice assistant' : 'Talk to our voice AI'}
-      >
-        <VoiceOrbGL size={56} speed={open ? 1.8 : 1} className="absolute inset-0" />
-        <span
-          className="relative z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full"
-          style={{
-            background: 'radial-gradient(circle at 35% 30%, #7db2ff 0%, #3B82F6 45%, #22396E 100%)',
-            boxShadow: '0 3px 10px rgba(56,89,168,0.5), inset 0 1px 2px rgba(255,255,255,0.4)',
-          }}
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {open ? (
-              <motion.span
-                key="close"
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: 90 }}
-                transition={{ duration: 0.15 }}
-                className="flex"
-              >
-                <X size={15} color="#fff" strokeWidth={2.2} />
-              </motion.span>
-            ) : (
-              <motion.span
-                key="mic"
-                initial={{ opacity: 0, rotate: 90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: -90 }}
-                transition={{ duration: 0.15 }}
-                className="flex"
-              >
-                <Mic size={15} color="#fff" strokeWidth={2.2} />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </span>
-      </motion.button>
     </div>
   )
 }

@@ -2,16 +2,13 @@
 
 import dynamic from 'next/dynamic'
 
-/* Non-critical, interaction-only chrome. Neither is needed at first paint, so
-   we load them client-side after hydration (ssr:false) to keep them out of the
-   initial render/hydration path. The floating chat button and back-to-top
-   button look and behave exactly the same once mounted. */
+/* Non-critical, interaction-only chrome. Not needed at first paint, so we
+   load them client-side after hydration (ssr:false) to keep them out of the
+   initial render/hydration path. (The old back-to-top button was removed:
+   it shared the bottom-left corner with the voice agent and read as a
+   glitch.) */
 const AIWidget = dynamic(
   () => import('@/components/widgets/AIWidget').then((m) => m.AIWidget),
-  { ssr: false },
-)
-const ScrollToTop = dynamic(
-  () => import('@/components/layout/ScrollToTop').then((m) => m.ScrollToTop),
   { ssr: false },
 )
 const VoiceWidget = dynamic(
@@ -22,7 +19,6 @@ const VoiceWidget = dynamic(
 export function DeferredWidgets() {
   return (
     <>
-      <ScrollToTop />
       <AIWidget />
       <VoiceWidget />
     </>
