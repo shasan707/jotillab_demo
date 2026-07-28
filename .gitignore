@@ -50,3 +50,8 @@ playwright-report
 .vercel
 
 .env*
+
+# CLI-installed agent skill docs and lockfile (not part of the site)
+.agents/
+.claude/skills/
+skills-lock.json
