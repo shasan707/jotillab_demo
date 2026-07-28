@@ -169,42 +169,14 @@ function ChatPanel() {
 
 export function AIWidget() {
   const [open, setOpen] = useState(false)
-  const [peek, setPeek] = useState(false)
-  const everOpened = useRef(false)
   const reduced = useReducedMotion()
 
-  // Peek invitation appears after a moment, and never again once opened.
-  useEffect(() => {
-    const t = setTimeout(() => setPeek(true), 2600)
-    return () => clearTimeout(t)
-  }, [])
-
-  const openChat = () => {
-    everOpened.current = true
-    setPeek(false)
-    setOpen(true)
-  }
+  const openChat = () => setOpen(true)
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 flex w-[150px] select-none flex-col items-center">
       <style>{TRIGGER_CSS}</style>
 
-      {/* Peek invitation */}
-      <AnimatePresence>
-        {peek && !open && !everOpened.current && (
-          <motion.button
-            onClick={openChat}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-16 right-0 w-[210px] cursor-pointer rounded-lg border border-black/5 bg-white px-3.5 py-2.5 text-left shadow-[0_4px_16px_rgba(15,17,41,0.12)]"
-          >
-            <p className="m-0 text-[13px] font-semibold text-text">Jotil AI</p>
-            <p className="m-0 mt-0.5 text-[13px] text-text-secondary">Questions? Chat with me.</p>
-          </motion.button>
-        )}
-      </AnimatePresence>
       {/* Widget panel */}
       <AnimatePresence>
         {open && (
@@ -213,7 +185,7 @@ export function AIWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-16 right-0 w-[calc(100vw-2rem)] sm:w-[340px] h-[460px] max-h-[calc(100vh-6rem)] rounded-2xl border border-white/60 shadow-2xl shadow-black/10 overflow-hidden flex flex-col"
+            className="absolute bottom-[calc(100%+0.75rem)] right-0 w-[calc(100vw-2rem)] sm:w-[340px] h-[460px] max-h-[calc(100vh-6rem)] rounded-2xl border border-white/60 shadow-2xl shadow-black/10 overflow-hidden flex flex-col"
             style={{ background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}
           >
             {/* Header */}
@@ -296,6 +268,20 @@ export function AIWidget() {
           </AnimatePresence>
         </span>
       </motion.button>
+
+      {/* Label below the orb, mirroring the voice agent */}
+      <p
+        className="m-0 mt-1.5 text-center text-[13px] font-semibold leading-tight text-text"
+        style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
+      >
+        Chat with Jotil AI
+      </p>
+      <p
+        className="m-0 mt-0.5 whitespace-nowrap text-center text-[10px] tracking-[0.03em] leading-tight text-text-secondary/70"
+        style={{ textShadow: '0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.9), 0 0 22px rgba(255,255,255,0.85)' }}
+      >
+        Instant answers, any time
+      </p>
     </div>
   )
 }
