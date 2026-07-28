@@ -21,7 +21,49 @@ const CSS = `
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
 }
+@keyframes vwb-eq {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.8); }
+}
+@keyframes vwb-wave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(2); }
+}
 `
+
+/* Live call visualizer, matching the reference: green EQ bars while the
+   assistant listens, amber wave bars while it speaks. */
+function VoiceBars({ speaking, reduced }) {
+  const heights = speaking ? [8, 14, 22, 14, 8] : [10, 18, 12]
+  const gradient = speaking
+    ? 'linear-gradient(to top, #f59e0b, #fbbf24)'
+    : 'linear-gradient(to top, #12a06b, #10b981)'
+  return (
+    <div className="mt-1 flex flex-col items-center gap-1">
+      <span
+        className="text-[9.5px] font-semibold uppercase tracking-[0.1em] text-text-secondary/80"
+        style={GLOW}
+      >
+        {speaking ? 'Speaking' : 'Listening'}
+      </span>
+      <div className="flex h-[24px] items-center gap-[3px]">
+        {heights.map((h, i) => (
+          <span
+            key={`${speaking}-${i}`}
+            className="w-[4px] rounded-full"
+            style={{
+              height: h,
+              background: gradient,
+              animation: reduced
+                ? 'none'
+                : `${speaking ? 'vwb-wave 0.8s' : 'vwb-eq 1s'} ${i * (speaking ? 0.1 : 0.15)}s ease-in-out infinite`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const GLOW = {
   textShadow:
@@ -108,13 +150,13 @@ export function VoiceWidget() {
         whileTap={{ scale: 0.94 }}
         animate={busy || reduced ? { y: 0 } : { y: [0, -5, 0] }}
         transition={busy || reduced ? { duration: 0.2 } : { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.1 }}
-        className="relative flex h-[84px] w-[84px] cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         aria-label={live ? 'End the call' : connecting ? 'Cancel' : 'Talk to our voice AI'}
       >
-        <VoiceOrbGL size={84} speed={live ? 1.9 : connecting ? 1.5 : 1} className="absolute inset-0" />
+        <VoiceOrbGL size={56} speed={live ? 1.9 : connecting ? 1.5 : 1} className="absolute inset-0" />
         {/* Center call button */}
         <span
-          className="relative z-10 flex h-[38px] w-[38px] items-center justify-center rounded-full"
+          className="relative z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full"
           style={{
             background: 'radial-gradient(circle at 35% 30%, #7db2ff 0%, #3B82F6 45%, #22396E 100%)',
             boxShadow: '0 4px 14px rgba(56,89,168,0.5), inset 0 1px 2px rgba(255,255,255,0.4)',
@@ -129,11 +171,11 @@ export function VoiceWidget() {
             }}
           />
           {connecting ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
           ) : live && agentTalking ? (
-            <Volume2 size={17} color="#fff" strokeWidth={2.2} style={{ animation: reduced ? 'none' : 'vwo-icon 1.2s ease-in-out infinite' }} />
+            <Volume2 size={15} color="#fff" strokeWidth={2.2} style={{ animation: reduced ? 'none' : 'vwo-icon 1.2s ease-in-out infinite' }} />
           ) : (
-            <Mic size={17} color="#fff" strokeWidth={2.2} style={{ animation: reduced || busy ? 'none' : 'vwo-icon 2s ease-in-out infinite' }} />
+            <Mic size={15} color="#fff" strokeWidth={2.2} style={{ animation: reduced || busy ? 'none' : 'vwo-icon 2s ease-in-out infinite' }} />
           )}
         </span>
       </motion.button>
@@ -142,6 +184,9 @@ export function VoiceWidget() {
       <p className="m-0 mt-1.5 text-center text-[13px] font-semibold leading-tight text-text" style={GLOW}>
         {label}
       </p>
+
+      {/* Live visualizer: listening / speaking bars like the reference */}
+      {live && <VoiceBars speaking={agentTalking} reduced={reduced} />}
 
       {/* Or call the phone line */}
       <a

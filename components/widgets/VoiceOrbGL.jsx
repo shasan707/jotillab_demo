@@ -57,7 +57,9 @@ vec4 extractAlpha(vec3 colorIn) {
 const vec3 color1 = vec3(0.231, 0.510, 0.965); /* #3B82F6 sapphire */
 const vec3 color2 = vec3(0.024, 0.714, 0.831); /* #06b6d4 cyan */
 const vec3 color3 = vec3(0.137, 0.224, 0.431); /* #22396E navy */
-const vec3 backgroundColor = vec3(0.973, 0.980, 0.992);
+/* Black background = fully transparent outside the glowing ring (the
+   canvas composites over the page with no visible disc behind it). */
+const vec3 backgroundColor = vec3(0.0, 0.0, 0.0);
 const float innerRadius = 0.6;
 const float noiseScale = 0.65;
 
