@@ -1,10 +1,17 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import { getAllPosts, getPostBySlug } from '@/lib/mdx'
+import { getAllPosts } from '@/lib/mdx'
+import { getAllPostsCombined, getPostBySlugCombined } from '@/lib/blog'
+import { categoryClass } from '@/data/blogCategories'
 import { Calendar, Clock, ArrowLeft, ArrowRight, Twitter, Linkedin, BookOpen } from 'lucide-react'
 import { CopyLinkButton } from '@/components/blog/CopyLinkButton'
 import { CommentSection } from '@/components/blog/CommentSection'
+
+/* MDX posts are prerendered; admin-created (Redis) slugs render on demand
+   via dynamicParams and refresh at most every 5 minutes (plus instant
+   revalidation from the admin publish route). */
+export const revalidate = 300
 
 export async function generateStaticParams() {
   const posts = getAllPosts()
@@ -13,7 +20,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const post = getPostBySlug(slug)
+  const post = await getPostBySlugCombined(slug)
   if (!post) return { title: 'Not Found' }
   return {
     title: post.title,
@@ -31,17 +38,6 @@ export async function generateMetadata({ params }) {
       description: post.excerpt,
     },
   }
-}
-
-const CATEGORY_COLORS = {
-  'Voice AI': 'bg-blue-50 text-blue-700 border-blue-100',
-  'SMS & Messaging': 'bg-violet-50 text-violet-700 border-violet-100',
-  'Business Strategy': 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  'AI Tools': 'bg-amber-50 text-amber-700 border-amber-100',
-}
-
-function categoryClass(category) {
-  return CATEGORY_COLORS[category] ?? 'bg-slate-50 text-slate-700 border-slate-100'
 }
 
 function formatDate(dateStr) {
@@ -143,11 +139,11 @@ function RelatedPostCard({ post }) {
 
 export default async function BlogPost({ params }) {
   const { slug } = await params
-  const post = getPostBySlug(slug)
+  const post = await getPostBySlugCombined(slug)
   if (!post) notFound()
 
   // Related posts: other posts (excluding current), up to 2
-  const allPosts = getAllPosts()
+  const allPosts = await getAllPostsCombined()
   const related = allPosts.filter(p => p.slug !== slug).slice(0, 2)
 
   const postUrl = `https://jotillabs.com/blog/${slug}`

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Ratelimit } from '@upstash/ratelimit'
-import { getPostBySlug } from '@/lib/mdx'
+import { getPostBySlugCombined } from '@/lib/blog'
 import {
   getRedis,
   pendingKey,
@@ -73,7 +73,8 @@ export async function POST(request) {
       return NextResponse.json({ ok: true })
     }
 
-    if (!SLUG_RE.test(slug) || !getPostBySlug(slug)) {
+    const post = SLUG_RE.test(slug) ? await getPostBySlugCombined(slug) : null
+    if (!post) {
       return NextResponse.json({ ok: false, error: 'Invalid post.' }, { status: 400 })
     }
     if (name.length < 2 || name.length > 60) {
@@ -125,7 +126,6 @@ export async function POST(request) {
       const approveToken = signModerationToken(id, 'approve')
       const rejectToken = signModerationToken(id, 'reject')
       if (apiKey && approveToken && rejectToken) {
-        const post = getPostBySlug(slug)
         const base = process.env.SITE_URL || 'https://jotillabs.com'
         const moderate = (action, token) =>
           `${base}/api/blog/comments/moderate?id=${id}&action=${action}&token=${token}`

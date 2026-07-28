@@ -133,6 +133,13 @@ tests/                  — Playwright visual specs + snapshots
 16. Page transitions: app/template.jsx fades each route in, opacity ONLY (a transform would break GSAP ScrollTrigger pinning)
 17. NO canvas backgrounds, particles, blur reveals
 
+## Blog Admin (hidden authoring area)
+- /admin/blog (unlinked, robots-blocked, noindex): shared-password login (`BLOG_ADMIN_PASSWORD` env) sets a 30-day httpOnly cookie HMAC-signed with COMMENT_MODERATION_SECRET (lib/adminAuth.js)
+- Admin posts live in Upstash Redis hash `blog:posts` (field=slug, JSON shaped exactly like resolved MDX posts incl. precomputed readingTime string); CRUD via /api/admin/posts (rate-limited login at /api/admin/login)
+- lib/blog.js getAllPostsCombined()/getPostBySlugCombined() merge MDX + Redis; blog pages are async with `revalidate = 300` plus instant revalidatePath from the admin route; generateStaticParams stays MDX-only (dynamicParams renders admin slugs on demand)
+- Slugs immutable after creation (comments key by slug); MDX slugs can never be edited/deleted from the UI; shared categories in data/blogCategories.js
+- Comments work identically on admin posts (comments route validates via getPostBySlugCombined)
+
 ## Blog Comments (moderated)
 - One comment form per post (components/blog/CommentSection.jsx, client island under the share card; blog pages stay SSG)
 - POST /api/blog/comments stores the comment as PENDING in Upstash Redis (comments:pending:{id}, TTL 30d) and emails contact@jotillabs.com approve/reject links (HMAC-signed with COMMENT_MODERATION_SECRET); honeypot + link-blocking + 3/10min per-IP rate limit

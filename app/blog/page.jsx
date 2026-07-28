@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { getAllPosts } from '@/lib/mdx'
+import { getAllPostsCombined } from '@/lib/blog'
+import { categoryClass } from '@/data/blogCategories'
 import { Calendar, Clock, ArrowRight, BookOpen } from 'lucide-react'
 
 export const metadata = {
@@ -8,16 +9,9 @@ export const metadata = {
     'Expert insights on AI voice agents, SMS automation, and business process automation. Learn how JotilLabs helps modern businesses grow with AI.',
 }
 
-const CATEGORY_COLORS = {
-  'Voice AI': 'bg-blue-50 text-blue-700 border-blue-100',
-  'SMS & Messaging': 'bg-violet-50 text-violet-700 border-violet-100',
-  'Business Strategy': 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  'AI Tools': 'bg-amber-50 text-amber-700 border-amber-100',
-}
-
-function categoryClass(category) {
-  return CATEGORY_COLORS[category] ?? 'bg-slate-50 text-slate-700 border-slate-100'
-}
+/* Admin-created posts (Redis) join the MDX files; refresh at most every 5
+   minutes, plus instant revalidation from the admin publish route. */
+export const revalidate = 300
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -151,8 +145,8 @@ function PostCard({ post }) {
   )
 }
 
-export default function BlogPage() {
-  const posts = getAllPosts()
+export default async function BlogPage() {
+  const posts = await getAllPostsCombined()
   const [featured, ...rest] = posts
 
   return (
