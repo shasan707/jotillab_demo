@@ -8,6 +8,7 @@ import {
   PenSquare, Plus, Trash2, FileText, ChevronDown, CheckCircle2, AlertCircle, LogOut, ExternalLink, X,
   Image as ImageIcon, Film, MonitorPlay,
 } from 'lucide-react'
+import { upload } from '@vercel/blob/client'
 import { BLOG_CATEGORIES, categoryClass } from '@/data/blogCategories'
 
 /* Blog writing dashboard for admins. Lists every post (MDX file posts are
@@ -66,20 +67,51 @@ export function AdminDashboard({ posts }) {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
+
+    // Fast client-side checks with friendly messages.
+    const imageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    const videoTypes = ['video/mp4', 'video/webm']
+    const okType = kind === 'video' ? videoTypes.includes(file.type) : imageTypes.includes(file.type)
+    if (!okType) {
+      showError(
+        kind === 'video'
+          ? 'Use an MP4 or WebM video file.'
+          : 'Use a JPG, PNG, WebP, or GIF image.'
+      )
+      return
+    }
+    const maxBytes = kind === 'video' ? 200 * 1024 * 1024 : 8 * 1024 * 1024
+    if (file.size > maxBytes) {
+      showError(
+        kind === 'video'
+          ? 'Videos can be up to 200 MB. For longer videos, upload to YouTube and embed it instead.'
+          : 'Images can be up to 8 MB.'
+      )
+      return
+    }
+
     setUploading(kind)
     setErrorMessage('')
     if (status === 'error') setStatus('idle')
     try {
-      const body = new FormData()
-      body.append('file', file)
-      const res = await fetch('/api/admin/upload', { method: 'POST', body })
-      const data = await res.json()
-      if (!res.ok || !data.ok) throw new Error(data.error || 'Upload failed.')
+      // Browser uploads straight to Blob storage; our API only issues the
+      // permission token, so big videos never hit a server size limit.
+      const safeName = (file.name || 'upload').toLowerCase().replace(/[^a-z0-9.]+/g, '-')
+      const blob = await upload(`blog/${safeName}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/admin/upload',
+        clientPayload: JSON.stringify({ kind }),
+      })
       insertSnippet(
-        data.kind === 'video' ? `<Video src="${data.url}" />` : `![Describe this image](${data.url})`
+        kind === 'video' ? `<Video src="${blob.url}" />` : `![Describe this image](${blob.url})`
       )
     } catch (err) {
-      showError(err.message || 'Upload failed. Please try again.')
+      const msg = String(err?.message || '')
+      showError(
+        msg.includes('Not signed in')
+          ? 'Your session expired. Refresh the page and sign in again.'
+          : msg || 'Upload failed. Please try again.'
+      )
     } finally {
       setUploading('')
     }
