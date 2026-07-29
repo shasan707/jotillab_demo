@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,8 +9,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 export function SmoothScroll({ children }) {
+  const pathname = usePathname()
   useEffect(() => {
     if (typeof window === 'undefined') return
+
+    // The Studio manages its own scroll containers; Lenis would fight them.
+    if (pathname && pathname.startsWith('/studio')) return
 
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
@@ -41,7 +46,7 @@ export function SmoothScroll({ children }) {
       gsap.ticker.remove(onTick)
       lenis.destroy()
     }
-  }, [])
+  }, [pathname])
 
   return children
 }

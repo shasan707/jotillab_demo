@@ -7,6 +7,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/layout/JsonLd'
 import { DeferredWidgets } from '@/components/layout/DeferredWidgets'
+import { HideOnStudio } from '@/components/layout/HideOnStudio'
 import { BrandBackgroundGate, SmoothScroll } from '@/components/design'
 
 const inter = Inter({
@@ -136,11 +137,17 @@ export default function RootLayout({ children }) {
           <a href="#main-content" className="skip-to-main">
             Skip to main content
           </a>
-          <Navbar />
+          <HideOnStudio>
+            <Navbar />
+          </HideOnStudio>
           <main id="main-content" className="relative z-10">{children}</main>
-          <Footer />
+          <HideOnStudio>
+            <Footer />
+          </HideOnStudio>
         </SmoothScroll>
-        <DeferredWidgets />
+        <HideOnStudio>
+          <DeferredWidgets />
+        </HideOnStudio>
         <Analytics />
         <SpeedInsights />
       </body>

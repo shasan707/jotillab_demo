@@ -4,7 +4,7 @@ export default function robots() {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin'],
+        disallow: ['/api/', '/admin', '/studio'],
       },
     ],
     sitemap: 'https://jotillabs.com/sitemap.xml',

@@ -1,31 +1,37 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import { getAllPosts } from '@/lib/mdx'
-import { getAllPostsCombined, getPostBySlugCombined } from '@/lib/blog'
+import { PortableText } from '@portabletext/react'
+import { getAllPostsCombined, getPostBySlugCombined, getAllPostSlugs, SITE_URL, SITE_B_URL } from '@/lib/blog'
+import { portableTextComponents } from '@/components/blog/PortableTextComponents'
 import { categoryClass } from '@/data/blogCategories'
 import { Calendar, Clock, ArrowLeft, ArrowRight, Twitter, Linkedin, BookOpen } from 'lucide-react'
 import { CopyLinkButton } from '@/components/blog/CopyLinkButton'
 import { CommentSection } from '@/components/blog/CommentSection'
-import { MdxImage, Video, YouTube } from '@/components/blog/MdxMedia'
 
-/* MDX posts are prerendered; admin-created (Redis) slugs render on demand
-   via dynamicParams and refresh at most every 5 minutes (plus instant
-   revalidation from the admin publish route). */
+/* Posts live in Sanity. Known slugs are prerendered; newly published ones
+   render on demand via dynamicParams and refresh at most every 5 minutes
+   (plus instant revalidation from the Sanity webhook at /api/revalidate). */
 export const revalidate = 300
 
 export async function generateStaticParams() {
-  const posts = getAllPosts()
-  return posts.map(post => ({ slug: post.slug }))
+  const slugs = await getAllPostSlugs()
+  return slugs.map(slug => ({ slug }))
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
   const post = await getPostBySlugCombined(slug)
   if (!post) return { title: 'Not Found' }
+  /* When a post shows on both sites, only the canonical site self-references;
+     the other points at it so search engines credit one URL. */
+  const canonical =
+    post.canonicalSite === 'site-b' && SITE_B_URL
+      ? `${SITE_B_URL}/blog/${slug}`
+      : `${SITE_URL}/blog/${slug}`
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.excerpt,
@@ -47,68 +53,6 @@ function formatDate(dateStr) {
     month: 'long',
     day: 'numeric',
   })
-}
-
-// MDX component overrides -- maps to Tailwind prose-compatible styling
-const mdxComponents = {
-  h2: ({ children }) => (
-    <h2 className="mb-4 mt-10 font-[var(--font-sans)] text-2xl font-bold tracking-[-0.02em] text-text first:mt-0">
-      {children}
-    </h2>
-  ),
-  h3: ({ children }) => (
-    <h3 className="mb-3 mt-8 font-[var(--font-sans)] text-xl font-bold tracking-[-0.015em] text-text">
-      {children}
-    </h3>
-  ),
-  p: ({ children }) => (
-    <p className="mb-5 text-[17px] leading-[1.75] text-[#374151]">{children}</p>
-  ),
-  ul: ({ children }) => (
-    <ul className="mb-5 space-y-2 pl-6">{children}</ul>
-  ),
-  ol: ({ children }) => (
-    <ol className="mb-5 list-decimal space-y-2 pl-6">{children}</ol>
-  ),
-  li: ({ children }) => (
-    <li className="text-[17px] leading-[1.75] text-[#374151] marker:text-primary [&::marker]:font-semibold">
-      {children}
-    </li>
-  ),
-  strong: ({ children }) => (
-    <strong className="font-bold text-text">{children}</strong>
-  ),
-  blockquote: ({ children }) => (
-    <blockquote className="my-6 border-l-4 border-primary/30 bg-primary/[0.03] py-3 pl-5 pr-4 text-[17px] italic text-[#374151]">
-      {children}
-    </blockquote>
-  ),
-  code: ({ children }) => (
-    <code className="rounded-md bg-slate-100 px-1.5 py-0.5 font-[var(--font-mono)] text-[13px] text-slate-800">
-      {children}
-    </code>
-  ),
-  pre: ({ children }) => (
-    <pre className="mb-5 overflow-x-auto rounded-xl bg-slate-900 p-5 text-sm text-slate-100">
-      {children}
-    </pre>
-  ),
-  hr: () => (
-    <hr className="my-10 border-0 border-t border-black/[0.07]" />
-  ),
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      className="font-medium text-primary underline underline-offset-2 transition-colors hover:text-primary-dark"
-      target={href?.startsWith('http') ? '_blank' : undefined}
-      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-    >
-      {children}
-    </a>
-  ),
-  img: MdxImage,
-  Video,
-  YouTube,
 }
 
 function RelatedPostCard({ post }) {
@@ -226,9 +170,9 @@ export default async function BlogPost({ params }) {
         {/* Gradient divider */}
         <div className="mb-12 h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        {/* MDX content */}
+        {/* Post content (Portable Text from Sanity) */}
         <article className="min-w-0">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <PortableText value={post.content} components={portableTextComponents} />
         </article>
 
         {/* Gradient divider */}

@@ -55,3 +55,6 @@ playwright-report
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Sanity migration asset cache (scripts/migrate-to-sanity.mjs)
+scripts/.sanity-asset-map.json
