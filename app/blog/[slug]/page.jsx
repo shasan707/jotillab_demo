@@ -7,6 +7,7 @@ import { categoryClass } from '@/data/blogCategories'
 import { Calendar, Clock, ArrowLeft, ArrowRight, Twitter, Linkedin, BookOpen } from 'lucide-react'
 import { CopyLinkButton } from '@/components/blog/CopyLinkButton'
 import { CommentSection } from '@/components/blog/CommentSection'
+import { MdxImage, Video, YouTube } from '@/components/blog/MdxMedia'
 
 /* MDX posts are prerendered; admin-created (Redis) slugs render on demand
    via dynamicParams and refresh at most every 5 minutes (plus instant
@@ -105,6 +106,9 @@ const mdxComponents = {
       {children}
     </a>
   ),
+  img: MdxImage,
+  Video,
+  YouTube,
 }
 
 function RelatedPostCard({ post }) {

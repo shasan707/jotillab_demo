@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   PenSquare, Plus, Trash2, FileText, ChevronDown, CheckCircle2, AlertCircle, LogOut, ExternalLink, X,
+  Image as ImageIcon, Film, MonitorPlay,
 } from 'lucide-react'
 import { BLOG_CATEGORIES, categoryClass } from '@/data/blogCategories'
 
@@ -32,8 +33,70 @@ export function AdminDashboard({ posts }) {
   const [publishedSlug, setPublishedSlug] = useState('')
   const [confirmDelete, setConfirmDelete] = useState('')
   const [deleting, setDeleting] = useState('')
+  const [uploading, setUploading] = useState('') // '' | 'image' | 'video'
+  const [ytOpen, setYtOpen] = useState(false)
+  const [ytUrl, setYtUrl] = useState('')
+  const contentRef = useRef(null)
+  const imageInputRef = useRef(null)
+  const videoInputRef = useRef(null)
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  /* Insert a snippet at the cursor position in the content box. */
+  function insertSnippet(snippet) {
+    const el = contentRef.current
+    setForm((f) => {
+      const content = f.content
+      const start = el ? el.selectionStart : content.length
+      const end = el ? el.selectionEnd : content.length
+      const before = content.slice(0, start)
+      const after = content.slice(end)
+      const pad = before && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : ''
+      return { ...f, content: `${before}${pad}${snippet}\n\n${after}` }
+    })
+    el?.focus()
+  }
+
+  function showError(message) {
+    setStatus('error')
+    setErrorMessage(message)
+  }
+
+  async function handleUpload(kind, e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setUploading(kind)
+    setErrorMessage('')
+    if (status === 'error') setStatus('idle')
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      const res = await fetch('/api/admin/upload', { method: 'POST', body })
+      const data = await res.json()
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Upload failed.')
+      insertSnippet(
+        data.kind === 'video' ? `<Video src="${data.url}" />` : `![Describe this image](${data.url})`
+      )
+    } catch (err) {
+      showError(err.message || 'Upload failed. Please try again.')
+    } finally {
+      setUploading('')
+    }
+  }
+
+  function handleYouTubeInsert() {
+    const match = ytUrl.match(
+      /(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,20})/
+    )
+    if (!match) {
+      showError('That does not look like a YouTube link. Paste the full video address.')
+      return
+    }
+    insertSnippet(`<YouTube id="${match[1]}" />`)
+    setYtUrl('')
+    setYtOpen(false)
+  }
 
   function openCreate() {
     setMode('create')
@@ -268,20 +331,81 @@ export function AdminDashboard({ posts }) {
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label htmlFor="post-content" className={labelClass}>Post content</label>
+                      <div className="mb-1.5 flex items-end justify-between gap-3">
+                        <label htmlFor="post-content" className={`${labelClass} mb-0`}>Post content</label>
+                        {/* Media toolbar */}
+                        <div className="flex items-center gap-1.5">
+                          <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => handleUpload('image', e)} />
+                          <input ref={videoInputRef} type="file" accept="video/mp4,video/webm" className="hidden" onChange={(e) => handleUpload('video', e)} />
+                          <button
+                            type="button"
+                            onClick={() => imageInputRef.current?.click()}
+                            disabled={!!uploading}
+                            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-[9px] border border-black/10 bg-white px-2.5 text-[11.5px] font-semibold text-text-secondary transition-colors hover:text-primary disabled:opacity-50"
+                          >
+                            {uploading === 'image'
+                              ? <span className="h-3 w-3 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+                              : <ImageIcon size={13} strokeWidth={1.5} />}
+                            Image
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => videoInputRef.current?.click()}
+                            disabled={!!uploading}
+                            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-[9px] border border-black/10 bg-white px-2.5 text-[11.5px] font-semibold text-text-secondary transition-colors hover:text-primary disabled:opacity-50"
+                          >
+                            {uploading === 'video'
+                              ? <span className="h-3 w-3 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+                              : <Film size={13} strokeWidth={1.5} />}
+                            Video
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setYtOpen((v) => !v)}
+                            disabled={!!uploading}
+                            className={`flex h-8 cursor-pointer items-center gap-1.5 rounded-[9px] border px-2.5 text-[11.5px] font-semibold transition-colors disabled:opacity-50 ${ytOpen ? 'border-primary/40 text-primary' : 'border-black/10 bg-white text-text-secondary hover:text-primary'}`}
+                          >
+                            <MonitorPlay size={13} strokeWidth={1.5} />
+                            YouTube
+                          </button>
+                        </div>
+                      </div>
+                      {ytOpen && (
+                        <div className="mb-2 flex items-center gap-2">
+                          <input
+                            type="url"
+                            value={ytUrl}
+                            onChange={(e) => setYtUrl(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleYouTubeInsert() } }}
+                            placeholder="Paste a YouTube link, e.g. https://youtu.be/..."
+                            className={`${inputClass} py-2 text-[13px]`}
+                            style={inputStyle}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleYouTubeInsert}
+                            disabled={!ytUrl.trim()}
+                            className="btn-gradient h-9 shrink-0 cursor-pointer rounded-[9px] border-none px-4 text-[12px] font-semibold text-white disabled:opacity-50"
+                          >
+                            Insert
+                          </button>
+                        </div>
+                      )}
                       <textarea
                         id="post-content"
+                        ref={contentRef}
                         required
                         minLength={50}
                         maxLength={50000}
                         value={form.content}
                         onChange={set('content')}
-                        placeholder={'Write your article here.\n\n## A section heading\n\nRegular paragraphs are plain text with a blank line between them. Use **bold** for emphasis.\n\n- A bullet point\n- Another bullet point'}
+                        placeholder={'Write your article here.\n\n## A section heading\n\nRegular paragraphs are plain text with a blank line between them. Use **bold** for emphasis.\n\n- A bullet point\n- Another bullet point\n\nUse the buttons above to add pictures, videos, or a YouTube embed.'}
                         className={`${inputClass} min-h-[400px] resize-y font-mono text-[13px] leading-relaxed`}
                         style={inputStyle}
                       />
                       <p className="m-0 mt-1 text-[11px] text-[var(--color-text-secondary)]">
                         Formatting: ## Heading, **bold**, - list item, blank line between paragraphs.
+                        Pictures and videos upload with the buttons above and drop in where your cursor is.
                       </p>
                     </div>
                   </div>

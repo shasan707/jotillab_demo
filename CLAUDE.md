@@ -139,6 +139,7 @@ tests/                  — Playwright visual specs + snapshots
 - lib/blog.js getAllPostsCombined()/getPostBySlugCombined() merge MDX + Redis; blog pages are async with `revalidate = 300` plus instant revalidatePath from the admin route; generateStaticParams stays MDX-only (dynamicParams renders admin slugs on demand)
 - Slugs immutable after creation (comments key by slug); MDX slugs can never be edited/deleted from the UI; shared categories in data/blogCategories.js
 - Comments work identically on admin posts (comments route validates via getPostBySlugCombined)
+- Media: editor toolbar uploads images (jpg/png/webp/gif ≤8MB) and videos (mp4/webm ≤80MB) to Vercel Blob (store jotil-blog-media, public; /api/admin/upload, cookie-guarded, needs BLOB_READ_WRITE_TOKEN) and inserts snippets at the cursor: `![alt](url)`, `<Video src="..." />`, `<YouTube id="..." />` (id parsed from any pasted YouTube link). Renderers in components/blog/MdxMedia.jsx, registered in the detail page's mdxComponents (file posts can use them too)
 
 ## Blog Comments (moderated)
 - One comment form per post (components/blog/CommentSection.jsx, client island under the share card; blog pages stay SSG)
