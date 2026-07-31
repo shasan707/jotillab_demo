@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Mic, Volume2, Phone } from 'lucide-react'
 import { VoiceOrbGL } from './VoiceOrbGL'
+import { brand } from '@/lib/brand'
 
 /* Voice agent at bottom-LEFT, always visible on every page — the reference
    layout at widget scale: the orb with the call button at its center, the
@@ -214,12 +215,12 @@ export function VoiceWidget() {
 
       {/* Or call the phone line */}
       <a
-        href="tel:+18669307859"
+        href={brand.phoneHref}
         className="mt-1 flex items-center justify-center gap-1 whitespace-nowrap text-[11.5px] font-medium leading-tight no-underline transition-colors hover:text-primary"
         style={{ color: '#3859a8', fontVariantNumeric: 'tabular-nums', ...GLOW }}
       >
         <Phone size={10} strokeWidth={2.2} className="shrink-0" />
-        Or call +1 (866) 930-7859
+        Or call {brand.phone}
       </a>
 
       {/* Privacy note */}
