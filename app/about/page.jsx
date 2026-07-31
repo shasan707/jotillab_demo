@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Target, Eye, Lightbulb, Shield, Zap, Users } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { CountUp } from '@/components/ui/CountUp'
@@ -48,19 +49,19 @@ const VALUES = [
 
 const TEAM = [
   {
-    initials: 'SS',
+    photo: '/founders/sayeed-sajal.jpg',
     name: 'Sayeed Sajal',
     title: 'CEO & Co-Founder',
     bio: 'Sayeed drives the overall vision and product strategy at JotilLabs, combining deep expertise in AI systems with a relentless focus on delivering measurable business outcomes for clients.',
   },
   {
-    initials: 'SD',
+    photo: '/founders/saikat-das.jpg',
     name: 'Saikat Das',
     title: 'COO & Co-Founder',
     bio: 'Saikat leads operations, partnerships, and go-to-market. He ensures that every client deployment runs smoothly from kickoff through scaling, with a strong background in enterprise operations.',
   },
   {
-    initials: 'QR',
+    photo: '/founders/qudrat-ratul.jpg',
     name: 'Qudrat E Alahy Ratul',
     title: 'CTO & Co-Founder',
     bio: 'Ratul architects the technical foundation of the Jotil platform, from voice AI infrastructure to real-time communication pipelines, with a philosophy of building systems that are both powerful and maintainable.',
@@ -71,7 +72,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-24">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-24">
         <div
           className="pointer-events-none absolute top-[-120px] right-[-80px] rounded-full"
           aria-hidden="true"
@@ -91,7 +92,7 @@ export default function AboutPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)' }}
             >
               We believe every business{' '}
@@ -115,14 +116,14 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-primary-50)" height={40} />
 
       {/* Story + Mission / Vision */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left: Story */}
             <AnimatedSection>
               <Badge variant="blue" className="mb-5">How it started</Badge>
               <h2
-                className="font-bold tracking-[-0.03em] leading-snug mb-6 text-text"
+                className="headline-shadow font-bold tracking-[-0.03em] leading-snug mb-6 text-text"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Born from a frustration with wasted potential
@@ -213,11 +214,11 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Stats */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               Trusted by growing businesses
@@ -254,12 +255,12 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* Values */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we believe</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               The values that guide every decision
@@ -288,12 +289,12 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Team */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">The founders</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               Built by people who care deeply
@@ -308,13 +309,20 @@ export default function AboutPage() {
               <AnimatedSection key={member.name} delay={i * 0.1}>
                 <div className="card text-center h-full flex flex-col items-center p-8">
                   <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mb-4 font-bold text-white text-lg tracking-tight shrink-0"
+                    className="relative w-24 h-24 rounded-full overflow-hidden mb-4 shrink-0"
                     style={{
-                      background: 'linear-gradient(135deg, #3859a8, #3B82F6)',
+                      border: '3px solid #ffffff',
+                      outline: '2px solid rgba(56,89,168,0.30)',
                       boxShadow: '0 8px 24px rgba(56, 89, 168,0.3)',
                     }}
                   >
-                    {member.initials}
+                    <Image
+                      src={member.photo}
+                      alt={member.name}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
                   </div>
 
                   <h3 className="font-semibold text-text text-base mb-0.5">{member.name}</h3>
@@ -334,7 +342,7 @@ export default function AboutPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <AnimatedSection>
             <div
@@ -345,7 +353,7 @@ export default function AboutPage() {
               }}
             >
               <h2
-                className="font-bold tracking-[-0.03em] text-text mb-4"
+                className="headline-shadow font-bold tracking-[-0.03em] text-text mb-4"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Want to join our mission?

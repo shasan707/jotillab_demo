@@ -71,7 +71,7 @@ export default function CustomDevelopmentPage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="relative overflow-hidden pt-32 pb-24">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-24">
         <div
           className="pointer-events-none absolute top-[-120px] right-[-80px] rounded-full"
           aria-hidden="true"
@@ -102,7 +102,7 @@ export default function CustomDevelopmentPage() {
 
           <AnimatedSection delay={0.08}>
             <h1
-              className="font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
+              className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.06] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)' }}
             >
               Custom AI{' '}
@@ -124,12 +124,12 @@ export default function CustomDevelopmentPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-primary-50)" height={40} />
 
       {/* What We Build */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">What we build</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               AI solutions built for your business
@@ -166,12 +166,12 @@ export default function CustomDevelopmentPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
 
       {/* Why Us */}
-      <section className="py-24 bg-bg-alt/40">
+      <section className="py-24 bg-[#E9EEF7]">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-14">
             <Badge variant="blue" className="mb-5">Why JotilLabs</Badge>
             <h2
-              className="font-bold tracking-[-0.03em] text-text mb-3"
+              className="headline-shadow font-bold tracking-[-0.03em] text-text mb-3"
               style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
             >
               What makes us different
@@ -208,7 +208,7 @@ export default function CustomDevelopmentPage() {
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
 
       {/* CTA */}
-      <section className="py-24">
+      <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <AnimatedSection>
             <div
@@ -220,7 +220,7 @@ export default function CustomDevelopmentPage() {
               }}
             >
               <h2
-                className="font-bold tracking-[-0.03em] text-text mb-4"
+                className="headline-shadow font-bold tracking-[-0.03em] text-text mb-4"
                 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.25rem)' }}
               >
                 Have something specific in mind?
@@ -237,7 +237,7 @@ export default function CustomDevelopmentPage() {
                   Tell Us About Your Project
                 </Link>
                 <Link
-                  href="/products"
+                  href="/"
                   className="inline-flex items-center no-underline text-sm font-semibold text-text px-7 py-3.5 rounded-[11px] transition-all duration-300 hover:-translate-y-0.5"
                   style={{
                     background: 'rgba(0,0,0,0.04)',

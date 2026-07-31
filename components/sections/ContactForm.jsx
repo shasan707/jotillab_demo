@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, Mail, Phone, MapPin, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ChevronDown, Mail, Phone, MapPin, CheckCircle2, AlertCircle, CalendarClock, ArrowUp } from 'lucide-react'
 
 const INQUIRY_TYPES = [
   'General Inquiry',
@@ -122,6 +122,19 @@ export function ContactForm() {
 
   return (
     <>
+      <div className="max-w-2xl mx-auto text-center mb-12">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Another way to reach us</p>
+        <h2
+          className="font-extrabold tracking-[-0.03em] text-text"
+          style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}
+        >
+          Questions, or not ready to book?
+        </h2>
+        <p className="text-text-secondary mt-3">
+          Send us a message and we will reply within one business day.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
         {/* Form (2/3 width) */}
         <div className="lg:col-span-2">
@@ -341,32 +354,29 @@ export function ContactForm() {
             </div>
           </div>
 
-          {/* Book a Demo card with inline Calendly */}
-          <div
-            className="rounded-[20px] overflow-hidden"
+          {/* Prefer a live demo? Point back up to the scheduler in the hero. */}
+          <a
+            href="#book"
+            className="group block no-underline rounded-[20px] overflow-hidden"
             style={{
               background: 'linear-gradient(135deg, #3859a8, #2a4688)',
               boxShadow: '0 12px 40px rgba(56, 89, 168,0.35)',
             }}
           >
-            <div className="p-7 pb-4">
-              <h3 className="font-bold text-white text-base mb-2">Book a Live Demo</h3>
-              <p className="text-sm text-white/80 leading-relaxed">
-                See our AI handle a real call in 15 minutes. No slides, no fluff.
+            <div className="p-7">
+              <div className="flex items-center gap-2 mb-2">
+                <CalendarClock size={16} className="text-white/90" strokeWidth={1.8} />
+                <h3 className="font-bold text-white text-base">Rather see it live?</h3>
+              </div>
+              <p className="text-sm text-white/80 leading-relaxed mb-4">
+                Book a 15-minute demo and watch our AI handle a real call. No slides, no fluff.
               </p>
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-all group-hover:gap-2.5">
+                Pick a time
+                <ArrowUp size={14} strokeWidth={2.2} />
+              </span>
             </div>
-            <div className="bg-white rounded-t-2xl p-1">
-              <iframe
-                src="https://calendly.com/jotillabs/15min?hide_gdpr_banner=1&hide_landing_page_details=1"
-                width="100%"
-                height="380"
-                frameBorder="0"
-                title="Book a demo with JotilLabs"
-                className="rounded-xl"
-                loading="lazy"
-              />
-            </div>
-          </div>
+          </a>
 
           {/* Response time note */}
           <div
@@ -396,9 +406,14 @@ export function ContactForm() {
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto">
-          <div className="card p-8">
-            {FAQ_ITEMS.map((item) => (
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-5">
+          <div className="card p-6 md:p-8">
+            {FAQ_ITEMS.slice(0, 2).map((item) => (
+              <FAQItem key={item.question} {...item} />
+            ))}
+          </div>
+          <div className="card p-6 md:p-8">
+            {FAQ_ITEMS.slice(2).map((item) => (
               <FAQItem key={item.question} {...item} />
             ))}
           </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,13 +9,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 export function SmoothScroll({ children }) {
+  const pathname = usePathname()
   useEffect(() => {
     if (typeof window === 'undefined') return
+
+    // The Studio manages its own scroll containers; Lenis would fight them.
+    if (pathname && pathname.startsWith('/studio')) return
 
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches
     if (reduced) return
+
+    // Phones/touch use native scrolling — skip Lenis entirely so there's no
+    // per-frame page transform competing with paint while scrolling. GSAP
+    // ScrollTrigger falls back to native scroll events automatically.
+    const isTouch =
+      window.matchMedia('(max-width: 767px)').matches ||
+      window.matchMedia('(hover: none)').matches
+    if (isTouch) return
 
     const lenis = new Lenis({
       lerp: 0.1,
@@ -33,7 +46,7 @@ export function SmoothScroll({ children }) {
       gsap.ticker.remove(onTick)
       lenis.destroy()
     }
-  }, [])
+  }, [pathname])
 
   return children
 }

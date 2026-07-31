@@ -1,0 +1,249 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { Mic, AudioLines } from 'lucide-react'
+
+/* Interactive AI-bot moment shown between the hero and the demo video.
+   Pure CSS recreation of the original WebGL orb look (no libraries): an
+   organic glowing ring in purple / blue / cyan with a soft bloom, a bright
+   highlight travelling around the rim, and a gentle morphing wobble.
+   Tap or click to wake it: everything speeds up and breathes; the icon
+   flips from mic to waveform. Tap again to rest.
+
+   With an `agent` prop (an industry key resolved server-side, e.g.
+   "beauty-spa"), waking the orb starts a REAL Retell voice call through
+   /api/retell/web-call — same secure flow as the voice widget: the browser
+   only ever sees a short-lived access token. Tapping again ends the call. */
+
+const RING_GRADIENT =
+  'conic-gradient(from 210deg, #22396E 0deg, #3859a8 90deg, #3B82F6 180deg, #06b6d4 265deg, #22396E 360deg)'
+
+const CSS = `
+@keyframes jvb-spin { to { transform: rotate(360deg); } }
+@keyframes jvb-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+/* Organic wobble: the inner face drifts slightly off-center so the ring
+   reads thicker on one side and thinner on the other, like the shader. */
+@keyframes jvb-wobble {
+  0%, 100% { transform: translate(0.8%, -0.6%) scale(1); }
+  25% { transform: translate(-0.7%, 0.5%) scale(1.008); }
+  50% { transform: translate(0.5%, 0.9%) scale(0.995); }
+  75% { transform: translate(-0.9%, -0.4%) scale(1.005); }
+}
+/* Wavy outline: the ring's silhouette morphs between organic blob shapes
+   instead of staying a perfect circle. The spin carries the waves around
+   the rim while the radii keep shifting on their own clock. */
+@keyframes jvb-blob {
+  0%, 100% { border-radius: 44% 56% 53% 47% / 55% 44% 56% 45%; }
+  25% { border-radius: 56% 44% 43% 57% / 47% 56% 44% 53%; }
+  50% { border-radius: 45% 55% 57% 43% / 43% 53% 47% 57%; }
+  75% { border-radius: 57% 43% 47% 53% / 53% 45% 55% 47%; }
+}
+/* Contained awake ripple: expands just past the rim and fades, staying
+   well inside the section instead of washing over neighboring sections. */
+@keyframes jvb-ping {
+  0% { transform: scale(1); opacity: 0.5; }
+  80%, 100% { transform: scale(1.26); opacity: 0; }
+}
+/* Gentler version for the inner face so the ring never breaks open. */
+@keyframes jvb-blob-soft {
+  0%, 100% { border-radius: 48% 52% 51% 49% / 52% 48% 52% 48%; }
+  25% { border-radius: 52% 48% 47% 53% / 49% 52% 48% 51%; }
+  50% { border-radius: 48% 52% 53% 47% / 47% 51% 49% 53%; }
+  75% { border-radius: 53% 47% 49% 51% / 51% 48% 52% 49%; }
+}
+`
+
+export function IndustryVoiceBot({ agent }) {
+  const [awake, setAwake] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | connecting | live | error
+  const [agentTalking, setAgentTalking] = useState(false)
+  const clientRef = useRef(null)
+
+  // End any live call when leaving the page.
+  useEffect(() => {
+    return () => {
+      try { clientRef.current?.stopCall() } catch {}
+      clientRef.current = null
+    }
+  }, [])
+
+  async function startCall() {
+    setStatus('connecting')
+    setAwake(true)
+    try {
+      const res = await fetch('/api/retell/web-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not start the call.')
+
+      const { RetellWebClient } = await import('retell-client-js-sdk')
+      const client = new RetellWebClient()
+      clientRef.current = client
+
+      client.on('call_started', () => setStatus('live'))
+      client.on('call_ended', () => {
+        clientRef.current = null
+        setStatus('idle')
+        setAgentTalking(false)
+        setAwake(false)
+      })
+      client.on('agent_start_talking', () => setAgentTalking(true))
+      client.on('agent_stop_talking', () => setAgentTalking(false))
+      client.on('error', () => {
+        try { client.stopCall() } catch {}
+        clientRef.current = null
+        setStatus('error')
+        setAgentTalking(false)
+        setAwake(false)
+      })
+
+      await client.startCall({ accessToken: data.accessToken })
+    } catch {
+      clientRef.current = null
+      setStatus('error')
+      setAgentTalking(false)
+      setAwake(false)
+    }
+  }
+
+  function endCall() {
+    try { clientRef.current?.stopCall() } catch {}
+    clientRef.current = null
+    setStatus('idle')
+    setAgentTalking(false)
+    setAwake(false)
+  }
+
+  const handleTap = () => {
+    if (!agent) {
+      setAwake((v) => !v)
+      return
+    }
+    if (status === 'connecting' || status === 'live') endCall()
+    else startCall()
+  }
+
+  const pillText = !agent
+    ? awake
+      ? 'Awake and listening. Tap to rest.'
+      : 'Tap the orb to wake your assistant'
+    : status === 'connecting'
+      ? 'Connecting...'
+      : status === 'live'
+        ? agentTalking
+          ? 'Assistant is speaking. Tap to end.'
+          : 'Live. Speak whenever you like.'
+        : status === 'error'
+          ? 'Could not start the call. Tap to try again.'
+          : 'Tap the orb to talk to our AI'
+
+  return (
+    <section className="py-8">
+      <style>{CSS}</style>
+      <div className="mx-auto max-w-3xl px-6 text-center">
+        <AnimatedSection>
+          <button
+            type="button"
+            onClick={handleTap}
+            aria-pressed={awake}
+            aria-label={
+              !agent
+                ? awake ? 'Let the assistant rest' : 'Wake the assistant'
+                : awake ? 'End the voice call' : 'Start a voice call'
+            }
+            className="relative mx-auto block h-[150px] w-[150px] cursor-pointer rounded-full border-none bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-4 sm:h-[190px] sm:w-[190px]"
+            style={{ touchAction: 'manipulation', animation: awake ? 'jvb-breathe 2.2s ease-in-out infinite' : 'none' }}
+          >
+            {/* Outer bloom (blurred copy of the ring) */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-[-6%] rounded-full"
+              style={{
+                background: RING_GRADIENT,
+                filter: 'blur(20px)',
+                opacity: awake ? 0.55 : 0.32,
+                transition: 'opacity 0.5s ease',
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite, jvb-blob ${awake ? '4s' : '9s'} ease-in-out infinite`,
+              }}
+            />
+            {/* Turning gradient disc (becomes the ring once the face covers it) */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: RING_GRADIENT,
+                animation: `jvb-spin ${awake ? '5s' : '16s'} linear infinite, jvb-blob ${awake ? '4s' : '9s'} ease-in-out infinite`,
+              }}
+            />
+            {/* Bright highlight travelling around the rim (counter-rotating) */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full"
+              style={{ animation: `jvb-spin ${awake ? '2.6s' : '8s'} linear infinite reverse` }}
+            >
+              <span
+                className="absolute left-1/2 top-[-4%] h-[30%] w-[30%] -translate-x-1/2 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(186,230,253,0.55) 40%, transparent 70%)',
+                  filter: 'blur(4px)',
+                  mixBlendMode: 'screen',
+                }}
+              />
+            </span>
+            {/* Inner face — offset wobble makes the ring thickness organic */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-[11.5%] rounded-full"
+              style={{
+                background:
+                  'radial-gradient(120% 120% at 68% 26%, #ffffff 0%, #f6f9ff 45%, #eef2fb 75%, #e6ecf9 100%)',
+                boxShadow:
+                  'inset 0 3px 12px rgba(255,255,255,0.95), inset 0 -12px 28px rgba(56,89,168,0.14), inset 10px 0 24px rgba(6,182,212,0.10)',
+                animation: `jvb-wobble ${awake ? '3.5s' : '7s'} ease-in-out infinite, jvb-blob-soft ${awake ? '5s' : '11s'} ease-in-out infinite`,
+              }}
+            />
+            {/* Awake halo */}
+            {awake && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'rgba(56,89,168,0.16)', animation: 'jvb-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }}
+              />
+            )}
+            {/* Voice icon at the center */}
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              {awake ? (
+                <AudioLines size={28} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+              ) : (
+                <Mic size={28} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+              )}
+            </span>
+          </button>
+
+          <div className="mt-3 flex justify-center">
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium"
+              style={{
+                background: 'rgba(56,89,168,0.07)',
+                border: '1px solid rgba(56,89,168,0.16)',
+              }}
+            >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ background: status === 'error' ? '#DC2626' : awake ? '#12a06b' : '#3B82F6' }}
+              />
+              <span className="text-text-secondary">{pillText}</span>
+            </span>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  )
+}

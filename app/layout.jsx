@@ -1,21 +1,14 @@
 import './globals.css'
-import { Montserrat_Alternates, Inter, JetBrains_Mono, Fraunces } from 'next/font/google'
+import { Inter, JetBrains_Mono, Fraunces, Russo_One, Roboto } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/layout/JsonLd'
-import { AIWidget } from '@/components/widgets/AIWidget'
-import { ScrollToTop } from '@/components/layout/ScrollToTop'
+import { DeferredWidgets } from '@/components/layout/DeferredWidgets'
+import { HideOnStudio } from '@/components/layout/HideOnStudio'
 import { BrandBackgroundGate, SmoothScroll } from '@/components/design'
-
-const montserratAlternates = Montserrat_Alternates({
-  subsets: ['latin'],
-  variable: '--font-montserrat-alternates',
-  display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
-})
 
 const inter = Inter({
   subsets: ['latin'],
@@ -37,6 +30,24 @@ const fraunces = Fraunces({
   display: 'swap',
   weight: 'variable',
   axes: ['opsz'],
+})
+
+const russoOne = Russo_One({
+  subsets: ['latin'],
+  variable: '--font-russo',
+  display: 'swap',
+  weight: '400',
+})
+
+// The site's single display face: every heading and heading-styled element
+// uses Roboto (--font-display / --font-sans both resolve to it), EXCEPT the
+// hero headline (Russo One) and Fraunces serif accents. Mid weights are
+// loaded because styled UI text uses medium/semibold, not just bold.
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata = {
@@ -98,7 +109,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${montserratAlternates.variable} ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${russoOne.variable} ${roboto.variable}`}
     >
       <head>
         <OrganizationJsonLd />
@@ -126,12 +137,17 @@ export default function RootLayout({ children }) {
           <a href="#main-content" className="skip-to-main">
             Skip to main content
           </a>
-          <Navbar />
+          <HideOnStudio>
+            <Navbar />
+          </HideOnStudio>
           <main id="main-content" className="relative z-10">{children}</main>
-          <Footer />
+          <HideOnStudio>
+            <Footer />
+          </HideOnStudio>
         </SmoothScroll>
-        <ScrollToTop />
-        <AIWidget />
+        <HideOnStudio>
+          <DeferredWidgets />
+        </HideOnStudio>
         <Analytics />
         <SpeedInsights />
       </body>

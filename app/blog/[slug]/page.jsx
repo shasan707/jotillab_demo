@@ -1,22 +1,37 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import { getAllPosts, getPostBySlug } from '@/lib/mdx'
+import { PortableText } from '@portabletext/react'
+import { getAllPostsCombined, getPostBySlugCombined, getAllPostSlugs, SITE_URL, SITE_B_URL } from '@/lib/blog'
+import { portableTextComponents } from '@/components/blog/PortableTextComponents'
+import { categoryClass } from '@/data/blogCategories'
 import { Calendar, Clock, ArrowLeft, ArrowRight, Twitter, Linkedin, BookOpen } from 'lucide-react'
 import { CopyLinkButton } from '@/components/blog/CopyLinkButton'
+import { CommentSection } from '@/components/blog/CommentSection'
+
+/* Posts live in Sanity. Known slugs are prerendered; newly published ones
+   render on demand via dynamicParams and refresh at most every 5 minutes
+   (plus instant revalidation from the Sanity webhook at /api/revalidate). */
+export const revalidate = 300
 
 export async function generateStaticParams() {
-  const posts = getAllPosts()
-  return posts.map(post => ({ slug: post.slug }))
+  const slugs = await getAllPostSlugs()
+  return slugs.map(slug => ({ slug }))
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const post = getPostBySlug(slug)
+  const post = await getPostBySlugCombined(slug)
   if (!post) return { title: 'Not Found' }
+  /* When a post shows on both sites, only the canonical site self-references;
+     the other points at it so search engines credit one URL. */
+  const canonical =
+    post.canonicalSite === 'site-b' && SITE_B_URL
+      ? `${SITE_B_URL}/blog/${slug}`
+      : `${SITE_URL}/blog/${slug}`
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.excerpt,
@@ -32,17 +47,6 @@ export async function generateMetadata({ params }) {
   }
 }
 
-const CATEGORY_COLORS = {
-  'Voice AI': 'bg-blue-50 text-blue-700 border-blue-100',
-  'SMS & Messaging': 'bg-violet-50 text-violet-700 border-violet-100',
-  'Business Strategy': 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  'AI Tools': 'bg-amber-50 text-amber-700 border-amber-100',
-}
-
-function categoryClass(category) {
-  return CATEGORY_COLORS[category] ?? 'bg-slate-50 text-slate-700 border-slate-100'
-}
-
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -51,72 +55,13 @@ function formatDate(dateStr) {
   })
 }
 
-// MDX component overrides -- maps to Tailwind prose-compatible styling
-const mdxComponents = {
-  h2: ({ children }) => (
-    <h2 className="mb-4 mt-10 font-[var(--font-sans)] text-2xl font-700 tracking-[-0.02em] text-text first:mt-0">
-      {children}
-    </h2>
-  ),
-  h3: ({ children }) => (
-    <h3 className="mb-3 mt-8 font-[var(--font-sans)] text-xl font-700 tracking-[-0.015em] text-text">
-      {children}
-    </h3>
-  ),
-  p: ({ children }) => (
-    <p className="mb-5 text-[17px] leading-[1.75] text-[#374151]">{children}</p>
-  ),
-  ul: ({ children }) => (
-    <ul className="mb-5 space-y-2 pl-6">{children}</ul>
-  ),
-  ol: ({ children }) => (
-    <ol className="mb-5 list-decimal space-y-2 pl-6">{children}</ol>
-  ),
-  li: ({ children }) => (
-    <li className="text-[17px] leading-[1.75] text-[#374151] marker:text-primary [&::marker]:font-600">
-      {children}
-    </li>
-  ),
-  strong: ({ children }) => (
-    <strong className="font-700 text-text">{children}</strong>
-  ),
-  blockquote: ({ children }) => (
-    <blockquote className="my-6 border-l-4 border-primary/30 bg-primary/[0.03] py-3 pl-5 pr-4 text-[17px] italic text-[#374151]">
-      {children}
-    </blockquote>
-  ),
-  code: ({ children }) => (
-    <code className="rounded-md bg-slate-100 px-1.5 py-0.5 font-[var(--font-mono)] text-[13px] text-slate-800">
-      {children}
-    </code>
-  ),
-  pre: ({ children }) => (
-    <pre className="mb-5 overflow-x-auto rounded-xl bg-slate-900 p-5 text-sm text-slate-100">
-      {children}
-    </pre>
-  ),
-  hr: () => (
-    <hr className="my-10 border-0 border-t border-black/[0.07]" />
-  ),
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      className="font-500 text-primary underline underline-offset-2 transition-colors hover:text-primary-dark"
-      target={href?.startsWith('http') ? '_blank' : undefined}
-      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-    >
-      {children}
-    </a>
-  ),
-}
-
 function RelatedPostCard({ post }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
       <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/[0.07]">
         <div className="mb-3 flex items-center gap-2.5">
           <span
-            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-600 ${categoryClass(post.category)}`}
+            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${categoryClass(post.category)}`}
           >
             {post.category}
           </span>
@@ -125,13 +70,13 @@ function RelatedPostCard({ post }) {
             {post.readingTime}
           </span>
         </div>
-        <h4 className="mb-2 font-[var(--font-sans)] text-[16px] font-700 leading-snug tracking-[-0.015em] text-text transition-colors group-hover:text-primary">
+        <h4 className="mb-2 font-[var(--font-sans)] text-[16px] font-bold leading-snug tracking-[-0.015em] text-text transition-colors group-hover:text-primary">
           {post.title}
         </h4>
         <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-[var(--color-text-secondary)]">
           {post.excerpt}
         </p>
-        <div className="mt-4 flex items-center gap-1.5 text-sm font-600 text-primary">
+        <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-primary">
           Read article
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" strokeWidth={2} />
         </div>
@@ -142,11 +87,11 @@ function RelatedPostCard({ post }) {
 
 export default async function BlogPost({ params }) {
   const { slug } = await params
-  const post = getPostBySlug(slug)
+  const post = await getPostBySlugCombined(slug)
   if (!post) notFound()
 
   // Related posts: other posts (excluding current), up to 2
-  const allPosts = getAllPosts()
+  const allPosts = await getAllPostsCombined()
   const related = allPosts.filter(p => p.slug !== slug).slice(0, 2)
 
   const postUrl = `https://jotillabs.com/blog/${slug}`
@@ -180,7 +125,7 @@ export default async function BlogPost({ params }) {
           {/* Back link */}
           <Link
             href="/blog"
-            className="mb-8 inline-flex items-center gap-2 text-sm font-500 text-[var(--color-text-secondary)] transition-colors hover:text-text"
+            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:text-text"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
             All posts
@@ -189,7 +134,7 @@ export default async function BlogPost({ params }) {
           {/* Category + reading time */}
           <div className="mb-5 flex items-center gap-3">
             <span
-              className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-600 ${categoryClass(post.category)}`}
+              className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-semibold ${categoryClass(post.category)}`}
             >
               {post.category}
             </span>
@@ -200,17 +145,17 @@ export default async function BlogPost({ params }) {
           </div>
 
           {/* Title */}
-          <h1 className="mb-6 font-[var(--font-sans)] text-3xl font-800 leading-tight tracking-[-0.03em] text-text sm:text-4xl lg:text-5xl">
+          <h1 className="headline-shadow mb-6 font-[var(--font-sans)] text-3xl font-extrabold leading-tight tracking-[-0.03em] text-text sm:text-4xl lg:text-5xl">
             {post.title}
           </h1>
 
           {/* Author + date */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-700 text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white">
               {post.author?.charAt(0) ?? 'J'}
             </div>
             <div>
-              <p className="text-sm font-600 text-text">{post.author}</p>
+              <p className="text-sm font-semibold text-text">{post.author}</p>
               <p className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)]">
                 <Calendar className="h-3 w-3" strokeWidth={1.5} />
                 {formatDate(post.date)}
@@ -225,9 +170,9 @@ export default async function BlogPost({ params }) {
         {/* Gradient divider */}
         <div className="mb-12 h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        {/* MDX content */}
+        {/* Post content (Portable Text from Sanity) */}
         <article className="min-w-0">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          <PortableText value={post.content} components={portableTextComponents} />
         </article>
 
         {/* Gradient divider */}
@@ -235,14 +180,14 @@ export default async function BlogPost({ params }) {
 
         {/* Share section */}
         <div className="rounded-2xl border border-black/[0.06] bg-white p-6 sm:p-8">
-          <p className="mb-4 text-sm font-600 text-text">Share this article</p>
+          <p className="mb-4 text-sm font-semibold text-text">Share this article</p>
           <div className="flex flex-wrap items-center gap-3">
             <a
               href={tweetUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share this article on X (Twitter)"
-              className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-600 text-text transition-all hover:-translate-y-0.5 hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/5 hover:text-[#1DA1F2] hover:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-semibold text-text transition-all hover:-translate-y-0.5 hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/5 hover:text-[#1DA1F2] hover:shadow-sm"
             >
               <Twitter className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
               Share on X
@@ -252,7 +197,7 @@ export default async function BlogPost({ params }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share this article on LinkedIn"
-              className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-600 text-text transition-all hover:-translate-y-0.5 hover:border-[#0A66C2]/30 hover:bg-[#0A66C2]/5 hover:text-[#0A66C2] hover:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-semibold text-text transition-all hover:-translate-y-0.5 hover:border-[#0A66C2]/30 hover:bg-[#0A66C2]/5 hover:text-[#0A66C2] hover:shadow-sm"
             >
               <Linkedin className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
               Share on LinkedIn
@@ -262,13 +207,16 @@ export default async function BlogPost({ params }) {
             <CopyLinkButton postUrl={postUrl} />
           </div>
         </div>
+
+        {/* Reader comments (approved after review) */}
+        <CommentSection slug={slug} />
       </div>
 
       {/* Related posts */}
       {related.length > 0 && (
         <section className="border-t border-black/[0.05] bg-white px-6 py-16 sm:px-8">
           <div className="mx-auto max-w-3xl">
-            <p className="mb-8 text-xs font-700 uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
+            <p className="mb-8 text-xs font-bold uppercase tracking-[0.12em] text-[var(--color-text-secondary)]">
               More Articles
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -279,7 +227,7 @@ export default async function BlogPost({ params }) {
             <div className="mt-8 text-center">
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-5 py-2.5 text-sm font-600 text-text transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/5 hover:text-primary hover:shadow-sm"
+                className="inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-white px-5 py-2.5 text-sm font-semibold text-text transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-primary/5 hover:text-primary hover:shadow-sm"
               >
                 <BookOpen className="h-4 w-4" strokeWidth={1.5} />
                 View all articles

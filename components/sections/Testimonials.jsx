@@ -1,7 +1,9 @@
 'use client'
 
+import { useRef, useEffect } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
-import { SerifAccent } from '@/components/design'
+import { SerifAccent, TiltCard } from '@/components/design'
 
 const TESTIMONIALS = [
   {
@@ -31,14 +33,61 @@ const TESTIMONIALS = [
     initials: 'RK',
     avatarColor: '#3B82F6',
   },
+  {
+    quote:
+      'Calls used to hit voicemail while my crew was on jobs. Now every caller gets answered and booked before our competitors even pick up.',
+    name: 'Miguel A.',
+    role: 'Owner',
+    company: 'Cascade Plumbing Co.',
+    initials: 'MA',
+    avatarColor: '#3859a8',
+  },
+  {
+    quote:
+      'Our front desk finally focuses on the patients standing in front of them. The AI quietly handles everything else in the background.',
+    name: 'Priya N.',
+    role: 'Operations Lead',
+    company: 'Lakeside Dental',
+    initials: 'PN',
+    avatarColor: '#2a4688',
+  },
+  {
+    quote:
+      'After-hours intake was our biggest leak. Now potential clients get a real conversation at 11pm and we review qualified leads over coffee.',
+    name: 'Daniel W.',
+    role: 'Managing Partner',
+    company: 'Whitfield Law',
+    initials: 'DW',
+    avatarColor: '#3B82F6',
+  },
+  {
+    quote:
+      'Follow-ups happen the minute a lead comes in, not the next morning. Our response time went from hours to seconds.',
+    name: 'Amanda C.',
+    role: 'General Manager',
+    company: 'Harbor Auto Group',
+    initials: 'AC',
+    avatarColor: '#3859a8',
+  },
+  {
+    quote:
+      'Members book, reschedule, and ask questions by text any time of day. It feels like we tripled our front desk without hiring anyone.',
+    name: 'Tom B.',
+    role: 'Owner',
+    company: 'Ridgeline Fitness',
+    initials: 'TB',
+    avatarColor: '#2a4688',
+  },
 ]
+
+const ROW_ONE = TESTIMONIALS.slice(0, 4)
+const ROW_TWO = TESTIMONIALS.slice(4)
 
 export function Testimonials() {
   return (
-    <section className="py-24 bg-[#F4F6FB]">
+    <section className="py-24 bg-[#F4F6FB] overflow-hidden">
+      {/* Heading */}
       <div className="max-w-7xl mx-auto px-6">
-
-        {/* Heading */}
         <AnimatedSection className="text-center mb-14">
           <p className="badge mx-auto mb-4 w-fit">Testimonials</p>
           <h2
@@ -49,18 +98,121 @@ export function Testimonials() {
             <span className="text-gradient">clients say</span>
           </h2>
         </AnimatedSection>
-
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {TESTIMONIALS.map((t, i) => (
-            <AnimatedSection key={t.name} delay={i * 0.09}>
-              <TestimonialCard testimonial={t} />
-            </AnimatedSection>
-          ))}
-        </div>
-
       </div>
+
+      {/* Dual-direction marquee — pauses on hover so cards stay readable */}
+      <AnimatedSection>
+        <div className="flex flex-col gap-5">
+          <MarqueeRow items={ROW_ONE} />
+          <MarqueeRow items={ROW_TWO} reverse />
+        </div>
+      </AnimatedSection>
     </section>
+  )
+}
+
+function MarqueeRow({ items, reverse = false }) {
+  // Two copies of the row enable a seamless loop. The track auto-scrolls by
+  // animating translateX (so it always moves regardless of screen width) and
+  // is draggable by cursor AND touch via pointer events. touch-action:pan-y
+  // lets vertical swipes scroll the PAGE while horizontal swipes drag the row.
+  const doubled = [...items, ...items]
+  const trackRef = useRef(null)
+  const reduced = useReducedMotion()
+  const st = useRef({ offset: 0, half: 0, paused: false, dragging: false, startX: 0, startOffset: 0, raf: 0 })
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    const s = st.current
+    const dir = reverse ? 1 : -1
+    const speed = 0.5
+
+    const measure = () => { s.half = track.scrollWidth / 2 }
+    measure()
+    s.offset = reverse ? -s.half : 0
+    track.style.transform = `translate3d(${s.offset}px,0,0)`
+
+    const onResize = () => measure()
+    window.addEventListener('resize', onResize)
+
+    if (reduced) {
+      return () => window.removeEventListener('resize', onResize)
+    }
+
+    const tick = () => {
+      if (!s.dragging && !s.paused && s.half > 0) {
+        s.offset += dir * speed
+        if (s.offset <= -s.half) s.offset += s.half
+        else if (s.offset >= 0) s.offset -= s.half
+        track.style.transform = `translate3d(${s.offset}px,0,0)`
+      }
+      s.raf = requestAnimationFrame(tick)
+    }
+    s.raf = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(s.raf)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [reverse, reduced])
+
+  const applyOffset = (o) => {
+    const s = st.current
+    if (s.half > 0) {
+      while (o <= -s.half) o += s.half
+      while (o > 0) o -= s.half
+    }
+    s.offset = o
+    if (trackRef.current) trackRef.current.style.transform = `translate3d(${o}px,0,0)`
+  }
+
+  const onPointerDown = (e) => {
+    const s = st.current
+    s.dragging = true
+    s.paused = true
+    s.startX = e.clientX
+    s.startOffset = s.offset
+    if (e.pointerType !== 'touch') e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+  const onPointerMove = (e) => {
+    const s = st.current
+    if (!s.dragging) return
+    applyOffset(s.startOffset + (e.clientX - s.startX))
+  }
+  const endDrag = () => {
+    const s = st.current
+    s.dragging = false
+    s.paused = false
+  }
+
+  return (
+    <div
+      className="overflow-hidden select-none cursor-grab active:cursor-grabbing py-2"
+      style={{
+        touchAction: 'pan-y',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+        maskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+      }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerLeave={endDrag}
+      onMouseEnter={() => { st.current.paused = true }}
+      onMouseLeave={() => { if (!st.current.dragging) st.current.paused = false }}
+    >
+      <div ref={trackRef} className="flex w-max items-stretch gap-5" style={{ willChange: 'transform' }}>
+        {doubled.map((t, i) => (
+          <TiltCard
+            key={`${t.name}-${i}`}
+            className="w-[320px] sm:w-[380px] shrink-0 rounded-[20px]"
+            aria-hidden={i >= items.length ? 'true' : undefined}
+          >
+            <TestimonialCard testimonial={t} />
+          </TiltCard>
+        ))}
+      </div>
+    </div>
   )
 }
 

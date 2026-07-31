@@ -33,10 +33,11 @@ function IntegrationPill({ label }) {
     <div
       className="flex items-center gap-2.5 px-4 py-2.5 rounded-full shrink-0 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
       style={{
-        background: 'rgba(255,255,255,0.55)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.60)',
+        // Solid chip (was translucent + blur) — over the light section the blur
+        // was invisible anyway, and ~40 of these in the marquee were the bulk of
+        // the page's backdrop-filter cost during scroll.
+        background: '#ffffff',
+        border: '1px solid rgba(15,17,41,0.06)',
         boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
       }}
     >
@@ -95,18 +96,17 @@ export function IntegrationStrip() {
   const row2 = INTEGRATIONS.slice(10, 20)
 
   return (
-    <section className="py-24 bg-white">
+    <section className="cv-auto py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Heading */}
         <AnimatedSection className="text-center mb-14">
-          <p className="badge mx-auto mb-4 w-fit">Integrations</p>
           <h2
-            className="text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
+            className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Works with{' '}
-            <span className="text-gradient">150+ tools</span>{' '}
+            <span className="text-gradient">300+ tools</span>{' '}
             you already use
           </h2>
           <p

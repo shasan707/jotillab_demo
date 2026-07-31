@@ -9,7 +9,7 @@ import { SerifAccent } from '@/components/design'
 export function CTASection() {
   return (
     <section
-      className="surface-navy relative py-24 overflow-hidden"
+      className="cv-auto surface-navy relative py-24 overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #3859a8 0%, #2a4688 45%, #0f1129 100%)',
       }}
@@ -40,10 +40,13 @@ export function CTASection() {
         }}
       />
 
-      {/* Cyan ambient glow - top right, matches brand doc */}
+      {/* Traveling beam along the top edge */}
+      <div aria-hidden="true" className="beam-line" />
+
+      {/* Cyan ambient glow - top right, drifts slowly */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute rounded-full"
+        className="pointer-events-none absolute rounded-full atmosphere-drift-1"
         style={{
           width: 520,
           height: 520,
@@ -51,12 +54,13 @@ export function CTASection() {
           right: '-12%',
           background: 'radial-gradient(circle, rgba(59, 130, 246,0.28) 0%, transparent 70%)',
           filter: 'blur(90px)',
+          willChange: 'transform',
         }}
       />
-      {/* Royal blue secondary glow - left */}
+      {/* Royal blue secondary glow - left, counter-drifts */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute rounded-full"
+        className="pointer-events-none absolute rounded-full atmosphere-drift-2"
         style={{
           width: 420,
           height: 420,
@@ -64,6 +68,7 @@ export function CTASection() {
           left: '-10%',
           background: 'radial-gradient(circle, rgba(56,89,168,0.35) 0%, transparent 70%)',
           filter: 'blur(90px)',
+          willChange: 'transform',
         }}
       />
 
@@ -99,8 +104,12 @@ export function CTASection() {
             className="text-white font-extrabold tracking-[-0.04em] mb-6"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(2rem, 4.5vw, 3.25rem)',
+              fontSize: 'clamp(1.9rem, 3.5vw, 2.75rem)',
               lineHeight: 1.1,
+              // Same subtle directional cast as every other heading, tuned dark
+              // so it reads on the navy band (a dark-navy shadow would vanish).
+              textShadow:
+                '2px 3px 0 rgba(0,0,0,0.22), 4px 6px 9px rgba(0,0,0,0.16)',
             }}
           >
             Stop losing customers{'\u00A0'}

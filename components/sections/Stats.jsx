@@ -1,9 +1,12 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { Phone, Shield, Users, Clock } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { CountUp } from '@/components/ui/CountUp'
 
+// `ring` is the fraction of the radial ring drawn around the icon —
+// a visual echo of the metric, not exact data.
 const STATS = [
   {
     end: 80,
@@ -12,6 +15,7 @@ const STATS = [
     icon: Phone,
     color: '#3859a8',
     colorAlpha: 'rgba(56, 89, 168,0.10)',
+    ring: 0.8,
   },
   {
     end: 3,
@@ -21,6 +25,7 @@ const STATS = [
     icon: Shield,
     color: '#3B82F6',
     colorAlpha: 'rgba(59, 130, 246,0.10)',
+    ring: 0.93,
   },
   {
     end: 12,
@@ -29,6 +34,7 @@ const STATS = [
     icon: Users,
     color: '#3B82F6',
     colorAlpha: 'rgba(59, 130, 246,0.10)',
+    ring: 0.62,
   },
   {
     end: 4,
@@ -37,6 +43,7 @@ const STATS = [
     icon: Clock,
     color: '#3859a8',
     colorAlpha: 'rgba(56, 89, 168,0.10)',
+    ring: 0.45,
   },
 ]
 
@@ -73,7 +80,7 @@ export function Stats() {
 }
 
 function StatCard({ stat }) {
-  const { end, suffix, decimals = 0, label, icon: Icon, color, colorAlpha } = stat
+  const { end, suffix, decimals = 0, label, icon: Icon, color, colorAlpha, ring } = stat
 
   return (
     <div
@@ -98,12 +105,31 @@ function StatCard({ stat }) {
         e.currentTarget.style.background = 'rgba(255,255,255,0.7)'
       }}
     >
-      {/* Icon */}
-      <div
-        className="w-10 h-10 rounded-[11px] flex items-center justify-center"
-        style={{ background: colorAlpha, border: `1px solid ${color}22` }}
-      >
-        <Icon size={18} strokeWidth={1.75} style={{ color }} />
+      {/* Icon inside a radial ring that draws as the card scrolls in,
+          in sync with the CountUp */}
+      <div className="relative w-14 h-14">
+        <svg className="absolute inset-0 -rotate-90" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+          <circle cx="28" cy="28" r="25" stroke="rgba(15,17,41,0.07)" strokeWidth="2.5" fill="none" />
+          <motion.circle
+            cx="28"
+            cy="28"
+            r="25"
+            stroke={color}
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: ring }}
+            viewport={{ once: true, margin: '-10%' }}
+            transition={{ duration: 2.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </svg>
+        <div
+          className="absolute inset-[7px] rounded-full flex items-center justify-center"
+          style={{ background: colorAlpha }}
+        >
+          <Icon size={18} strokeWidth={1.75} style={{ color }} />
+        </div>
       </div>
 
       {/* Number */}

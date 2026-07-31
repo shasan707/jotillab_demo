@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, PhoneIncoming, PhoneOff, Mic, MicOff,
@@ -30,6 +30,7 @@ const cardEntry = {
 function ReceptionistDemo() {
   const [callState, setCallState] = useState('ringing') // ringing | answered | transcript
   const [typingIndex, setTypingIndex] = useState(0)
+  const transcriptRef = useRef(null)
 
   useEffect(() => {
     const t1 = setTimeout(() => setCallState('answered'), 2200)
@@ -42,6 +43,14 @@ function ReceptionistDemo() {
     const iv = setInterval(() => setTypingIndex(i => i + 1), 1200)
     return () => clearInterval(iv)
   }, [callState])
+
+  // Keep the latest line in view inside the fixed frame, exactly like the phone
+  // interface: an INSTANT scrollTop assignment (no smooth behaviour), which does
+  // not flicker and never changes the card size.
+  useEffect(() => {
+    const el = transcriptRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [typingIndex])
 
   const transcript = [
     { from: 'ai', text: 'Good morning! Thank you for calling Meridian Dental. How can I help you today?' },
@@ -157,8 +166,10 @@ function ReceptionistDemo() {
           )}
         </div>
 
-        {/* Transcript area */}
-        <div className="px-5 pb-2 space-y-2.5 min-h-[140px]">
+        {/* Transcript area — compact fixed frame like the phone screen. Messages
+            appear top-down and the frame auto-scrolls (instant) to the newest
+            line, so the card stays a fixed size. */}
+        <div ref={transcriptRef} className="px-5 pb-2 space-y-2.5 h-[240px] overflow-hidden">
           {transcript.slice(0, Math.min(typingIndex + 1, transcript.length)).map((msg, i) => (
             <motion.div
               key={i}
@@ -190,7 +201,7 @@ function ReceptionistDemo() {
           <div className="h-8 w-8 rounded-full bg-[#3859a8] flex items-center justify-center shrink-0">
             <Mic size={14} className="text-white" />
           </div>
-          <div className="flex-1 flex items-center gap-[3px]">
+          <div className="flex-1 flex items-center gap-[3px] h-[44px]">
             {Array.from({ length: 24 }, (_, i) => {
               const h = [3, 5, 8, 12, 9, 14, 10, 7, 11, 6, 13, 8, 5, 9, 15, 11, 7, 10, 6, 12, 8, 4, 7, 5][i]
               return (
@@ -302,7 +313,7 @@ function MessengerDemo() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2 }}
-            className="px-4 py-4 space-y-2.5 min-h-[200px]"
+            className="px-4 py-4 space-y-2.5 h-[460px] overflow-hidden"
           >
             {activeThread.map((msg, i) => (
               <motion.div
@@ -527,6 +538,7 @@ function SpaceDemo() {
           })}
         </div>
 
+        <div className="min-h-[300px]">
         <AnimatePresence mode="wait">
           {activeTab === 'leads' ? (
             <motion.div
@@ -626,6 +638,7 @@ function SpaceDemo() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </motion.div>
     </div>
   )
@@ -638,7 +651,7 @@ function SpaceDemo() {
 function FlowDemo() {
   const nodes = [
     { label: 'New Lead', sub: 'Webhook Trigger', icon: Zap, color: 'from-[#3859a8] to-[#2a4688]' },
-    { label: 'AI Classify', sub: 'Score & Route', icon: GitBranch, color: 'from-[#3B82F6] to-[#4F46E5]' },
+    { label: 'AI Classify', sub: 'Score & Route', icon: GitBranch, color: 'from-[#3B82F6] to-[#2a4688]' },
     { label: 'CRM Update', sub: 'Create Record', icon: Database, color: 'from-[#3B82F6] to-[#0284C7]' },
     { label: 'Notify Team', sub: 'Slack + Email', icon: CheckCircle, color: 'from-emerald-500 to-emerald-600' },
   ]
@@ -774,47 +787,35 @@ function AvatarDemo() {
 
         {/* Avatar video area */}
         <div className="relative bg-gradient-to-br from-[#E8EFFE] to-[#F0F4FF] mx-4 mt-4 rounded-2xl overflow-hidden aspect-[4/3]">
-          {/* Avatar face placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Outer glow when speaking */}
-              {isSpeaking && (
-                <motion.div
-                  className="absolute -inset-4 rounded-full bg-[#3859a8]/10"
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-              )}
+          {/* Live motion avatar (hand/mouth motion). Loops, muted, autoplays;
+              the still photo shows as the poster while it loads / if it can't
+              play. Same clip as the hero avatar interface. */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/avatar-sarah.jpg"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: 'center 24%' }}
+          >
+            <source src="/avatar-sarah.mp4" type="video/mp4" />
+          </video>
 
-              {/* Avatar circle */}
-              <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-[#3859a8] to-[#3B82F6] flex items-center justify-center shadow-lg shadow-[#3859a8]/20">
-                <User size={40} className="text-white/90" />
+          {/* Talking glow that pulses over the avatar while speaking */}
+          {isSpeaking && (
+            <motion.div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              animate={{ opacity: [0, 0.18, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ background: 'radial-gradient(55% 42% at 50% 74%, rgba(56,89,168,0.45), transparent 70%)' }}
+            />
+          )}
 
-                {/* Lip-sync indicator */}
-                {isSpeaking && (
-                  <motion.div
-                    className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-[2px]"
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
-                  >
-                    {[3, 5, 7, 5, 3].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        className="w-[2px] rounded-full bg-white/70"
-                        style={{ height: h }}
-                        animate={{ height: [h, h * 1.8, h * 0.6, h * 1.4, h] }}
-                        transition={{ duration: 0.4, repeat: Infinity, delay: i * 0.06 }}
-                      />
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Name tag */}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 border border-black/5 whitespace-nowrap">
-                <p className="text-[11px] font-medium text-text">Jotil AI Avatar</p>
-              </div>
-            </div>
+          {/* Name tag */}
+          <div className="absolute bottom-3 left-3 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 border border-black/5 whitespace-nowrap">
+            <p className="text-[11px] font-medium text-text">Jotil AI Avatar</p>
           </div>
 
           {/* Small self-view */}
@@ -847,7 +848,7 @@ function AvatarDemo() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="bg-[#F0F4FF] rounded-xl px-4 py-2.5"
+              className="bg-[#F0F4FF] rounded-xl px-4 py-2.5 min-h-[92px]"
             >
               <p className="text-[10px] font-semibold text-[#3859a8] mb-0.5">
                 {isSpeaking ? 'AI Avatar' : 'You'}
@@ -910,11 +911,11 @@ export function DemoVisualization({ slug }) {
   if (!Demo) return null
 
   return (
-    <div className="py-20 px-4">
+    <div className="py-20 px-4 bg-[#E9EEF7]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Live Preview</p>
-          <h2 className="text-3xl font-bold text-text tracking-tight" style={headingFont}>
+          <h2 className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight" style={headingFont}>
             See it in action
           </h2>
           <p className="text-text-secondary mt-3 max-w-md mx-auto">

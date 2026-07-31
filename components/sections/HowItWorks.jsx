@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { Plug, SlidersHorizontal, Zap } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
@@ -33,18 +34,17 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="py-24 bg-[#F4F6FB]">
+    <section id="how-it-works" className="cv-auto py-24 bg-[#E9EEF7]">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Heading */}
         <AnimatedSection className="text-center mb-16">
-          <p className="badge mx-auto mb-4 w-fit">How it works</p>
           <h2
-            className="text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
+            className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold tracking-[-0.04em] text-text mb-4"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             Up and running in{' '}
-            <span className="text-gradient">hours, not months</span>
+            <span className="text-gradient">hours</span>
           </h2>
           <p
             className="text-base text-text-secondary leading-relaxed max-w-md mx-auto"
@@ -66,18 +66,22 @@ export function HowItWorks() {
                 <StepCard step={step} index={i} />
               </AnimatedSection>
 
-              {/* Connector — visible between steps on desktop */}
+              {/* Connector — draws itself between steps on desktop */}
               {i < STEPS.length - 1 && (
                 <div className="hidden lg:flex items-center justify-center w-14 shrink-0 self-center">
-                  <Connector />
+                  <Connector delay={0.35 + i * 0.3} />
                 </div>
               )}
 
-              {/* Vertical connector for mobile */}
+              {/* Vertical connector for mobile — draws downward on scroll */}
               {i < STEPS.length - 1 && (
                 <div className="lg:hidden flex justify-center my-3">
-                  <div
-                    className="w-px h-10"
+                  <motion.div
+                    className="w-px h-10 origin-top"
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    viewport={{ once: true, margin: '-10%' }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
                     style={{
                       background: 'linear-gradient(to bottom, rgba(56, 89, 168,0.25), rgba(59, 130, 246,0.15))',
                     }}
@@ -96,9 +100,13 @@ export function HowItWorks() {
 
 function StepCard({ step, index }) {
   const { number, icon: Icon, title, desc, color, colorAlpha } = step
+  const ref = useRef(null)
+  // Activation: the step "switches on" once it scrolls into view.
+  const inView = useInView(ref, { once: true, margin: '-20% 0px -20% 0px' })
 
   return (
     <div
+      ref={ref}
       className="h-full p-8 rounded-[20px] flex flex-col gap-5 transition-all duration-300"
       style={{
         background: 'rgba(255,255,255,0.55)',
@@ -120,9 +128,12 @@ function StepCard({ step, index }) {
         e.currentTarget.style.transform = 'translateY(0)'
       }}
     >
-      {/* Step number */}
-      <span
+      {/* Step number — fades up to full strength as the step activates */}
+      <motion.span
         className="block text-[3.5rem] font-extrabold leading-[1.25] select-none pt-1"
+        initial={{ opacity: 0.3 }}
+        animate={{ opacity: inView ? 1 : 0.3 }}
+        transition={{ duration: 0.6, delay: 0.15 + index * 0.18, ease: 'easeOut' }}
         style={{
           fontFamily: 'var(--font-jetbrains), JetBrains Mono, monospace',
           background: `linear-gradient(135deg, ${color}, ${color}aa)`,
@@ -133,14 +144,35 @@ function StepCard({ step, index }) {
         }}
       >
         {number}
-      </span>
+      </motion.span>
 
-      {/* Icon */}
-      <div
-        className="w-11 h-11 rounded-[12px] flex items-center justify-center"
-        style={{ background: colorAlpha, border: `1px solid ${color}22` }}
-      >
-        <Icon size={20} strokeWidth={1.75} style={{ color }} />
+      {/* Icon — neutral until activated, then fills with its step color */}
+      <div className="relative w-11 h-11">
+        {inView && (
+          <motion.span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-[12px]"
+            initial={{ scale: 0.7, opacity: 0.55 }}
+            animate={{ scale: 1.9, opacity: 0 }}
+            transition={{ duration: 0.9, delay: 0.25 + index * 0.18, ease: 'easeOut' }}
+            style={{ border: `1.5px solid ${color}` }}
+          />
+        )}
+        <div
+          className="w-11 h-11 rounded-[12px] flex items-center justify-center transition-all duration-500"
+          style={{
+            background: inView ? colorAlpha : 'rgba(15,17,41,0.04)',
+            border: inView ? `1px solid ${color}22` : '1px solid rgba(15,17,41,0.06)',
+            transitionDelay: `${0.2 + index * 0.18}s`,
+          }}
+        >
+          <Icon
+            size={20}
+            strokeWidth={1.75}
+            className="transition-colors duration-500"
+            style={{ color: inView ? color : '#9AA3B8', transitionDelay: `${0.2 + index * 0.18}s` }}
+          />
+        </div>
       </div>
 
       {/* Title */}
@@ -162,33 +194,32 @@ function StepCard({ step, index }) {
   )
 }
 
-function Connector() {
+function Connector({ delay = 0 }) {
   return (
-    <div className="flex flex-col items-center gap-1">
-      {/* Dashed line */}
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div
-          key={i}
-          className="rounded-full"
-          style={{
-            width: 3,
-            height: 3,
-            background: i % 2 === 0
-              ? 'rgba(56, 89, 168,0.30)'
-              : 'rgba(59, 130, 246,0.15)',
-          }}
-        />
-      ))}
-      {/* Arrow tip */}
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-        <path
-          d="M2 2L8 5L2 8"
-          stroke="rgba(56, 89, 168,0.35)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
+    <svg width="56" height="12" viewBox="0 0 56 12" fill="none" aria-hidden="true">
+      {/* Line draws left to right as the section scrolls into view */}
+      <motion.path
+        d="M2 6 H45"
+        stroke="rgba(56, 89, 168, 0.35)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, margin: '-15%' }}
+        transition={{ duration: 0.55, delay, ease: 'easeInOut' }}
+      />
+      {/* Arrow tip pops in after the line arrives */}
+      <motion.path
+        d="M46 2 L52 6 L46 10"
+        stroke="rgba(56, 89, 168, 0.4)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ opacity: 0, x: -4 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: '-15%' }}
+        transition={{ duration: 0.3, delay: delay + 0.5, ease: 'easeOut' }}
+      />
+    </svg>
   )
 }

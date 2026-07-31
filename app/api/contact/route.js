@@ -24,7 +24,7 @@ export async function POST(request) {
     }
 
     const body = await request.json()
-    const { name, email, company, phone, inquiryType, message } = body
+    const { name, email, company, phone, inquiryType, message, demoSlot, demoISO } = body
 
     // Validation
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -47,20 +47,31 @@ export async function POST(request) {
     const safePhone = phone ? escapeHtml(phone.trim()) : ''
     const safeInquiry = escapeHtml(inquiryType) || 'General Inquiry'
     const safeMessage = escapeHtml(message.trim())
+    // Optional live-demo booking (from the contact-page date/time picker)
+    const safeDemoSlot = demoSlot ? escapeHtml(String(demoSlot).trim()) : ''
+    const safeDemoISO = demoISO ? escapeHtml(String(demoISO).trim()) : ''
 
     const { error } = await resend.emails.send({
       from: `JotilLabs Website <${fromEmail}>`,
       to: 'contact@jotillabs.com',
       replyTo: email.trim(),
-      subject: `New Contact Form Submission - ${safeInquiry}`,
+      subject: safeDemoSlot ? 'New Live Demo Request' : `New Contact Form Submission - ${safeInquiry}`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background: #FAFBFD; border-radius: 12px;">
           <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #E5E7EB;">
-            <h2 style="margin: 0; font-size: 22px; font-weight: 700; color: #111111;">New Contact Submission</h2>
+            <h2 style="margin: 0; font-size: 22px; font-weight: 700; color: #111111;">${safeDemoSlot ? 'New Live Demo Request' : 'New Contact Submission'}</h2>
             <p style="margin: 4px 0 0; font-size: 14px; color: #999999;">From jotillabs.com contact form</p>
           </div>
 
           <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            ${safeDemoSlot ? `
+            <tr>
+              <td style="padding: 10px 0; color: #999; font-weight: 600; width: 140px; vertical-align: top;">Requested time</td>
+              <td style="padding: 10px 0;">
+                <span style="display: inline-block; background: #EEF2FB; color: #3859a8; font-weight: 700; padding: 6px 12px; border-radius: 8px;">${safeDemoSlot}</span>
+                ${safeDemoISO ? `<div style="margin-top: 4px; font-size: 12px; color: #999;">${safeDemoISO}</div>` : ''}
+              </td>
+            </tr>` : ''}
             <tr>
               <td style="padding: 10px 0; color: #999; font-weight: 600; width: 140px; vertical-align: top;">Name</td>
               <td style="padding: 10px 0; color: #111;">${safeName}</td>

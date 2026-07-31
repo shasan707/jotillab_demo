@@ -15,7 +15,7 @@ const MODELS = [
   { name: 'GPT-4o', provider: 'OpenAI', color: '#10a37f' },
   { name: 'Claude 4.7', provider: 'Anthropic', color: '#d97706' },
   { name: 'Gemini 2.5', provider: 'Google', color: '#4285f4' },
-  { name: 'Llama 3', provider: 'Meta', color: '#7c3aed' },
+  { name: 'Llama 3', provider: 'Meta', color: '#22396E' },
 ]
 
 const TURN_1 = {
@@ -23,8 +23,8 @@ const TURN_1 = {
   ai: "Q4 totals: $847K revenue, up 23% YoY. Here's the breakdown by channel:",
   bars: [
     { label: 'Voice', value: 342, color: '#3859a8' },
-    { label: 'Email', value: 251, color: '#6366F1' },
-    { label: 'Web', value: 172, color: '#22D3EE' },
+    { label: 'Email', value: 251, color: '#22396E' },
+    { label: 'Web', value: 172, color: '#06b6d4' },
     { label: 'SMS', value: 82, color: '#10B981' },
   ],
 }
@@ -631,7 +631,7 @@ function AgentView({
   )
 }
 
-export function SpaceScreen({ isActive, onAction }) {
+export function SpaceScreen({ isActive, onAction, onStep }) {
   const [view, setView] = useState('chat')
   const [selectedModel, setSelectedModel] = useState(0)
   const [highlightedModel, setHighlightedModel] = useState(-1)
@@ -702,7 +702,7 @@ export function SpaceScreen({ isActive, onAction }) {
       setAgentSuccess(false)
       setSelectedModel(0)
 
-      t(() => setPickerOpen(true), 600)
+      t(() => { setPickerOpen(true); onStep?.(0) }, 600)
       const hoverSchedule = [0, 1, 2, 1]
       hoverSchedule.forEach((idx, i) => {
         t(() => setHighlightedModel(idx), 1100 + i * 220)
@@ -724,6 +724,7 @@ export function SpaceScreen({ isActive, onAction }) {
       t(() => {
         setSentMessages((prev) => [...prev, { role: 'user', text: TURN_1.user }])
         setTypedInput('')
+        onStep?.(1)
       }, now)
       now += 350
 
@@ -779,7 +780,7 @@ export function SpaceScreen({ isActive, onAction }) {
       now += 1800
 
       // Transition to Agent view
-      t(() => setView('agent'), now)
+      t(() => { setView('agent'); onStep?.(2) }, now)
       now += 600
 
       now = typeText(AGENT.name, 38, now, setAgentNameTyped)
@@ -800,7 +801,7 @@ export function SpaceScreen({ isActive, onAction }) {
       t(() => setAgentSubmitPulse(false), now + 350)
       now += 600
 
-      t(() => setAgentSuccess(true), now)
+      t(() => { setAgentSuccess(true); onStep?.(3) }, now)
       now += 2200
 
       t(runLoop, now + 800)
@@ -809,7 +810,7 @@ export function SpaceScreen({ isActive, onAction }) {
     runLoop()
     loopRef.current = timers
     return () => timers.forEach(clearTimeout)
-  }, [isActive])
+  }, [isActive, onStep])
 
   const model = MODELS[selectedModel]
   const sidebarActive = view === 'agent' ? 'agents' : 'chat'

@@ -1,20 +1,81 @@
 import Link from 'next/link'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 
+/* Centered product-name lockup, shown on its own row above the side-by-side
+   text + device block: the product's own logo, then the one-word name in two
+   tones ("Jotil" navy + product part royal blue — the same pair on every
+   product), over a thin rule with a blue dot centered on it. */
+export function SlideBadge({ product }) {
+  const { slug, badge } = product
+  const NAVY = '#22396E'
+  const BLUE = '#3859a8'
+  // Split "JotilReceptionist" into ["Jotil", "Receptionist"] for the two tones
+  // (no space is rendered between them).
+  const rest = badge.replace(/^Jotil/, '')
+
+  return (
+    <div className="flex justify-center">
+      <div className="slide-badge inline-flex items-center gap-3">
+        <ProductGlyph slug={slug} size={34} />
+        {/* The rule sits under the NAME only (exact text width on every
+            product), with the dot centered on it. */}
+        <span className="inline-flex flex-col items-center">
+          {/* CamelCase lockup ("JotilSpace", capital J + capital product
+              initial): "Jotil" light in a navy-to-royal gradient, product
+              part bold in an all-blue gradient (never drifting to green). */}
+          <span
+            className="text-center text-xl tracking-[0.01em] sm:text-3xl"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            <span
+              className="font-normal"
+              style={{
+                background: `linear-gradient(120deg, ${NAVY} 0%, ${BLUE} 100%)`,
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Jotil
+            </span>
+            <span
+              className="font-bold"
+              style={{
+                background: 'linear-gradient(120deg, #2563EB 0%, #3B82F6 55%, #60A5FA 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              {rest}
+            </span>
+          </span>
+          {/* Rule tapers from thick at the center to hairline at both ends */}
+          <span aria-hidden="true" className="relative mt-1.5 block h-[5px] w-full">
+            <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 6" preserveAspectRatio="none">
+              <path d="M0 3 Q 50 0.4 100 3 Q 50 5.6 0 3 Z" fill={NAVY} />
+            </svg>
+            <span
+              className="absolute left-1/2 top-1/2 h-[6px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{ background: '#3B82F6', boxShadow: '0 0 0 2px #ffffff' }}
+            />
+          </span>
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/* The copy that sits beside the device (left-aligned, like before) — title,
+   description, outcome bullets, and CTA. The product-name badge lives in
+   SlideBadge above the row, so it is not repeated here. */
 export function SlideText({ product }) {
-  const { slug, icon: Icon, badge, title, desc, features } = product
+  const { slug, title, desc, features } = product
 
   return (
     <div className="slide-text max-w-[460px]">
-      <div
-        className="slide-badge inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-5"
-        style={{ background: 'rgba(56, 89, 168, 0.08)', color: '#3859a8' }}
-      >
-        <Icon size={14} strokeWidth={2} />
-        {badge}
-      </div>
-
       <h2
-        className="slide-heading text-[clamp(1.75rem,3vw,2.625rem)] font-bold leading-[1.15] tracking-[-0.03em] text-text mb-4"
+        className="slide-heading headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.03em] text-text mb-4"
         style={{ fontFamily: 'var(--font-display)' }}
       >
         {title}
@@ -30,7 +91,10 @@ export function SlideText({ product }) {
             key={i}
             className="slide-feature flex items-center gap-2.5 text-sm text-text-secondary"
           >
-            <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-primary" />
+            <span
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #06b6d4)' }}
+            />
             {f}
           </li>
         ))}

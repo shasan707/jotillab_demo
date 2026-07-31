@@ -4,29 +4,23 @@ import * as LucideIcons from 'lucide-react'
 import { Check, ArrowRight } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
-import { AtmosphericDivider } from '@/components/design'
 import { Button } from '@/components/ui/Button'
 import { IconBox } from '@/components/ui/IconBox'
 import { PricingCard } from '@/components/pricing/PricingCard'
-import {
-  ReceptionistLogo,
-  MessengerLogo,
-  OutreachLogo,
-  SpaceLogo,
-  FlowLogo,
-  AvatarLogo,
-} from '@/components/ui/ProductLogos'
 import { DemoVisualization } from '@/components/product/DemoVisualization'
-import { FAQAccordion } from '@/components/product/FAQAccordion'
+import { ProductHeroDevice } from '@/components/product/ProductHeroDevice'
 
-const LOGO_MAP = {
-  receptionist: ReceptionistLogo,
-  messenger: MessengerLogo,
-  outreach: OutreachLogo,
-  space: SpaceLogo,
-  flow: FlowLogo,
-  avatar: AvatarLogo,
-}
+// Products that have a live device interface (same screens as the homepage
+// showcase) — shown as the hero visual. Others use ProductHeroPreview.
+const DEMO_DEVICE_SLUGS = ['receptionist', 'messenger', 'outreach', 'space', 'avatar', 'jotildevs', 'jotilconsult', 'jotileducation']
+import { FAQAccordion } from '@/components/product/FAQAccordion'
+import { ProductHeroPreview } from '@/components/product/ProductHeroPreview'
+import JotilFlowPipeline from '@/components/product/JotilFlowPipeline'
+import { CursorTilt } from '@/components/ui/CursorTilt'
+import { DeviceGlow } from '@/components/sections/showcase/devices/DeviceGlow'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
+import { IntegrationsMarquee } from '@/components/product/IntegrationsMarquee'
+import { TiltCard } from '@/components/design'
 
 /* ─── Static generation ─── */
 
@@ -64,7 +58,9 @@ export default async function ProductPage({ params }) {
 
   if (!product) notFound()
 
-  const Logo = LOGO_MAP[slug]
+  // Browser (PC) interfaces need a larger column than the text (otherwise
+  // they render too small to read).
+  const wideDevice = ['space', 'avatar', 'jotildevs', 'jotilconsult', 'jotileducation'].includes(slug)
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -86,7 +82,7 @@ export default async function ProductPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {/* ─── 1. Hero ─── */}
-      <section className="relative pt-28 pb-20 px-4 overflow-hidden">
+      <section className="hero-wave-bg relative pt-28 pb-20 px-4 overflow-hidden">
         {/* Background orbs */}
         <div
           className="absolute top-0 right-0 w-[600px] h-[500px] rounded-full opacity-40 pointer-events-none"
@@ -100,12 +96,15 @@ export default async function ProductPage({ params }) {
         />
 
         <div className="relative max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className={`grid grid-cols-1 gap-12 lg:gap-16 items-center ${wideDevice ? 'lg:grid-cols-[0.85fr_1.15fr]' : 'lg:grid-cols-2'}`}>
             {/* Left column */}
             <AnimatedSection>
-              <Badge variant="blue" className="mb-5">{product.badge}</Badge>
+              <div className="flex items-center gap-3 mb-5">
+                <ProductGlyph slug={slug} size={52} />
+                <Badge variant="blue">{product.badge}</Badge>
+              </div>
               <h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
+                className="headline-shadow break-words text-5xl sm:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.07] mb-5"
                 style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}
               >
                 <span className="text-navy">{product.displayName[0]}</span><span className="text-primary">{product.displayName[1]}</span>
@@ -133,41 +132,36 @@ export default async function ProductPage({ params }) {
               </div>
             </AnimatedSection>
 
-            {/* Right column - Product visual / placeholder */}
+            {/* Right column - live product interface (same device mockup as the
+                homepage showcase); products without a screen use the preview. */}
             <AnimatedSection delay={0.15} className="flex justify-center lg:justify-end">
-              <div
-                className="relative w-full max-w-md aspect-[4/3] rounded-3xl flex flex-col items-center justify-center gap-4 overflow-hidden"
-                style={{
-                  background: 'rgba(255,255,255,0.30)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(56, 89, 168,0.1)',
-                  boxShadow: '0 16px 48px rgba(56, 89, 168,0.08), 0 4px 16px rgba(0,0,0,0.04)',
-                }}
-              >
-                {Logo && <Logo size={80} />}
-                <p className="text-sm font-medium text-text-secondary">Product demo coming soon</p>
-                <div
-                  className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm border border-black/5 shadow-sm rounded-xl px-3 py-1.5 flex items-center gap-2"
-                >
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  <span className="text-[11px] font-medium text-text-secondary">Live preview</span>
-                </div>
-              </div>
+              {slug === 'flow' ? (
+                <CursorTilt className="w-full flex justify-center lg:justify-end">
+                  <div className="relative w-full max-w-[640px]">
+                    <DeviceGlow radius={20} inset={-24} intensity={0.9} />
+                    <div className="relative">
+                      <JotilFlowPipeline />
+                    </div>
+                  </div>
+                </CursorTilt>
+              ) : DEMO_DEVICE_SLUGS.includes(slug) ? (
+                <ProductHeroDevice slug={slug} />
+              ) : (
+                <ProductHeroPreview slug={slug} productName={product.name} />
+              )}
             </AnimatedSection>
           </div>
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-primary-50)" to="var(--color-bg)" height={50} />
 
       {/* ─── 2. Services breakdown ─── */}
-      <section className="py-20 px-4">
+      <section className="bg-white py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What you get</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               What&apos;s included
@@ -183,7 +177,7 @@ export default async function ProductPage({ params }) {
           >
             {product.services.map((svc, i) => (
               <AnimatedSection key={i} delay={i * 0.08}>
-                <div className="card-premium h-full flex flex-col">
+                <TiltCard maxTilt={4} className="card-premium h-full flex flex-col rounded-[20px]">
                   <h3
                     className="text-lg font-bold text-text mb-3"
                     style={{ fontFamily: 'var(--font-display)' }}
@@ -203,27 +197,25 @@ export default async function ProductPage({ params }) {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </TiltCard>
               </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
-      {/* ─── 3. Demo visualization (client component) ─── */}
+      {/* ─── 3. Demo visualization (the live interface is now in the hero) ─── */}
       <DemoVisualization slug={slug} />
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 4. Features grid ─── */}
-      <section className="py-20 px-4 surface-sunken">
+      <section className="bg-white py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Why it works</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Built for results
@@ -235,7 +227,7 @@ export default async function ProductPage({ params }) {
               const Icon = getLucideIcon(feat.icon)
               return (
                 <AnimatedSection key={i} delay={i * 0.06}>
-                  <div className="card h-full">
+                  <TiltCard maxTilt={4} className="card h-full rounded-[20px]">
                     <IconBox size="md" glow className="mb-4">
                       <Icon strokeWidth={1.5} />
                     </IconBox>
@@ -246,7 +238,7 @@ export default async function ProductPage({ params }) {
                       {feat.title}
                     </h3>
                     <p className="text-sm text-text-secondary leading-relaxed">{feat.description}</p>
-                  </div>
+                  </TiltCard>
                 </AnimatedSection>
               )
             })}
@@ -254,15 +246,14 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 5. Pricing teaser — single highlighted tier + CTA to full pricing page ─── */}
-      <section id="pricing" className="py-20 px-4">
+      <section id="pricing" className="bg-[#E9EEF7] py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Pricing</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Simple, transparent pricing
@@ -346,20 +337,18 @@ export default async function ProductPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
       {/* ─── 6. FAQ (client accordion) ─── */}
       <FAQAccordion faq={product.faq} />
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── 7. Bottom CTA ─── */}
-      <section className="py-20 px-4">
+      <section className="bg-[#E9EEF7] py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-4">Get Started</p>
             <h2
-              className="text-3xl sm:text-4xl font-extrabold text-text tracking-tight mb-4"
+              className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-extrabold text-text tracking-tight mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Ready to try{' '}
@@ -372,32 +361,45 @@ export default async function ProductPage({ params }) {
               <Button href="/contact" variant="primary" size="lg">
                 Book a Demo
               </Button>
-              <Button href="/products" variant="outline" size="lg">
+              <Button href="/" variant="outline" size="lg">
                 Explore the Platform
               </Button>
             </div>
-
-            {/* Integration logos row */}
-            {product.integrations?.length > 0 && (
-              <div className="mt-10 pt-8 border-t border-black/5">
-                <p className="text-xs font-medium text-text-secondary mb-3 uppercase tracking-wider">
-                  Integrates with
-                </p>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  {product.integrations.map((name) => (
-                    <span
-                      key={name}
-                      className="text-xs font-medium text-text-secondary bg-white border border-black/5 rounded-full px-3 py-1"
-                    >
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </AnimatedSection>
         </div>
       </section>
+
+      {/* ─── 8. Integrations — per-product tools in a two-row moving marquee ─── */}
+      {product.integrations?.length > 0 && (
+        <section className="cv-auto bg-white py-20 px-4">
+          <div className="max-w-5xl mx-auto">
+            <AnimatedSection className="text-center mb-12">
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">
+                Integrations
+              </p>
+              <h2
+                className="headline-shadow text-[clamp(1.9rem,3.5vw,2.75rem)] font-bold text-text tracking-tight"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                Works with the tools you already use
+              </h2>
+              <p className="text-text-secondary mt-3 max-w-md mx-auto">
+                {product.name} plugs into your existing stack in minutes. No ripping and replacing.
+              </p>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.15}>
+              <IntegrationsMarquee items={product.integrations} />
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.3}>
+              <p className="text-center text-sm text-text-secondary mt-8">
+                Plus any REST API, webhook, or custom integration your business needs.
+              </p>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
     </>
   )
 }

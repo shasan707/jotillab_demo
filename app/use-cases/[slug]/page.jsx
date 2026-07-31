@@ -2,15 +2,18 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
   ArrowRight, ArrowLeft, AlertCircle, Sparkles,
-  Quote, Check, ChevronRight,
+  Check, ChevronRight,
 } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
 import { CountUp } from '@/components/ui/CountUp'
 import { AtmosphericDivider } from '@/components/design'
+import { DashboardPromo } from '@/components/sections/industry/DashboardPromo'
+import { IndustryVoiceBot } from '@/components/sections/industry/IndustryVoiceBot'
 import { INDUSTRIES, INDUSTRY_SLUGS, getIndustry, getRelatedIndustries } from '@/lib/industries'
 import { products } from '@/data/products'
 import { ScenarioCard } from '@/components/sections/industry/ScenarioCard'
+import { ChatScenarioCard } from '@/components/sections/industry/ChatScenarioCard'
 
 const BRAND = '#3859a8'
 
@@ -42,7 +45,7 @@ export default async function IndustryPage({ params }) {
   return (
     <div className="min-h-screen bg-bg">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden pt-32 pb-20">
+      <section className="hero-wave-bg relative overflow-hidden pt-32 pb-20">
         <div
           className="pointer-events-none absolute -top-40 -right-30 rounded-full"
           aria-hidden="true"
@@ -59,7 +62,7 @@ export default async function IndustryPage({ params }) {
           style={{
             width: 460,
             height: 460,
-            background: 'radial-gradient(circle, rgba(34, 211, 238,0.07) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(59, 130, 246,0.07) 0%, transparent 70%)',
             filter: 'blur(80px)',
           }}
         />
@@ -97,7 +100,7 @@ export default async function IndustryPage({ params }) {
 
               <AnimatedSection delay={0.1}>
                 <h1
-                  className="font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-4"
+                  className="headline-shadow font-extrabold tracking-[-0.04em] leading-[1.05] text-text mb-4"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.5rem, 5vw, 3.85rem)' }}
                 >
                   {industry.tagline}
@@ -120,7 +123,7 @@ export default async function IndustryPage({ params }) {
                     <ArrowRight size={15} strokeWidth={2} />
                   </Link>
                   <Link
-                    href="/products"
+                    href="/"
                     className="inline-flex items-center no-underline text-sm font-semibold text-text px-7 py-3.5 rounded-[11px] transition-all duration-300 hover:-translate-y-0.5"
                     style={{ background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.07)' }}
                   >
@@ -130,6 +133,22 @@ export default async function IndustryPage({ params }) {
               </AnimatedSection>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Voice AI bot (interactive orb, before the demo video).
+           Every industry has a dedicated Retell agent; the orb carries a
+           live call. The slug is resolved to an agent id server-side. ── */}
+      <IndustryVoiceBot agent={slug} />
+
+      {/* ── Product dashboard promo ── */}
+      <section className="pb-16">
+        <div className="max-w-5xl mx-auto px-6">
+          <AnimatedSection>
+            <DashboardPromo
+              ariaLabel={`${industry.name} platform dashboard preview`}
+            />
+          </AnimatedSection>
         </div>
       </section>
 
@@ -148,7 +167,7 @@ export default async function IndustryPage({ params }) {
                 Where it breaks today
               </p>
               <h2
-                className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
+                className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
                 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
               >
                 The reality of running {industry.name.toLowerCase()} ops
@@ -188,7 +207,7 @@ export default async function IndustryPage({ params }) {
                 What JotilLabs does
               </p>
               <h2
-                className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
+                className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-6"
                 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
               >
                 Built for how {industry.name.toLowerCase()} actually runs
@@ -248,7 +267,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">See it in action</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Real conversations, not slideware
@@ -258,12 +277,15 @@ export default async function IndustryPage({ params }) {
             </p>
           </AnimatedSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {industry.scenarios.map((scenario, i) => (
-              <AnimatedSection key={scenario.title} delay={i * 0.1}>
-                <ScenarioCard scenario={scenario} />
-              </AnimatedSection>
-            ))}
+          {/* Two cards: Voice, plus one Chat card that combines the SMS and
+              web conversations and shows the channels they arrive from. */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+            <AnimatedSection>
+              <ScenarioCard scenario={industry.scenarios.find((s) => s.channel === 'voice') ?? industry.scenarios[0]} />
+            </AnimatedSection>
+            <AnimatedSection delay={0.1}>
+              <ChatScenarioCard scenarios={industry.scenarios.filter((s) => s.channel !== 'voice')} />
+            </AnimatedSection>
           </div>
         </div>
       </section>
@@ -276,7 +298,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">Measured impact</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               What changes for {industry.name.toLowerCase()} teams
@@ -308,56 +330,7 @@ export default async function IndustryPage({ params }) {
         </div>
       </section>
 
-      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={50} />
-
-      {/* ── Customer Quote ── */}
-      <section className="py-24">
-        <div className="max-w-3xl mx-auto px-6">
-          <AnimatedSection>
-            <div
-              className="relative rounded-[28px] p-10 md:p-14 overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(56,89,168,0.06), rgba(56,89,168,0.14))',
-                border: '1px solid rgba(56,89,168,0.18)',
-              }}
-            >
-              <Quote
-                size={48}
-                color={BRAND}
-                strokeWidth={1.5}
-                className="opacity-30 mb-6"
-              />
-              <p
-                className="font-bold tracking-[-0.02em] text-text leading-[1.3] mb-8"
-                style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.25rem, 2.4vw, 1.75rem)' }}
-              >
-                &ldquo;{industry.quote.text}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white font-bold"
-                  style={{ background: `linear-gradient(135deg, ${BRAND}, #2a4688)` }}
-                >
-                  {industry.quote.author
-                    .split(' ')
-                    .map((n) => n[0])
-                    .filter((c) => /[A-Za-z]/.test(c))
-                    .slice(0, 2)
-                    .join('')}
-                </div>
-                <div>
-                  <p className="font-bold text-text">{industry.quote.author}</p>
-                  <p className="text-sm text-text-secondary">
-                    {industry.quote.role} · {industry.quote.company}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={50} />
+      <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg-alt)" height={50} />
 
       {/* ── Recommended Products ── */}
       <section className="py-24 bg-bg-alt/40">
@@ -365,7 +338,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">The stack</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Products that power this setup
@@ -425,7 +398,7 @@ export default async function IndustryPage({ params }) {
           <AnimatedSection className="text-center mb-12">
             <Badge variant="blue" className="mb-5">FAQ</Badge>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-3"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 3.4vw, 2.85rem)' }}
             >
               Common questions from {industry.name.toLowerCase()} owners
@@ -468,7 +441,7 @@ export default async function IndustryPage({ params }) {
             <div
               className="relative rounded-[28px] p-10 md:p-14 text-center overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(34, 211, 238,0.05))',
+                background: 'linear-gradient(135deg, rgba(56, 89, 168,0.10), rgba(59, 130, 246,0.06), rgba(59, 130, 246,0.05))',
                 border: '1px solid rgba(56, 89, 168,0.18)',
               }}
             >
@@ -492,7 +465,7 @@ export default async function IndustryPage({ params }) {
                   <Icon size={26} color={BRAND} strokeWidth={1.6} />
                 </div>
                 <h2
-                  className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
+                  className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text mb-4"
                   style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.85rem, 3.2vw, 2.6rem)' }}
                 >
                   See it on a {industry.name.toLowerCase()} call.
@@ -533,7 +506,7 @@ export default async function IndustryPage({ params }) {
               Also serving
             </p>
             <h2
-              className="font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
+              className="headline-shadow font-extrabold tracking-[-0.03em] leading-[1.1] text-text"
               style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.65rem, 2.6vw, 2.2rem)' }}
             >
               Other industries we work with

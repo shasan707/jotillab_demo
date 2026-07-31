@@ -2,31 +2,15 @@ import Link from 'next/link'
 import { Check, Minus } from 'lucide-react'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { Badge } from '@/components/ui/Badge'
-import { AtmosphericDivider } from '@/components/design'
+import { AtmosphericDivider, TiltCard } from '@/components/design'
 import { Button } from '@/components/ui/Button'
-import {
-  ReceptionistLogo,
-  MessengerLogo,
-  OutreachLogo,
-  SpaceLogo,
-  FlowLogo,
-  AvatarLogo,
-} from '@/components/ui/ProductLogos'
+import { ProductGlyph } from '@/components/ui/ProductGlyph'
 import { products } from '@/data/products'
 
 export const metadata = {
   title: 'Our AI Products',
   description:
     'AI-powered tools to automate every customer touchpoint. Voice, chat, SMS, outbound campaigns, CRM, workflow automation, and AI avatars.',
-}
-
-const LOGO_MAP = {
-  receptionist: ReceptionistLogo,
-  messenger: MessengerLogo,
-  outreach: OutreachLogo,
-  space: SpaceLogo,
-  flow: FlowLogo,
-  avatar: AvatarLogo,
 }
 
 /* ── Comparison table data ── */
@@ -38,6 +22,12 @@ const TABLE_FEATURES = [
   { label: 'Automation', key: 'automation' },
   { label: 'Scheduling', key: 'scheduling' },
 ]
+
+/* Comparison table covers the 6 core solutions. The 3 engagement-based
+   solutions (Devs, Consult, Education) are scoped per project, so a
+   feature checklist does not apply to them. */
+const SERVICE_SLUGS = ['jotildevs', 'jotilconsult', 'jotileducation']
+const CORE = products.filter((p) => !SERVICE_SLUGS.includes(p.slug))
 
 const PRODUCT_FEATURES = {
   receptionist: { voice: true, chat: true, sms: false, crm: false, automation: false, scheduling: true },
@@ -61,7 +51,7 @@ export default function ProductsPage() {
   return (
     <>
       {/* ─── Hero ─── */}
-      <section className="relative pt-28 pb-16 px-4 overflow-hidden">
+      <section className="hero-wave-bg relative pt-28 pb-16 px-4 overflow-hidden">
         {/* Subtle orb */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full opacity-30 pointer-events-none"
@@ -73,7 +63,7 @@ export default function ProductsPage() {
           <AnimatedSection>
             <Badge variant="blue" className="mb-5">Our Solutions</Badge>
             <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.08]"
+              className="headline-shadow text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text tracking-tight leading-[1.08]"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Everything your business needs.{' '}
@@ -86,24 +76,23 @@ export default function ProductsPage() {
 
           {/* Logo row */}
           <AnimatedSection delay={0.15} className="mt-10 flex items-center justify-center gap-5 flex-wrap">
-            {products.map((p) => {
-              const Logo = LOGO_MAP[p.slug]
-              return (
-                <Link
-                  key={p.slug}
-                  href={`/products/${p.slug}`}
-                  className="flex flex-col items-center gap-2 group"
-                  aria-label={p.name}
-                >
-                  <div className="h-14 w-14 rounded-2xl bg-white border border-black/5 shadow-sm flex items-center justify-center transition-all duration-200 group-hover:shadow-md group-hover:border-primary/15 group-hover:-translate-y-0.5">
-                    <Logo size={36} />
-                  </div>
-                  <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider group-hover:text-primary transition-colors duration-150">
-                    {p.displayName[1]}
-                  </span>
-                </Link>
-              )
-            })}
+            {products.map((p) => (
+              <Link
+                key={p.slug}
+                href={`/products/${p.slug}`}
+                className="flex flex-col items-center gap-2 group"
+                aria-label={p.name}
+              >
+                <ProductGlyph
+                  slug={p.slug}
+                  size={56}
+                  className="shadow-sm transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md"
+                />
+                <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider group-hover:text-primary transition-colors duration-150">
+                  {p.displayName[1]}
+                </span>
+              </Link>
+            ))}
           </AnimatedSection>
         </div>
       </section>
@@ -111,12 +100,12 @@ export default function ProductsPage() {
       <AtmosphericDivider from="var(--color-primary-50)" to="var(--color-bg)" height={50} />
 
       {/* ─── Products grid ─── */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-14">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">What we offer</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Explore our solutions
@@ -125,17 +114,18 @@ export default function ProductsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {products.map((product, i) => {
-              const Logo = LOGO_MAP[product.slug]
               const price = startingPrice(product)
 
               return (
                 <AnimatedSection key={product.slug} delay={i * 0.07}>
-                  <div className="card-premium h-full flex flex-col group">
+                  <TiltCard maxTilt={4} className="card-premium h-full flex flex-col group rounded-[20px]">
                     {/* Card header */}
                     <div className="flex items-start gap-4 mb-5">
-                      <div className="h-16 w-16 rounded-2xl bg-[#F0F4FF] flex items-center justify-center shrink-0 transition-all duration-200 group-hover:bg-[#E8F0FE]">
-                        <Logo size={48} />
-                      </div>
+                      <ProductGlyph
+                        slug={product.slug}
+                        size={64}
+                        className="shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5"
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1.5">
                           <h3
@@ -185,7 +175,7 @@ export default function ProductsPage() {
                         <span aria-hidden>&#8594;</span>
                       </Link>
                     </div>
-                  </div>
+                  </TiltCard>
                 </AnimatedSection>
               )
             })}
@@ -196,12 +186,12 @@ export default function ProductsPage() {
       <AtmosphericDivider from="var(--color-bg)" to="var(--color-bg-alt)" height={40} />
 
       {/* ─── Comparison table ─── */}
-      <section className="py-20 px-4 surface-sunken overflow-hidden">
+      <section className="py-20 px-4 bg-[#E9EEF7] overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Compare</p>
             <h2
-              className="text-3xl font-bold text-text tracking-tight"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Which solution fits your business?
@@ -218,12 +208,11 @@ export default function ProductsPage() {
                       <th scope="col" className="text-left px-6 py-4 text-xs font-semibold text-text-secondary uppercase tracking-wider w-40">
                         Feature
                       </th>
-                      {products.map((p) => {
-                        const Logo = LOGO_MAP[p.slug]
+                      {CORE.map((p) => {
                         return (
                           <th key={p.slug} scope="col" className="px-4 py-4 text-center">
                             <div className="flex flex-col items-center gap-1.5">
-                              <Logo size={28} />
+                              <ProductGlyph slug={p.slug} size={40} />
                               <span
                                 className="text-xs font-semibold text-text whitespace-nowrap"
                                 style={{ fontFamily: 'var(--font-display)' }}
@@ -240,7 +229,7 @@ export default function ProductsPage() {
                     {TABLE_FEATURES.map((feature, ri) => (
                       <tr key={feature.key} className={ri % 2 === 0 ? '' : 'bg-[#FAFBFD]'}>
                         <th scope="row" className="px-6 py-4 text-sm font-medium text-text text-left">{feature.label}</th>
-                        {products.map((p) => {
+                        {CORE.map((p) => {
                           const has = PRODUCT_FEATURES[p.slug]?.[feature.key]
                           return (
                             <td key={p.slug} className="px-4 py-4 text-center">
@@ -263,17 +252,23 @@ export default function ProductsPage() {
                   </tbody>
                 </table>
           </AnimatedSection>
+
+          <AnimatedSection delay={0.15}>
+            <p className="text-sm text-text-secondary text-center mt-5">
+              JotilDevs, JotilConsult and JotilEducation are scoped per engagement. Talk to us for a tailored plan.
+            </p>
+          </AnimatedSection>
         </div>
       </section>
 
       <AtmosphericDivider from="var(--color-bg-alt)" to="var(--color-bg)" height={40} />
 
       {/* ─── Bottom CTA ─── */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <h2
-              className="text-3xl font-bold text-text tracking-tight mb-4"
+              className="headline-shadow text-3xl font-bold text-text tracking-tight mb-4"
               style={{ fontFamily: 'var(--font-display)' }}
             >
               Not sure which product fits?

@@ -2,19 +2,20 @@
 
 import { motion } from 'framer-motion'
 import {
-  UtensilsCrossed, Stethoscope, Home, Scale, Hotel,
-  TrendingUp, ShoppingCart, Wrench,
+  Scissors, TrendingUp, HeartPulse, Wrench, Scale,
+  ClipboardCheck, Home, UtensilsCrossed, Store,
 } from 'lucide-react'
 
 const ICONS = [
-  { Icon: UtensilsCrossed, label: 'Restaurant' },
-  { Icon: Stethoscope, label: 'Dental & Medical' },
-  { Icon: Home, label: 'Real Estate' },
-  { Icon: Scale, label: 'Legal' },
-  { Icon: Hotel, label: 'Hospitality' },
+  { Icon: Scissors, label: 'Beauty & Spa' },
   { Icon: TrendingUp, label: 'Finance' },
-  { Icon: ShoppingCart, label: 'E-commerce' },
+  { Icon: HeartPulse, label: 'Health & Wellness' },
   { Icon: Wrench, label: 'Home Services' },
+  { Icon: Scale, label: 'Legal' },
+  { Icon: ClipboardCheck, label: 'Personal Secretary' },
+  { Icon: Home, label: 'Real Estate' },
+  { Icon: UtensilsCrossed, label: 'Restaurants' },
+  { Icon: Store, label: 'Small Business' },
 ]
 
 export function IndustryIconStrip() {

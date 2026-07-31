@@ -2,9 +2,12 @@
 
 @theme {
   /* Fonts */
-  --font-display: var(--font-montserrat-alternates), "Montserrat Alternates", system-ui, -apple-system, sans-serif;
+  /* Display/sans map to Roboto so EVERY heading-styled element (real h tags
+     and styled <p>/<span>) shares one type system. Hero keeps Russo One via
+     --font-russo; Fraunces stays the intentional serif accent. */
+  --font-display: var(--font-roboto), Roboto, Arial, sans-serif;
   /* font-sans aliases font-display today; kept separate so body/UI can diverge later */
-  --font-sans: var(--font-montserrat-alternates), "Montserrat Alternates", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-roboto), Roboto, Arial, sans-serif;
   --font-body: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
   /* Editorial serif accent - use sparingly for pull-quotes, emphasis, numerical displays */
@@ -87,8 +90,8 @@
   --shadow-lg: 0 12px 32px rgba(15, 17, 41, 0.08), 0 4px 12px rgba(15, 17, 41, 0.05);
   --shadow-xl: 0 24px 60px rgba(15, 17, 41, 0.12), 0 8px 20px rgba(15, 17, 41, 0.06);
   /* Ambient cyan glow for interactive/highlight moments */
-  --shadow-glow-accent: 0 0 0 1px rgba(59, 130, 246, 0.10), 0 8px 32px rgba(59, 130, 246, 0.18);
-  --shadow-glow-primary: 0 0 0 1px rgba(56, 89, 168, 0.10), 0 8px 32px rgba(56, 89, 168, 0.20);
+  --shadow-glow-accent: 0 0 0 1px rgba(59, 130, 246, 0.14), 0 10px 40px rgba(59, 130, 246, 0.30);
+  --shadow-glow-primary: 0 0 0 1px rgba(56, 89, 168, 0.14), 0 10px 40px rgba(56, 89, 168, 0.32);
 
   /* Animations */
   --animate-float: float 6s ease-in-out infinite;
@@ -99,6 +102,7 @@
   --animate-ring-rotate: ring-rotate 60s linear infinite;
   --animate-orbit: orbit 25s linear infinite;
   --animate-heartbeat: heartbeat 10s ease-in-out infinite;
+  --animate-caret-blink: caret-blink 1.1s step-end infinite;
 
   /* Interaction tokens — shared duration + easing so every transition on
      the site feels authored by one hand. Consume via var(--duration-*)
@@ -153,6 +157,41 @@
 
 .atmosphere-drift-2 {
   animation: atmosphere-drift-2 28s ease-in-out infinite;
+}
+
+@keyframes atmosphere-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(3%, -5%) scale(1.12); }
+  66% { transform: translate(-4%, 3%) scale(1.04); }
+}
+
+.atmosphere-drift-3 {
+  animation: atmosphere-drift-3 36s ease-in-out infinite;
+}
+
+/* Lightweight hero "wave" motion: a slow GPU-only drift of the static scene
+   image so the wave gently flows — no WebGL, no blur, transform-only. The base
+   scale hides the edges as it translates. */
+@keyframes hero-bg-wave {
+  0%, 100% { transform: scale(1.08) translate3d(0, 0, 0); }
+  50% { transform: scale(1.08) translate3d(-2%, -1.3%, 0); }
+}
+.hero-bg-wave {
+  transform: scale(1.08);
+  animation: hero-bg-wave 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* On phones the full-screen blurred aurora layers are expensive to recomposite
+   every frame (and largely hidden behind opaque sections anyway). Freeze the
+   drift on small screens — a still frame looks identical, only the slow motion
+   is dropped, which keeps the GPU cool and the scroll smooth. */
+@media (max-width: 767px) {
+  .atmosphere-drift-1,
+  .atmosphere-drift-2,
+  .atmosphere-drift-3 {
+    animation: none;
+  }
 }
 
 @keyframes ring-pulse {
@@ -376,22 +415,70 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-premium:hover {
-  background: rgba(255, 255, 255, 0.70);
-  border-color: rgba(56, 89, 168, 0.30);
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(56, 89, 168, 0.42);
   box-shadow:
-    0 20px 60px rgba(56, 89, 168, 0.12),
+    0 28px 72px rgba(56, 89, 168, 0.20),
     var(--shadow-glow-accent),
     inset 0 1px 0 rgba(255, 255, 255, 1);
-  transform: translateY(-3px);
+  transform: translateY(-4px);
 }
 
 @media (max-width: 768px) {
+  /* Touch devices never fire :hover, so the resting card has to carry the
+     depth on its own. Use a lighter blur (cooler GPU) but a more present
+     drop shadow so cards don't read flat on mobile. */
   .card,
   .card-premium {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow:
+      0 10px 26px rgba(15, 17, 41, 0.09),
+      0 2px 8px rgba(56, 89, 168, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
+}
+
+/* ── Consistent heading typography (site-wide) ──
+   Every heading uses Roboto for one consistent type system, EXCEPT the hero
+   display headline (.hero-display, which keeps Russo One). Serif accents
+   (Fraunces <em>) are intentionally left untouched so they render the same on
+   every page. !important is required to win over the per-heading inline
+   font-family declarations scattered across components. */
+h1:not(.hero-display),
+h2:not(.hero-display),
+h3:not(.hero-display),
+h4,
+h5,
+h6 {
+  font-family: var(--font-roboto), Roboto, Arial, sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* Neutralise the rainbow gradient accent into one refined royal-blue. The
+   accent carries the SAME subtle dark directional cast as every other heading
+   (see .headline-shadow) so the shadow is consistent across the whole site. */
+.home-pro-headings .text-gradient {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #3859a8 !important;
+  color: #3859a8 !important;
+  text-shadow:
+    1px 2px 0 rgba(15, 17, 41, 0.10),
+    2px 3px 6px rgba(15, 17, 41, 0.07);
+}
+
+/* Heading accent words use the single royal-blue everywhere (not the rainbow
+   gradient), so every page matches the homepage. Only targets accents INSIDE
+   headings — decorative gradient text elsewhere is untouched. */
+h1 .text-gradient,
+h2 .text-gradient,
+h3 .text-gradient {
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #3859a8 !important;
+  color: #3859a8 !important;
 }
 
 .card-premium::before {
@@ -418,14 +505,59 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Gradients ── */
 
 .text-gradient {
-  background: linear-gradient(135deg, #3859a8, #3B82F6);
+  background: linear-gradient(115deg, #3B82F6 0%, #3859a8 52%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.btn-gradient {
-  background: linear-gradient(135deg, #3859a8, #2a4688);
+/* Depth shadow for big, bold headline words. Uses filter:drop-shadow so it
+   works on solid AND gradient-clipped text (text-shadow can't shadow gradient
+   text). Apply to large headings site-wide. */
+/* Skip paint/layout/compositing AND pause animations for these blocks while
+   they are off-screen. `auto` in contain-intrinsic-size makes the browser
+   remember each block's real rendered height, so the scrollbar doesn't jump.
+   Do NOT put this on scroll-driven sections (e.g. the Live Console) — it breaks
+   their scroll measurement. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+.headline-shadow {
+  /* Light directional "long shadow": a short hard offset (the colored
+     extrusion) plus a soft blur for depth, cast down-right. Low opacity so it
+     stays subtle on the smaller section headings. The hero mirrors these
+     values inline (SplineAura HEADLINE_SHADOW_DARK / HEADLINE_FILTER_DARK). */
+  text-shadow:
+    1px 2px 0 rgba(15, 17, 41, 0.10),
+    2px 3px 6px rgba(15, 17, 41, 0.07);
+}
+
+/* Slow drifting color wash for the solutions bento tiles (per-tile hue via
+   inline background; this only animates the gradient position). */
+@keyframes bento-wash {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Site-wide CTA gradient — the deep wave-blue used on the hero "Book a Demo"
+   and headline. btn-gradient-hero is kept as an alias for the same look. */
+.btn-gradient,
+.btn-gradient-hero {
+  background: linear-gradient(120deg, #22396E 0%, #2a4688 38%, #3859a8 68%, #3B82F6 100%);
+}
+
+/* Wavy hero background — the same scene image as the homepage hero, with a soft
+   white wash on top so headings/text stay readable. Applied to the hero/top
+   section of every page for a consistent landing-page look. */
+.hero-wave-bg {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.42)),
+    url(/hero-bg.jpg);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
 }
 
 .icon-gradient-bg {
@@ -677,6 +809,44 @@ textarea:focus-visible {
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
+/* ── Glitch text effect (Spline Aura hero headline) ── */
+.glitch-v9 { position: relative; display: inline-block; }
+.glitch-v9::before,
+.glitch-v9::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0; /* hidden unless the animation explicitly raises it */
+}
+.glitch-v9::before {
+  color: #3859a8;
+  animation: glitchV9A 3.6s infinite steps(1);
+  clip-path: inset(0 0 60% 0);
+}
+.glitch-v9::after {
+  color: #0f1129;
+  animation: glitchV9B 3.6s infinite steps(1);
+  clip-path: inset(60% 0 0 0);
+}
+@keyframes glitchV9A {
+  0%, 89%, 100% { transform: translate(0, 0); opacity: 0; }
+  90% { transform: translate(-3px, -1px); opacity: .85; }
+  92% { transform: translate(2px, 1px); opacity: .7; }
+  94% { transform: translate(-2px, 0); opacity: .8; }
+  96% { transform: translate(0, 0); opacity: 0; }
+}
+@keyframes glitchV9B {
+  0%, 89%, 100% { transform: translate(0, 0); opacity: 0; }
+  90% { transform: translate(3px, 1px); opacity: .85; }
+  92% { transform: translate(-2px, -1px); opacity: .7; }
+  94% { transform: translate(2px, 0); opacity: .8; }
+  96% { transform: translate(0, 0); opacity: 0; }
+}
+
 /* Respect prefers-reduced-motion across all custom motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -817,44 +987,178 @@ textarea:focus-visible {
   transform: scale(var(--s));
 }
 
-/* Natural unscaled dimensions per device type */
-[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.82; }
+/* Natural unscaled dimensions per device type. Scale is the ONLY size control
+   (the showcase no longer double-scales with `zoom`). Below lg the devices sit
+   in stacked cards with vertical room, so they scale up by width. At lg+ they
+   pin in a ~544px column AND inside a viewport-height sticky box, so the phone
+   (660px tall) is height-limited while the browser is width-limited. */
+/* Phone sits in a normal stacked row now, so it scales up toward the column
+   width for legibility (320*0.92=294 fits a 360px phone with padding). */
+[data-device-frame][data-device-type="phone"]   { --w: 320px; --h: 660px; --s: 0.92; }
 [data-device-frame][data-device-type="laptop"]  { --w: 720px; --h: 460px; --s: 0.42; }
 [data-device-frame][data-device-type="monitor"] { --w: 460px; --h: 330px; --s: 0.65; }
+/* Browser is wide (820px); on small phones it must FIT (no horizontal cut),
+   so it scales down to the viewport. 820*0.38=312 fits a 360px phone. */
 [data-device-frame][data-device-type="browser"] { --w: 820px; --h: 560px; --s: 0.38; }
 
 @media (min-width: 480px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 0.95; }
+  [data-device-frame][data-device-type="phone"]   { --s: 0.96; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.55; }
   [data-device-frame][data-device-type="monitor"] { --s: 0.85; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.5; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.52; }
 }
 
 @media (min-width: 640px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 1; }
+  [data-device-frame][data-device-type="phone"]   { --s: 0.9; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.78; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.7; }
+  /* browser sits in a full-width row -> it can grow for legible text */
+  [data-device-frame][data-device-type="browser"] { --s: 0.68; }
 }
 
 @media (min-width: 768px) {
+  /* md: typically a tablet with a tall viewport, so the phone can grow */
   [data-device-frame][data-device-type="phone"]   { --s: 1; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.92; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.78; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.82; }
 }
 
 @media (min-width: 1024px) {
-  /* lg+: ProductSlide switches to 2-column grid; each device cell is narrower */
+  /* lg+: 2-column rows (text + device side by side). The device is only
+     WIDTH-constrained by its ~543px column (never viewport-height pinned), so
+     it is sized to fit the column comfortably and is never clipped. */
   [data-device-frame][data-device-type="phone"]   { --s: 1; }
-  [data-device-frame][data-device-type="laptop"]  { --s: 0.55; }
-  [data-device-frame][data-device-type="monitor"] { --s: 0.85; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.5; }
+  [data-device-frame][data-device-type="laptop"]  { --s: 0.70; }
+  [data-device-frame][data-device-type="monitor"] { --s: 1; }
+  /* browser sits beside the text in the WIDER column, so it renders large
+     enough that its in-screen text reads clearly */
+  [data-device-frame][data-device-type="browser"] { --s: 0.65; }
 }
 
 @media (min-width: 1280px) {
-  [data-device-frame][data-device-type="phone"]   { --s: 1; }
+  [data-device-frame][data-device-type="phone"]   { --s: 1.05; }
   [data-device-frame][data-device-type="laptop"]  { --s: 0.72; }
   [data-device-frame][data-device-type="monitor"] { --s: 1; }
-  [data-device-frame][data-device-type="browser"] { --s: 0.68; }
+  [data-device-frame][data-device-type="browser"] { --s: 0.83; }
+}
+
+/* Product-page hero (data-hero-device): the browser device sits beside the
+   headline in a device-favoured column (see wideDevice grid). Size it to fill
+   that column so its in-screen text stays readable, without overlapping the
+   text. The homepage showcase keeps the larger scale above. */
+@media (min-width: 1024px) {
+  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.62; }
+}
+@media (min-width: 1280px) {
+  [data-hero-device] [data-device-frame][data-device-type="browser"] { --s: 0.74; }
+}
+
+
+/* ── Marquee (testimonials) ──
+   Track holds TWO copies of its content; translating by half the track
+   width (minus half the gap) loops seamlessly. Hovering the marquee
+   pauses the row so cards stay readable and hoverable. */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+}
+
+/* Hide scrollbars on drag-scroll carousels (testimonials) */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 20px;
+  animation: marquee-left var(--marquee-duration, 52s) linear infinite;
+  will-change: transform;
+}
+
+.marquee-track.marquee-reverse {
+  animation-name: marquee-right;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - 10px)); }
+}
+
+@keyframes marquee-right {
+  from { transform: translateX(calc(-50% - 10px)); }
+  to   { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ── Button shine sweep ──
+   Diagonal highlight that sweeps across gradient CTAs on hover.
+   Snaps back instantly on leave (no reverse sweep). */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -80%;
+  width: 50%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  left: 130%;
+  transition: left 0.65s var(--ease-card);
+}
+
+/* ── Dot grid texture ──
+   Faint engineering-paper dots; used inside the hero Live Console. */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(15, 17, 41, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* ── Beam line ──
+   1px rail with a bright segment that travels across it forever.
+   Used at the top edge of the CTA band. */
+.beam-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.beam-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 32%;
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.9), transparent);
+  animation: beam-slide 4.5s linear infinite;
+}
+
+@keyframes beam-slide {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(420%); }
 }

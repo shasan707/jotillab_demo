@@ -45,3 +45,16 @@ playwright-report
 *.njsproj
 *.sln
 *.sw?
+
+# Vercel CLI link metadata
+.vercel
+
+.env*
+
+# CLI-installed agent skill docs and lockfile (not part of the site)
+.agents/
+.claude/skills/
+skills-lock.json
+
+# Sanity migration asset cache (scripts/migrate-to-sanity.mjs)
+scripts/.sanity-asset-map.json

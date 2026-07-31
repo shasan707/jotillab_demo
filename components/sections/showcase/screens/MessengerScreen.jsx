@@ -40,7 +40,7 @@ const CONVERSATIONS = [
   },
 ]
 
-function ChatCard({ conversation, isActive, onCycleComplete }) {
+function ChatCard({ conversation, isActive, onCycleComplete, onStep }) {
   const ActionIcon = conversation.action.icon
   const [phase, setPhase] = useState('idle')
   const [currentRole, setCurrentRole] = useState(null)
@@ -64,10 +64,17 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
       return
     }
 
+    let taggedUser = false
+    let taggedAI = false
     const fullItems = [
-      ...conversation.messages.map((m) => ({ kind: 'msg', ...m })),
-      { kind: 'action' },
-      { kind: 'msg', role: 'ai', text: conversation.finalMsg },
+      ...conversation.messages.map((m) => {
+        const item = { kind: 'msg', ...m }
+        if (!taggedUser && m.role === 'user') { item.step = 0; taggedUser = true }
+        else if (!taggedAI && m.role === 'ai') { item.step = 1; taggedAI = true }
+        return item
+      }),
+      { kind: 'action', step: 2 },
+      { kind: 'msg', role: 'ai', text: conversation.finalMsg, step: 3 },
     ]
 
     const timers = []
@@ -118,16 +125,20 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
 
         now += 280
         const role = event.role
+        const msgStep = event.step
         t(() => {
           setSentItems((prev) => [...prev, { kind: 'msg', role, text }])
           setTypedText('')
           setPhase('idle')
           setCurrentRole(null)
+          if (msgStep != null) onStep?.(msgStep)
         }, now)
         now += 480
       } else if (event.kind === 'action') {
+        const actStep = event.step
         t(() => {
           setSentItems((prev) => [...prev, { kind: 'action' }])
+          if (actStep != null) onStep?.(actStep)
         }, now)
         now += 1300
       }
@@ -136,7 +147,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
     t(() => onCycleCompleteRef.current?.(), now + 2800)
 
     return () => timers.forEach(clearTimeout)
-  }, [isActive, conversation])
+  }, [isActive, conversation, onStep])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -163,11 +174,11 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
         </div>
         <div>
           <p className="text-[15px] font-bold leading-tight" style={{ color: BRAND.color }}>{BRAND.label}</p>
-          <p className="text-[9px] text-gray-400">{BRAND.sublabel}</p>
+          <p className="text-[11px] text-gray-400">{BRAND.sublabel}</p>
         </div>
         <div className="ml-auto flex items-center gap-1">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-          <span className="text-[8px] text-green-600">Online</span>
+          <span className="text-[10px] text-green-600">Online</span>
         </div>
       </div>
 
@@ -191,7 +202,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
                   </div>
                 )}
                 <div
-                  className={`max-w-[78%] px-2.5 py-1.5 text-[10px] leading-[1.4] ${
+                  className={`max-w-[78%] px-2.5 py-1.5 text-[12px] leading-[1.4] ${
                     isUser
                       ? 'rounded-xl rounded-br-sm text-gray-900'
                       : 'rounded-xl rounded-bl-sm text-white'
@@ -217,10 +228,10 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
               </div>
               <div className="flex items-center gap-1 mt-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                <span className="text-[8px] font-semibold" style={{ color: BRAND.color }}>
+                <span className="text-[10px] font-semibold" style={{ color: BRAND.color }}>
                   {conversation.action.label}
                 </span>
-                <span className="text-[7px] text-gray-400">{conversation.action.sublabel}</span>
+                <span className="text-[9px] text-gray-400">{conversation.action.sublabel}</span>
               </div>
             </div>
           )
@@ -253,7 +264,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
             <Logo size={10} tone="on-dark" animate={false} />
           </div>
         </div>
-        <div className="flex-1 bg-gray-50 rounded-full px-3 py-1 text-[9px] flex items-center min-h-5">
+        <div className="flex-1 bg-gray-50 rounded-full px-3 py-1 text-[11px] flex items-center min-h-5">
           {phase === 'thinking' ? (
             <span className="flex items-center gap-0.75">
               {[0, 1, 2].map((d) => (
@@ -300,7 +311,7 @@ function ChatCard({ conversation, isActive, onCycleComplete }) {
   )
 }
 
-export function MessengerScreen({ isActive }) {
+export function MessengerScreen({ isActive, onStep }) {
   const [convIdx, setConvIdx] = useState(0)
 
   return (
@@ -317,6 +328,7 @@ export function MessengerScreen({ isActive }) {
           key={convIdx}
           conversation={CONVERSATIONS[convIdx]}
           isActive={isActive}
+          onStep={onStep}
           onCycleComplete={() => setConvIdx((i) => (i + 1) % CONVERSATIONS.length)}
         />
       </div>

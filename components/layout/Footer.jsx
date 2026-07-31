@@ -32,12 +32,16 @@ function FooterColumn({ title, links }) {
       <ul className="space-y-3 list-none p-0 m-0">
         {links.map(({ label, to }) => (
           <li key={label}>
-            <Link
-              href={to}
-              className="text-sm text-slate-400 no-underline hover:text-white transition-colors duration-200"
-            >
-              {label}
-            </Link>
+            {to ? (
+              <Link
+                href={to}
+                className="text-sm text-slate-400 no-underline hover:text-white transition-colors duration-200"
+              >
+                {label}
+              </Link>
+            ) : (
+              <span className="text-sm text-slate-400">{label}</span>
+            )}
           </li>
         ))}
       </ul>

@@ -2,19 +2,19 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PhoneCall, PhoneOff, Calendar, MessageSquare, UserPlus, Sparkles, User } from 'lucide-react'
+import { PhoneCall, PhoneOff, Calendar, MessageSquare, UserPlus, Sparkles } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 
 const SCRIPT = [
   { type: 'msg', role: 'ai', text: 'Good morning! Thank you for calling. How can I help?' },
-  { type: 'msg', role: 'caller', text: "Hi, I'd like to schedule a consultation for my business." },
+  { type: 'msg', role: 'caller', text: "Hi, I'd like to schedule a consultation for my business.", step: 1 },
   { type: 'msg', role: 'ai', text: "I'd be happy to help! What type of business are you in?" },
   { type: 'msg', role: 'caller', text: "We run a dental practice in downtown Lehi." },
-  { type: 'msg', role: 'ai', text: 'I have Thursday at 10 AM or Friday at 2 PM. Which works?' },
+  { type: 'msg', role: 'ai', text: 'I have Thursday at 10 AM or Friday at 2 PM. Which works?', step: 2 },
   { type: 'msg', role: 'caller', text: 'Thursday at 10 works great.' },
-  { type: 'action', id: 'calendar', icon: Calendar, label: 'Appointment booked', sublabel: 'Thu, 10:00 AM' },
+  { type: 'action', id: 'calendar', icon: Calendar, label: 'Appointment booked', sublabel: 'Thu, 10:00 AM', step: 3 },
   { type: 'msg', role: 'ai', text: "Perfect! I'll send you a confirmation text right now." },
-  { type: 'action', id: 'sms', icon: MessageSquare, label: 'SMS sent', sublabel: 'Confirmation delivered' },
+  { type: 'action', id: 'sms', icon: MessageSquare, label: 'SMS sent', sublabel: 'Confirmation delivered', step: 4 },
   { type: 'msg', role: 'ai', text: "I've also saved your contact in our system." },
   { type: 'action', id: 'crm', icon: UserPlus, label: 'Contact saved', sublabel: 'Added to CRM' },
   { type: 'msg', role: 'caller', text: 'Thank you so much!' },
@@ -30,7 +30,7 @@ function RingingPhase() {
       <div
         className="absolute bottom-0 left-0 right-0 h-[45%]"
         style={{
-          background: 'linear-gradient(180deg, transparent 0%, rgba(56,89,168,0.04) 30%, rgba(56,89,168,0.08) 60%, rgba(99,102,241,0.06) 100%)',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(56,89,168,0.04) 30%, rgba(56,89,168,0.08) 60%, rgba(59,130,246,0.06) 100%)',
         }}
       />
 
@@ -49,19 +49,22 @@ function RingingPhase() {
           />
         ))}
         <div
-          className="w-[72px] h-[72px] rounded-full flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #e8edf5, #f0f2f8)',
-            boxShadow: '0 4px 20px rgba(56,89,168,0.1), inset 0 1px 0 rgba(255,255,255,0.8)',
-          }}
+          className="w-[72px] h-[72px] rounded-full overflow-hidden"
+          style={{ boxShadow: '0 6px 22px rgba(56,89,168,0.22), inset 0 1px 0 rgba(255,255,255,0.8)' }}
         >
-          <User size={30} strokeWidth={1.5} style={{ color: '#3859a8' }} />
+          <img
+            src="/avatar-sarah.jpg"
+            alt="Sarah Mitchell"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: 'center 22%' }}
+            draggable={false}
+          />
         </div>
       </div>
 
       <p className="text-sm font-semibold" style={{ color: '#0f1129' }}>Sarah Mitchell</p>
-      <p className="text-[11px] mt-0.5" style={{ color: '#6B7098' }}>+1 (801) 555-0147</p>
-      <p className="text-[10px] mt-1" style={{ color: '#9da3c0' }}>Incoming Call...</p>
+      <p className="text-[12.5px] mt-0.5" style={{ color: '#6B7098' }}>+1 (801) 555-0147</p>
+      <p className="text-[12px] mt-1" style={{ color: '#9da3c0' }}>Incoming Call...</p>
 
       <div className="flex gap-14 mt-10">
         <div className="flex flex-col items-center gap-1.5">
@@ -74,7 +77,7 @@ function RingingPhase() {
           >
             <PhoneOff size={18} strokeWidth={1.5} className="text-white" />
           </div>
-          <span className="text-[9px]" style={{ color: '#9da3c0' }}>Decline</span>
+          <span className="text-[11px]" style={{ color: '#9da3c0' }}>Decline</span>
         </div>
         <div className="flex flex-col items-center gap-1.5">
           <motion.div
@@ -88,7 +91,7 @@ function RingingPhase() {
           >
             <PhoneCall size={18} strokeWidth={1.5} className="text-white" />
           </motion.div>
-          <span className="text-[9px]" style={{ color: '#9da3c0' }}>Accept</span>
+          <span className="text-[11px]" style={{ color: '#9da3c0' }}>Accept</span>
         </div>
       </div>
 
@@ -221,8 +224,8 @@ function BlingAction({ action }) {
         <div className="w-3 h-3 rounded-full bg-green-500/15 flex items-center justify-center">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
         </div>
-        <span className="text-[9px] font-semibold" style={{ color: '#3859a8' }}>{action.label}</span>
-        <span className="text-[8px] text-gray-400">{action.sublabel}</span>
+        <span className="text-[11px] font-semibold" style={{ color: '#3859a8' }}>{action.label}</span>
+        <span className="text-[11px] text-gray-400">{action.sublabel}</span>
       </motion.div>
     </motion.div>
   )
@@ -238,7 +241,7 @@ function ChatBubble({ line }) {
       className={`flex mb-3 ${isAI ? 'justify-start' : 'justify-end'}`}
     >
       <div
-        className={`max-w-[82%] px-2.5 py-1.5 text-[10px] leading-[1.4] ${
+        className={`max-w-[82%] px-2.5 py-1.5 text-[12px] leading-[1.4] ${
           isAI ? 'rounded-xl rounded-bl-sm text-white' : 'rounded-xl rounded-br-sm bg-[#f1f3f5] text-gray-900'
         }`}
         style={isAI ? { backgroundColor: '#3859a8' } : {}}
@@ -259,17 +262,17 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
   }, [items, speakingRole, blingAction])
 
   return (
-    <div className="w-full h-full flex flex-col bg-white text-[11px]">
+    <div className="w-full h-full flex flex-col bg-white text-[12.5px]">
       {/* Call header */}
       <div className="pt-7 pb-1.5 px-3 flex items-center gap-2" style={{ background: 'linear-gradient(to bottom, #3859a8, #2a4688)' }}>
         <div className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center shrink-0">
           <Logo size={12} tone="on-dark" animate={false} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[11px] text-white leading-tight">Sarah Mitchell</p>
+          <p className="font-semibold text-[12.5px] text-white leading-tight">Sarah Mitchell</p>
           <div className="flex items-center gap-1">
             <Logo size={8} tone="on-dark" animate={false} />
-            <p className="text-[8px] text-white/60">JotilLabs AI Answering</p>
+            <p className="text-[11px] text-white/60">JotilLabs AI Answering</p>
           </div>
         </div>
         {/* Header waveform */}
@@ -375,10 +378,10 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
             className="w-9 h-9 rounded-full flex items-center justify-center relative"
             style={{
               background: speakingRole === 'ai'
-                ? 'linear-gradient(135deg, #22D3EE, #3859a8, #6366F1)'
+                ? 'linear-gradient(135deg, #06b6d4, #3859a8, #22396E)'
                 : 'linear-gradient(135deg, #4a6fc2, #3859a8, #2a4688)',
               boxShadow: speakingRole === 'ai'
-                ? '0 0 16px rgba(34,211,238,0.5), 0 0 32px rgba(56,89,168,0.3), 0 0 48px rgba(99,102,241,0.2)'
+                ? '0 0 16px rgba(6,182,212,0.5), 0 0 32px rgba(56,89,168,0.3), 0 0 48px rgba(59,130,246,0.2)'
                 : '0 2px 8px rgba(56,89,168,0.25)',
               animation: speakingRole === 'ai' ? 'orb-pulse 1s ease-in-out infinite' : 'none',
               transition: 'background 0.4s, box-shadow 0.4s',
@@ -392,7 +395,7 @@ function ActiveCallPhase({ items, speakingRole, blingAction }) {
   )
 }
 
-export function ReceptionistScreen({ isActive, onAction }) {
+export function ReceptionistScreen({ isActive, onAction, onStep }) {
   const [phase, setPhase] = useState('ring')
   const [items, setItems] = useState([])
   const [speakingRole, setSpeakingRole] = useState(null)
@@ -423,7 +426,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
       setBlingAction(null)
 
       schedule(() => setPhase('connect'), 2200)
-      schedule(() => setPhase('active'), 2800)
+      schedule(() => { setPhase('active'); onStep?.(0) }, 2800)
 
       let t = 2800
       const speakDur = 1200
@@ -438,6 +441,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
           schedule(() => {
             setSpeakingRole(null)
             setItems((prev) => [...prev, msg])
+            if (msg.step != null) onStep?.(msg.step)
           }, t)
           t += gap
         } else if (step.type === 'action') {
@@ -446,6 +450,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
           schedule(() => {
             setBlingAction(action)
             if (onAction) onAction(action.id)
+            if (action.step != null) onStep?.(action.step)
           }, t)
           t += 900
           schedule(() => {
@@ -463,7 +468,7 @@ export function ReceptionistScreen({ isActive, onAction }) {
     loopRef.current = timers
 
     return () => timers.forEach(clearTimeout)
-  }, [isActive, onAction])
+  }, [isActive, onAction, onStep])
 
   return (
     <AnimatePresence mode="wait">
