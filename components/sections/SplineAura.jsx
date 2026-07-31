@@ -64,6 +64,10 @@ const PRODUCTS = [
   { name: 'JotilAvatar', tag: 'See your brand. Hear your brand. Talk to your brand.', iconKey: 'avatar', color: '#3B82F6', c2: '#22396E' },
 ]
 
+// The orb name's product-word gradient: one fixed pair for ALL products
+// (sapphire -> deep navy, the JotilAvatar pairing).
+const NAME_GRADIENT = 'linear-gradient(120deg, #3B82F6, #22396E)'
+
 const BLOB_MORPH = [
   '32% 68% 70% 30% / 30% 30% 70% 70%',
   '62% 38% 30% 70% / 60% 30% 70% 40%',
@@ -249,12 +253,25 @@ function HeroOrb() {
               <ProductIcon iconKey={product.iconKey} color={product.color} c2={product.c2} />
             </div>
             {/* Fluid size so long names (JotilReceptionist) stay inside the
-                230px blob on phones; caps at the original 24px from sm up. */}
+                230px blob on phones; caps at the original 24px from sm up.
+                Lockup on every product: quiet black "Jotil" + extrabold
+                product word in the shared sapphire-to-navy gradient. */}
             <span
-              className="max-w-full font-bold leading-tight"
-              style={{ fontFamily: 'var(--font-display)', color: '#0f1129', transform: 'translateZ(38px)', fontSize: 'clamp(15px, 4.4vw, 24px)' }}
+              className="max-w-full leading-tight"
+              style={{ fontFamily: 'var(--font-display)', transform: 'translateZ(38px)', fontSize: 'clamp(15px, 4.4vw, 24px)' }}
             >
-              {product.name}
+              <span className="font-normal" style={{ color: '#0f1129' }}>Jotil</span>
+              <span
+                className="font-extrabold"
+                style={{
+                  background: NAME_GRADIENT,
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                {product.name.replace(/^Jotil/, '')}
+              </span>
             </span>
             {/* Width-capped so the wrapped lines stay inside the blob's CURVED
                 edge (it narrows below the middle) on every screen size. */}

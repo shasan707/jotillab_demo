@@ -20,12 +20,35 @@ export function SlideBadge({ product }) {
         {/* The rule sits under the NAME only (exact text width on every
             product), with the dot centered on it. */}
         <span className="inline-flex flex-col items-center">
+          {/* CamelCase lockup ("JotilSpace", capital J + capital product
+              initial): "Jotil" light in a navy-to-royal gradient, product
+              part bold in an all-blue gradient (never drifting to green). */}
           <span
-            className="text-center text-lg font-semibold uppercase tracking-[0.18em] sm:text-2xl"
-            style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}
+            className="text-center text-xl tracking-[0.01em] sm:text-3xl"
+            style={{ fontFamily: 'var(--font-display)' }}
           >
-            <span style={{ color: NAVY }}>Jotil</span>
-            <span style={{ color: BLUE }}>{rest}</span>
+            <span
+              className="font-normal"
+              style={{
+                background: `linear-gradient(120deg, ${NAVY} 0%, ${BLUE} 100%)`,
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Jotil
+            </span>
+            <span
+              className="font-bold"
+              style={{
+                background: 'linear-gradient(120deg, #2563EB 0%, #3B82F6 55%, #60A5FA 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              {rest}
+            </span>
           </span>
           {/* Rule tapers from thick at the center to hairline at both ends */}
           <span aria-hidden="true" className="relative mt-1.5 block h-[5px] w-full">
