@@ -14,7 +14,7 @@ import { INDUSTRIES, INDUSTRY_SLUGS, getIndustry, getRelatedIndustries } from '@
 import { products } from '@/data/products'
 import { ScenarioCard } from '@/components/sections/industry/ScenarioCard'
 import { ChatScenarioCard } from '@/components/sections/industry/ChatScenarioCard'
-import { IntakeForm } from '@/components/sections/industry/IntakeForm'
+import { ChatIntake } from '@/components/sections/industry/intake/ChatIntake'
 
 const BRAND = '#3859a8'
 
@@ -568,7 +568,7 @@ export default async function IndustryPage({ params }) {
             </p>
           </AnimatedSection>
           <AnimatedSection delay={0.08}>
-            <IntakeForm slug={industry.slug} industryName={industry.name} />
+            <ChatIntake slug={industry.slug} industryName={industry.name} />
           </AnimatedSection>
         </div>
       </section>

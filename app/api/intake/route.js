@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server'
-import { Ratelimit } from '@upstash/ratelimit'
-import { getRedis } from '@/lib/comments'
 import { getIndustry } from '@/lib/industries'
 import { getIntakeQuestions } from '@/lib/intakeQuestions'
-import { saveIntakeSubmission } from '@/lib/db'
+import { validateAnswers } from '@/lib/intakeValidation'
+import { allowIntakeRequest } from '@/lib/intakeRateLimit'
+import { saveIntakeSubmission, updateIntakeLead } from '@/lib/db'
 
-/* Industry intake form endpoint. Stores every submission in Neon Postgres
-   (intake_submissions) and emails contact@jotillabs.com via Resend. Either
-   channel alone is enough for a 200: the database is the system of record,
-   the email is the notification. Both missing -> 503. */
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const SHORT_MAX = 200
-const LONG_MAX = 2000
+/* Industry intake final-submit endpoint. Stores the submission in Neon
+   Postgres (intake_submissions) and emails contact@jotillabs.com via
+   Resend. Either channel alone is enough for a 200: the database is the
+   system of record, the email is the notification. Both missing -> 503.
+   When the chat created a partial lead first (/api/intake/lead), the body
+   carries { lead: { id, key } } and this route completes that row instead
+   of inserting a new one; a row that is already complete answers 200
+   without a second email (double-submit dedup). */
 
 function escapeHtml(text) {
   return String(text)
@@ -48,78 +48,57 @@ export async function POST(request) {
     }
 
     const questions = getIntakeQuestions(slug)
-    const rawAnswers = body.answers && typeof body.answers === 'object' ? body.answers : {}
-    const answers = {}
-
-    for (const q of questions) {
-      const value = typeof rawAnswers[q.id] === 'string' ? rawAnswers[q.id].trim() : ''
-      if (q.required && !value) {
-        return NextResponse.json(
-          { ok: false, error: `Please answer: ${q.label}` },
-          { status: 400 }
-        )
-      }
-      if (!value) continue
-      const max = q.type === 'textarea' ? LONG_MAX : SHORT_MAX
-      if (value.length > max) {
-        return NextResponse.json(
-          { ok: false, error: `"${q.label}" is too long.` },
-          { status: 400 }
-        )
-      }
-      if (/https?:\/\//i.test(value)) {
-        return NextResponse.json(
-          { ok: false, error: 'Please answer without links.' },
-          { status: 400 }
-        )
-      }
-      if (q.type === 'email' && !EMAIL_RE.test(value)) {
-        return NextResponse.json(
-          { ok: false, error: 'Please enter a valid email address.' },
-          { status: 400 }
-        )
-      }
-      if (q.type === 'select' && q.options && !q.options.includes(value)) {
-        return NextResponse.json(
-          { ok: false, error: `Please pick an option for: ${q.label}` },
-          { status: 400 }
-        )
-      }
-      answers[q.id] = value
+    const result = validateAnswers(questions, body.answers, { requireRequired: true })
+    if (result.error) {
+      return NextResponse.json({ ok: false, error: result.error }, { status: 400 })
     }
+    const answers = result.answers
 
-    // Rate limit: 3 submissions per 10 minutes per IP. Redis unavailable ->
-    // skip limiting rather than block real submissions.
-    try {
-      const redis = getRedis()
-      if (redis) {
-        const ip =
-          (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
-          request.headers.get('x-real-ip') ||
-          'anonymous'
-        const ratelimit = new Ratelimit({
-          redis,
-          limiter: Ratelimit.slidingWindow(3, '10 m'),
-          prefix: 'rl:intake',
-        })
-        const { success } = await ratelimit.limit(ip)
-        if (!success) {
-          return NextResponse.json(
-            { ok: false, error: 'Too many submissions. Please try again in a few minutes.' },
-            { status: 429 }
-          )
-        }
-      }
-    } catch (rlErr) {
-      console.error('[intake] Rate limit check failed, continuing:', rlErr)
-    }
+    const lead =
+      body.lead && Number.isInteger(body.lead.id) && typeof body.lead.key === 'string' && body.lead.key
+        ? { id: body.lead.id, key: body.lead.key }
+        : null
 
-    // System of record: Neon Postgres.
+    // Preferred path: complete the partial lead the chat already created.
+    // The create consumed the rate-limit budget, so no second check here.
     let saved = false
-    try {
-      saved = await saveIntakeSubmission({ slug, industryName: industry.name, answers })
-    } catch (dbErr) {
-      console.error('[intake] Postgres save failed:', dbErr)
+    if (hasDb && lead) {
+      try {
+        const outcome = await updateIntakeLead({
+          id: lead.id,
+          key: lead.key,
+          answers,
+          industryName: industry.name,
+          complete: true,
+        })
+        if (outcome === 'updated') saved = true
+        // Already completed with the same key: a double submit. Succeed
+        // quietly without a second email or a duplicate row.
+        if (outcome === 'completed') return NextResponse.json({ ok: true })
+      } catch (dbErr) {
+        console.error('[intake] Lead completion failed:', dbErr)
+      }
+    }
+
+    // Fresh insert path (no lead, wrong key, or update failure): rate
+    // limit 3 submissions per 10 minutes per IP, like the lead creates.
+    if (!saved) {
+      const allowed = await allowIntakeRequest(request, {
+        prefix: 'rl:intake',
+        tokens: 3,
+        window: '10 m',
+      })
+      if (!allowed) {
+        return NextResponse.json(
+          { ok: false, error: 'Too many submissions. Please try again in a few minutes.' },
+          { status: 429 }
+        )
+      }
+      try {
+        saved = await saveIntakeSubmission({ slug, industryName: industry.name, answers })
+      } catch (dbErr) {
+        console.error('[intake] Postgres save failed:', dbErr)
+      }
     }
 
     // Notification: Resend email to the team.
@@ -128,13 +107,14 @@ export async function POST(request) {
       try {
         const rows = questions
           .filter((q) => answers[q.id])
-          .map(
-            (q) => `
+          .map((q) => {
+            const value = Array.isArray(answers[q.id]) ? answers[q.id].join(', ') : answers[q.id]
+            return `
               <tr>
                 <td style="padding: 10px 0; color: #999; font-weight: 600; width: 220px; vertical-align: top;">${escapeHtml(q.label)}</td>
-                <td style="padding: 10px 0; color: #111; white-space: pre-wrap;">${escapeHtml(answers[q.id])}</td>
+                <td style="padding: 10px 0; color: #111; white-space: pre-wrap;">${escapeHtml(value)}</td>
               </tr>`
-          )
+          })
           .join('')
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',

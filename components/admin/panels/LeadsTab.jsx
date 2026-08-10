@@ -77,8 +77,11 @@ export function LeadsTab() {
                 <ClipboardList size={17} strokeWidth={1.5} className="text-primary" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-bold text-text">
-                  {lead.business_name || lead.contact_name || 'Unnamed lead'}
+                <span className="flex items-center gap-2 min-w-0">
+                  <span className="truncate text-sm font-bold text-text">
+                    {lead.business_name || lead.contact_name || 'Unnamed lead'}
+                  </span>
+                  <StatusPill status={lead.status} />
                 </span>
                 <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
                   {[lead.industry_name, lead.contact_email].filter(Boolean).join(' | ')}
@@ -111,6 +114,8 @@ export function LeadsTab() {
               <Meta label="Industry" value={selected.industry_name} />
               <Meta label="Name" value={selected.contact_name} />
               <Meta label="Received" value={fmtDateTime(selected.created_at)} />
+              <Meta label="Status" value={<StatusPill status={selected.status} />} />
+              <Meta label="Last updated" value={selected.updated_at ? fmtDateTime(selected.updated_at) : null} />
               <Meta
                 label="Email"
                 value={
@@ -143,7 +148,9 @@ export function LeadsTab() {
                       <p className="m-0 mb-1 text-[13px] font-semibold text-[var(--color-text-secondary)]">
                         {questionLabel(selected.slug, id)}
                       </p>
-                      <p className="m-0 whitespace-pre-wrap text-sm text-text">{String(value)}</p>
+                      <p className="m-0 whitespace-pre-wrap text-sm text-text">
+                        {Array.isArray(value) ? value.join(', ') : String(value)}
+                      </p>
                     </div>
                   ))}
               </div>
@@ -152,6 +159,25 @@ export function LeadsTab() {
         )}
       </DetailDrawer>
     </div>
+  )
+}
+
+/* Partial leads come from abandoned chats: the contact block arrived but
+   the conversation never finished. Rows without a status predate the
+   chat intake and are complete by definition. */
+function StatusPill({ status }) {
+  const partial = status === 'partial'
+  return (
+    <span
+      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
+      style={
+        partial
+          ? { background: 'rgba(245,158,11,0.12)', color: '#B45309' }
+          : { background: 'rgba(56,89,168,0.10)', color: '#3859a8' }
+      }
+    >
+      {partial ? 'Partial' : 'Complete'}
+    </span>
   )
 }
 
