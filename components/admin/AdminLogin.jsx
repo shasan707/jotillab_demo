@@ -42,9 +42,9 @@ export function AdminLogin() {
         >
           <Lock size={20} strokeWidth={1.5} className="text-primary" />
         </span>
-        <h1 className="m-0 mb-1 text-center text-xl font-bold text-text">Blog admin</h1>
+        <h1 className="m-0 mb-1 text-center text-xl font-bold text-text">Admin</h1>
         <p className="m-0 mb-6 text-center text-sm text-[var(--color-text-secondary)]">
-          Enter the admin password to write posts.
+          Enter the admin password to view activity.
         </p>
         <form onSubmit={handleSubmit}>
           <label htmlFor="admin-password" className="sr-only">Admin password</label>

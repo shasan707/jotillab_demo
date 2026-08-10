@@ -1,11 +1,4 @@
-import {
-  getRedis,
-  pendingKey,
-  approvedKey,
-  decidedKey,
-  DECIDED_TTL_SECONDS,
-  verifyModerationToken,
-} from '@/lib/comments'
+import { decideComment, verifyModerationToken } from '@/lib/comments'
 
 /* One-click comment moderation from the notification email.
    GET ?id=&action=approve|reject&token=  (token = HMAC over id:action)
@@ -46,47 +39,24 @@ export async function GET(request) {
       return page('Link not valid', 'This moderation link is not valid.', null, null)
     }
 
-    const redis = getRedis()
-    if (!redis) {
-      return page('Comments not configured', 'The comment storage is not set up yet.', null, null)
-    }
-
-    const decided = await redis.get(decidedKey(id))
-    if (decided) {
-      return page(
-        decided === 'approved' ? 'Already approved' : 'Already rejected',
-        decided === 'approved'
-          ? 'This comment was already approved and is live on the post.'
-          : 'This comment was already rejected and deleted.',
-        null,
-        null
-      )
-    }
-
-    const raw = await redis.get(pendingKey(id))
-    if (!raw) {
-      return page('Link expired', 'This comment is no longer pending. It may have expired.', null, null)
-    }
-    const record = typeof raw === 'string' ? JSON.parse(raw) : raw
+    const { outcome, slug } = await decideComment(id, action)
     const base = process.env.SITE_URL || 'https://jotillabs.com'
-    const postUrl = `${base}/blog/${record.slug}`
+    const postUrl = slug ? `${base}/blog/${slug}` : null
 
-    if (action === 'approve') {
-      const publicComment = {
-        id: record.id,
-        name: record.name,
-        message: record.message,
-        createdAt: record.createdAt,
-      }
-      await redis.lpush(approvedKey(record.slug), JSON.stringify(publicComment))
-      await redis.set(decidedKey(id), 'approved', { ex: DECIDED_TTL_SECONDS })
-      await redis.del(pendingKey(id))
-      return page('Comment approved', 'It is now live on the post.', postUrl, 'View the post')
+    switch (outcome) {
+      case 'unconfigured':
+        return page('Comments not configured', 'The comment storage is not set up yet.', null, null)
+      case 'already-approved':
+        return page('Already approved', 'This comment was already approved and is live on the post.', null, null)
+      case 'already-rejected':
+        return page('Already rejected', 'This comment was already rejected and deleted.', null, null)
+      case 'missing':
+        return page('Link expired', 'This comment is no longer pending. It may have expired.', null, null)
+      case 'approved':
+        return page('Comment approved', 'It is now live on the post.', postUrl, 'View the post')
+      default:
+        return page('Comment rejected', 'The comment was deleted and will not appear on the site.', postUrl, 'View the post')
     }
-
-    await redis.set(decidedKey(id), 'rejected', { ex: DECIDED_TTL_SECONDS })
-    await redis.del(pendingKey(id))
-    return page('Comment rejected', 'The comment was deleted and will not appear on the site.', postUrl, 'View the post')
   } catch (err) {
     console.error('[blog/comments/moderate] Error:', err)
     return page('Something went wrong', 'Please try the link again in a moment.', null, null)

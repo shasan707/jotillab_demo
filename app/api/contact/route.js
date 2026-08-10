@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { saveContactSubmission } from '@/lib/db'
 
 /** Escape HTML special characters to prevent injection in email body */
 function escapeHtml(str) {
@@ -35,6 +36,23 @@ export async function POST(request) {
     }
     if (!message || typeof message !== 'string' || message.trim().length < 10) {
       return NextResponse.json({ ok: false, error: 'Message must be at least 10 characters.' }, { status: 400 })
+    }
+
+    // Best-effort copy into Neon so the admin panel can list submissions.
+    // The email below is the primary channel; a DB hiccup never fails the request.
+    try {
+      await saveContactSubmission({
+        name: name.trim(),
+        email: email.trim(),
+        company: company ? String(company).trim() : null,
+        phone: phone ? String(phone).trim() : null,
+        inquiryType: inquiryType ? String(inquiryType).trim() : null,
+        message: message.trim(),
+        demoSlot: demoSlot ? String(demoSlot).trim() : null,
+        demoISO: demoISO ? String(demoISO).trim() : null,
+      })
+    } catch (dbErr) {
+      console.error('[contact/route] DB save failed:', dbErr)
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY)
