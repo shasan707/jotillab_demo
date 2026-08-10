@@ -1,18 +1,64 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, MapPin } from 'lucide-react'
 import { EMAIL_RE, normalizeUrl, SHORT_MAX, LONG_MAX } from '@/lib/intakeValidation'
 
-/* Typed-answer bar for text, email, tel, url and textarea questions.
-   Validation mirrors the server so nobody types a whole answer only to be
-   bounced at the end. Enter sends; Shift+Enter adds a line in textareas. */
+/* Typed-answer bar for text, email, tel, url, location and textarea
+   questions. Validation mirrors the server so nobody types a whole answer
+   only to be bounced at the end. Enter sends; Shift+Enter adds a line in
+   textareas. Location questions add a share-my-location chip: browser
+   geolocation (permission prompt, HTTPS only), softened into a readable
+   place name via a keyless reverse-geocode with a raw-coordinates
+   fallback, so it works even when that lookup is unreachable. */
+
+async function readCurrentLocation() {
+  const pos = await new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      timeout: 8000,
+      maximumAge: 60000,
+    })
+  })
+  const lat = pos.coords.latitude.toFixed(5)
+  const lng = pos.coords.longitude.toFixed(5)
+  try {
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+    )
+    const data = await res.json()
+    const place = [data.city || data.locality, data.principalSubdivision]
+      .filter(Boolean)
+      .join(', ')
+    if (place) return `${place} (${lat}, ${lng})`
+  } catch {
+    // Lookup unavailable: coordinates alone are still a usable answer.
+  }
+  return `${lat}, ${lng}`
+}
 
 export function ChatInputBar({ question, onAnswer, onSkip, disabled }) {
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
+  const [locating, setLocating] = useState(false)
   const inputRef = useRef(null)
   const isTextarea = question.type === 'textarea'
+  const isLocation = question.type === 'location'
+
+  async function shareLocation() {
+    if (!navigator.geolocation) {
+      setError('Location is not available in this browser. Please type it instead.')
+      return
+    }
+    setError('')
+    setLocating(true)
+    try {
+      onAnswer(await readCurrentLocation())
+    } catch {
+      setError('Could not get your location. Please type it instead.')
+    } finally {
+      setLocating(false)
+    }
+  }
 
   useEffect(() => {
     inputRef.current?.focus({ preventScroll: true })
@@ -67,11 +113,27 @@ export function ChatInputBar({ question, onAnswer, onSkip, disabled }) {
 
   return (
     <div>
+      {isLocation && (
+        <button
+          type="button"
+          disabled={disabled || locating}
+          onClick={shareLocation}
+          className="mb-2.5 inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold text-text bg-white cursor-pointer transition-all duration-200 hover:border-primary hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+          style={{ border: '1px solid rgba(15,17,41,0.12)' }}
+        >
+          <MapPin size={14} strokeWidth={1.8} color="#3859a8" />
+          {locating ? 'Finding your location...' : 'Share my current location'}
+        </button>
+      )}
       <div className="flex items-end gap-2">
         {isTextarea ? (
           <textarea rows={3} {...sharedProps} />
         ) : (
-          <input type={question.type === 'url' ? 'text' : question.type} inputMode={question.type === 'url' ? 'url' : undefined} {...sharedProps} />
+          <input
+            type={question.type === 'url' || isLocation ? 'text' : question.type}
+            inputMode={question.type === 'url' ? 'url' : undefined}
+            {...sharedProps}
+          />
         )}
         <button
           type="button"

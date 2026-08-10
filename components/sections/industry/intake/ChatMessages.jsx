@@ -37,7 +37,9 @@ export function ChatMessages({ messages, reduced }) {
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-2.5 min-h-[300px] max-h-[420px]"
+      data-lenis-prevent
+      className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 flex flex-col gap-2.5 min-h-[300px] max-h-[420px]"
+      style={{ touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}
       aria-live="polite"
     >
       {messages.map((msg) => {

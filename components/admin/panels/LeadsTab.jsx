@@ -151,6 +151,7 @@ export function LeadsTab() {
                       <p className="m-0 whitespace-pre-wrap text-sm text-text">
                         {Array.isArray(value) ? value.join(', ') : String(value)}
                       </p>
+                      <MapLink value={value} />
                     </div>
                   ))}
               </div>
@@ -159,6 +160,25 @@ export function LeadsTab() {
         )}
       </DetailDrawer>
     </div>
+  )
+}
+
+/* Location answers shared from the chat carry coordinates; link them to a
+   map. The href is built from the extracted numbers only, never from the
+   raw submitted string. */
+function MapLink({ value }) {
+  if (typeof value !== 'string') return null
+  const m = value.match(/(-?\d{1,3}\.\d{3,}),\s*(-?\d{1,3}\.\d{3,})/)
+  if (!m) return null
+  return (
+    <a
+      href={`https://www.google.com/maps?q=${Number(m[1])},${Number(m[2])}`}
+      target="_blank"
+      rel="noreferrer"
+      className="mt-1.5 inline-block text-[13px] font-semibold text-primary"
+    >
+      View on map
+    </a>
   )
 }
 
