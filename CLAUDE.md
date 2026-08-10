@@ -32,6 +32,7 @@ JotilLabs (legal entity: Jotil Labs LLC) - The AI-First Customer Platform (Found
 - `RETELL_CHAT_AGENT_ID` — Retell chat agent behind the chatbot widget (app/api/retell/chat proxies messages server-side; browser sees only text + an opaque chat id)
 - `RETELL_AGENT_ID_<INDUSTRY>` — per-industry agents for the /use-cases voice orbs (BEAUTY_SPA, FINANCE_INSURANCE, HEALTH_WELLNESS, HOME_SERVICES, LEGAL, PERSONAL_SECRETARY, REAL_ESTATE, RESTAURANT, SMALL_BUSINESS); resolved server-side in the same route (client sends only the industry slug, falls back to RETELL_AGENT_ID)
 - `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_API_*`) — blog comments storage (Upstash Redis via Vercel Marketplace). Without them the comments API returns 503 and the blog CommentSection hides itself
+- `DATABASE_URL` — Neon Postgres (Vercel Marketplace), industry intake form submissions (see Industry Intake Form below)
 - `COMMENT_MODERATION_SECRET` — HMAC secret signing the approve/reject links in comment notification emails (see Blog comments below)
 
 ## File Structure (key areas)
@@ -148,7 +149,13 @@ tests/                  — Playwright visual specs + snapshots
 - /api/blog/comments/moderate?id=&action=&token= performs the one-click decision, idempotent via comments:decided:{id} (TTL 90d), responds with a small branded HTML page
 - Backend missing → API 503 → the section renders nothing (never a broken box)
 
-## Homepage Section Order
+## Industry Intake Form
+- Multi-step wizard on every /use-cases/[slug] page between Recommended Products and FAQ (components/sections/industry/IntakeForm.jsx, client island; page stays SSG)
+- Questions in lib/intakeQuestions.js: shared core (contact, operations, timing) + 3 industry-specific questions per slug, grouped into 4 wizard steps by getIntakeSteps(slug); getIntakeQuestions(slug) is the flat list the API validates against
+- POST /api/intake saves the submission to Neon Postgres (intake_submissions table, lib/db.js lazy client + CREATE TABLE IF NOT EXISTS) AND emails contact@jotillabs.com via Resend (replyTo the submitter). Either channel succeeding → 200; the DB is the system of record, email is the notification
+- Protection: honeypot (website field → fake 200), link-blocking, per-question length caps (200 short / 2000 textarea), select answers validated against options, 3/10min per-IP rate limit (rl:intake, reuses blog-comments Redis; Redis missing → limiting skipped)
+- Graceful degradation: DATABASE_URL missing → save skipped; RESEND_API_KEY missing → email skipped; BOTH missing → 503
+- Leads are viewed in the Neon dashboard (SQL console / table view); no in-site viewer yet
 HeroConsole > SolutionsBento > HowItWorks > Stats > Testimonials > IntegrationStrip > CTASection
 - HeroConsole: editorial centered headline (Fraunces italic cycling word) over a "Live Console" glass panel (typewriter call transcript + streaming activity feed + stats strip)
 - SolutionsBento: asymmetric bento grid of the 9 solutions (large Receptionist anchor tile with live micro-visual, wide Messenger + Devs tiles, compact tiles, navy CTA tile)
