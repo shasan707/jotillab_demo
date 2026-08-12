@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { ListState } from './ListState'
-import { fmtDateTime } from './format'
+import { Toolbar } from './Toolbar'
+import { AnimatedRow } from './AnimatedRow'
+import { fmtDateTime, timeAgo } from './format'
 
 /* Pending blog comments with one-click moderation. Uses the same
    idempotent decision logic as the emailed approve/reject links. */
@@ -15,6 +17,8 @@ export function CommentsTab() {
   const [confirmReject, setConfirmReject] = useState(null)
   const [actingId, setActingId] = useState(null)
   const [notice, setNotice] = useState('')
+  const [search, setSearch] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
 
   const load = useCallback(async () => {
     try {
@@ -69,20 +73,41 @@ export function CommentsTab() {
     return <ListState status={status} error={error} onRetry={() => { setStatus('loading'); load() }} />
   }
 
+  const q = search.trim().toLowerCase()
+  const visible = items.filter((comment) => {
+    if (!q) return true
+    return [comment.name, comment.email, comment.message, comment.slug]
+      .filter(Boolean)
+      .some((field) => String(field).toLowerCase().includes(q))
+  })
+
   return (
     <div>
+      <Toolbar
+        searchValue={search}
+        onSearch={setSearch}
+        placeholder="Search comments by name, email, or content..."
+        onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false) }}
+        refreshing={refreshing}
+        resultCount={visible.length}
+      />
+
       {notice && (
         <div className="mb-3 rounded-[11px] px-4 py-3 text-sm" style={{ background: 'rgba(56,89,168,0.06)', color: '#3859a8' }}>
           {notice}
         </div>
       )}
 
-      {items.length === 0 ? (
-        <ListState status="empty" emptyLabel="No comments waiting for review." />
+      {visible.length === 0 ? (
+        <ListState
+          status="empty"
+          emptyLabel={items.length === 0 ? 'No comments waiting for review.' : 'No comments match this search.'}
+        />
       ) : (
         <ul className="m-0 flex list-none flex-col gap-3 p-0">
-          {items.map((comment) => (
-            <li key={comment.id} className="rounded-2xl border border-black/[0.06] bg-white p-5">
+          {visible.map((comment, i) => (
+            <AnimatedRow key={comment.id} index={i}>
+              <div className="rounded-2xl border border-black/[0.06] bg-white p-5">
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <span className="text-sm font-bold text-text">{comment.name}</span>
                 {comment.email && (
@@ -96,7 +121,9 @@ export function CommentsTab() {
                 >
                   {comment.slug}
                 </a>
-                <span className="ml-auto text-xs text-[var(--color-text-muted)]">{fmtDateTime(comment.createdAt)}</span>
+                <span className="ml-auto text-xs text-[var(--color-text-muted)]" title={fmtDateTime(comment.createdAt)}>
+                  {timeAgo(comment.createdAt)}
+                </span>
               </div>
               <p className="m-0 mb-4 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-text-secondary)]">
                 {comment.message}
@@ -124,7 +151,8 @@ export function CommentsTab() {
                   {confirmReject === comment.id ? 'Confirm reject' : 'Reject'}
                 </button>
               </div>
-            </li>
+              </div>
+            </AnimatedRow>
           ))}
         </ul>
       )}

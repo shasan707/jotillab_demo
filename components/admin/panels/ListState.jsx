@@ -7,8 +7,20 @@ import { AlertCircle, Inbox, PlugZap } from 'lucide-react'
 export function ListState({ status, error, emptyLabel, onRetry }) {
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center py-20">
-        <span className="h-6 w-6 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+      <div className="flex flex-col gap-2" aria-hidden="true">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4"
+          >
+            <div className="h-10 w-10 shrink-0 animate-pulse rounded-xl bg-black/[0.06]" />
+            <div className="flex-1">
+              <div className="mb-2 h-3 w-1/3 animate-pulse rounded bg-black/[0.06]" />
+              <div className="h-3 w-2/3 animate-pulse rounded bg-black/[0.04]" />
+            </div>
+            <div className="h-3 w-16 shrink-0 animate-pulse rounded bg-black/[0.05]" />
+          </div>
+        ))}
       </div>
     )
   }

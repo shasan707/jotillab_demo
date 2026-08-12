@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Phone, MessageSquare, ClipboardList, Mail, MessageCircle, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CallsTab } from './panels/CallsTab'
@@ -11,21 +12,34 @@ import { MessagesTab } from './panels/MessagesTab'
 import { CommentsTab } from './panels/CommentsTab'
 
 /* Unified admin panel: every customer interaction in one place.
-   Tabs mount on first visit and stay mounted (hidden) after, so
-   switching back does not refetch. */
+   The stat cards double as navigation; tabs mount on first visit and
+   stay mounted (hidden) after, so switching back does not refetch. */
 
 const TABS = [
-  { id: 'calls', label: 'Calls', icon: Phone, component: CallsTab },
-  { id: 'chats', label: 'Chats', icon: MessageSquare, component: ChatsTab },
-  { id: 'leads', label: 'Leads', icon: ClipboardList, component: LeadsTab },
-  { id: 'messages', label: 'Messages', icon: Mail, component: MessagesTab },
-  { id: 'comments', label: 'Comments', icon: MessageCircle, component: CommentsTab },
+  { id: 'calls', label: 'Calls', icon: Phone, component: CallsTab, tint: 'rgba(56,89,168,0.10)', color: '#3859a8' },
+  { id: 'chats', label: 'Chats', icon: MessageSquare, component: ChatsTab, tint: 'rgba(59,130,246,0.10)', color: '#3B82F6' },
+  { id: 'leads', label: 'Leads', icon: ClipboardList, component: LeadsTab, tint: 'rgba(34,197,94,0.10)', color: '#15803D' },
+  { id: 'messages', label: 'Messages', icon: Mail, component: MessagesTab, tint: 'rgba(217,119,6,0.10)', color: '#D97706' },
+  { id: 'comments', label: 'Comments', icon: MessageCircle, component: CommentsTab, tint: 'rgba(15,17,41,0.06)', color: '#4A4D6A' },
 ]
 
 export function AdminPanel() {
   const router = useRouter()
+  const reduce = useReducedMotion()
   const [active, setActive] = useState('calls')
   const [visited, setVisited] = useState(() => new Set(['calls']))
+  const [stats, setStats] = useState(null)
+  const [statsLoaded, setStatsLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/admin/stats')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.ok) setStats(data.stats)
+      })
+      .catch(() => {})
+      .finally(() => setStatsLoaded(true))
+  }, [])
 
   function selectTab(id) {
     setActive(id)
@@ -47,7 +61,7 @@ export function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] px-4 pb-16 pt-28 sm:px-6">
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full max-w-5xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="m-0 text-2xl font-extrabold tracking-[-0.02em] text-text">Admin</h1>
@@ -65,10 +79,59 @@ export function AdminPanel() {
           </button>
         </div>
 
+        <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+          {TABS.map((tab, i) => {
+            const Icon = tab.icon
+            const value = stats?.[tab.id]
+            const isActive = active === tab.id
+            const card = (
+              <button
+                type="button"
+                onClick={() => selectTab(tab.id)}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-3 rounded-2xl border bg-white p-4 text-left transition-all hover:-translate-y-px hover:shadow-md',
+                  isActive ? 'border-primary/30 shadow-sm ring-2 ring-primary/10' : 'border-black/[0.06]'
+                )}
+              >
+                <span
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                  style={{ background: tab.tint }}
+                >
+                  <Icon size={17} strokeWidth={1.5} color={tab.color} />
+                </span>
+                <span className="min-w-0">
+                  {statsLoaded ? (
+                    <span className="block font-mono text-xl font-extrabold leading-tight text-text">
+                      {typeof value === 'number' ? value.toLocaleString('en-US') : '—'}
+                    </span>
+                  ) : (
+                    <span className="mb-1 block h-6 w-10 animate-pulse rounded bg-black/[0.06]" />
+                  )}
+                  <span className="block text-xs font-semibold text-[var(--color-text-secondary)]">
+                    {tab.id === 'comments' ? 'Pending comments' : tab.label}
+                  </span>
+                </span>
+              </button>
+            )
+            if (reduce) return <div key={tab.id}>{card}</div>
+            return (
+              <motion.div
+                key={tab.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: i * 0.05, ease: 'easeOut' }}
+              >
+                {card}
+              </motion.div>
+            )
+          })}
+        </div>
+
         <div className="mb-6 flex flex-wrap gap-2">
           {TABS.map((tab) => {
             const Icon = tab.icon
             const isActive = active === tab.id
+            const count = stats?.[tab.id]
             return (
               <button
                 key={tab.id}
@@ -83,6 +146,16 @@ export function AdminPanel() {
               >
                 <Icon size={15} strokeWidth={1.5} />
                 {tab.label}
+                {typeof count === 'number' && count > 0 && (
+                  <span
+                    className={cn(
+                      'rounded-full px-1.5 py-0.5 font-mono text-[11px] font-bold leading-none',
+                      isActive ? 'bg-white/20 text-white' : 'bg-black/[0.06] text-[var(--color-text-secondary)]'
+                    )}
+                  >
+                    {count > 999 ? '999+' : count}
+                  </span>
+                )}
               </button>
             )
           })}

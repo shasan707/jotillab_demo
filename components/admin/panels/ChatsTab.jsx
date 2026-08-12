@@ -1,15 +1,26 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { MessageSquare } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { MessageSquare, Flag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ListState } from './ListState'
 import { DetailDrawer } from './DetailDrawer'
-import { fmtDateTime, SENTIMENT_STYLES } from './format'
+import { Toolbar } from './Toolbar'
+import { AnimatedRow } from './AnimatedRow'
+import { NotesSection } from './NotesSection'
+import { useMeta } from './useMeta'
+import { fmtDateTime, timeAgo, SENTIMENT_STYLES } from './format'
 
-/* Chat sessions, listed live from Retell. The widget creates a session
-   when it opens, so sessions where the visitor never typed are hidden
-   by default. */
+/* Chat sessions, listed live from Retell. The widget opens a session
+   before the visitor types, so empty sessions are hidden behind a
+   filter chip instead of cluttering the list. */
+
+const CHIPS = [
+  { id: 'all', label: 'With messages' },
+  { id: 'Positive', label: 'Positive' },
+  { id: 'Negative', label: 'Negative' },
+  { id: 'empty', label: 'Empty sessions' },
+]
 
 export function ChatsTab() {
   const [items, setItems] = useState([])
@@ -18,15 +29,22 @@ export function ChatsTab() {
   const [paginationKey, setPaginationKey] = useState(null)
   const [hasMore, setHasMore] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [showEmpty, setShowEmpty] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const [search, setSearch] = useState('')
+  const [chip, setChip] = useState('all')
 
   const [selectedId, setSelectedId] = useState(null)
   const [detail, setDetail] = useState(null)
   const [detailStatus, setDetailStatus] = useState('idle')
 
-  const load = useCallback(async (key) => {
+  const ids = useMemo(() => items.map((c) => c.id), [items])
+  const { metaMap, markRead, toggleFlag, addNote } = useMeta('chat', ids)
+
+  const load = useCallback(async (key, { refresh = false } = {}) => {
     try {
       if (key) setLoadingMore(true)
+      if (refresh) setRefreshing(true)
       const params = new URLSearchParams()
       if (key) params.set('paginationKey', key)
       const res = await fetch(`/api/admin/chats?${params}`)
@@ -48,6 +66,7 @@ export function ChatsTab() {
       setError(err.message || 'Could not load chats.')
     } finally {
       setLoadingMore(false)
+      setRefreshing(false)
     }
   }, [])
 
@@ -57,6 +76,7 @@ export function ChatsTab() {
 
   async function openChat(id) {
     setSelectedId(id)
+    markRead(id)
     setDetail(null)
     setDetailStatus('loading')
     try {
@@ -74,64 +94,116 @@ export function ChatsTab() {
     return <ListState status={status} error={error} onRetry={() => { setStatus('loading'); load(null) }} />
   }
 
-  const visible = showEmpty ? items : items.filter((c) => c.userMessageCount > 0)
+  const q = search.trim().toLowerCase()
+  const visible = items.filter((chat) => {
+    if (chip === 'empty') {
+      if (chat.userMessageCount > 0) return false
+    } else if (chip === 'all') {
+      if (chat.userMessageCount === 0) return false
+    } else if (chat.sentiment !== chip || chat.userMessageCount === 0) {
+      return false
+    }
+    if (!q) return true
+    return [chat.agent, chat.summary, chat.preview]
+      .filter(Boolean)
+      .some((field) => field.toLowerCase().includes(q))
+  })
+
+  const selectedMeta = selectedId ? metaMap[selectedId] : null
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-end">
-        <label className="flex cursor-pointer items-center gap-2 text-[13px] text-[var(--color-text-secondary)]">
-          <input
-            type="checkbox"
-            checked={showEmpty}
-            onChange={(e) => setShowEmpty(e.target.checked)}
-            className="accent-[var(--color-primary)]"
-          />
-          Show empty sessions
-        </label>
-      </div>
+      <Toolbar
+        searchValue={search}
+        onSearch={setSearch}
+        placeholder="Search chats by agent, summary, or first message..."
+        chips={CHIPS}
+        activeChip={chip}
+        onChipSelect={setChip}
+        onRefresh={() => load(null, { refresh: true })}
+        refreshing={refreshing}
+        resultCount={visible.length}
+      />
 
       {visible.length === 0 ? (
-        <ListState status="empty" emptyLabel="No chats yet. Conversations from the website chat widget will appear here." />
+        <ListState
+          status="empty"
+          emptyLabel={
+            items.length === 0
+              ? 'No chats yet. Conversations from the website chat widget will appear here.'
+              : 'No chats match this search or filter.'
+          }
+        />
       ) : (
         <ul className="m-0 flex list-none flex-col gap-2 p-0">
-          {visible.map((chat) => (
-            <li key={chat.id}>
-              <button
-                type="button"
-                onClick={() => openChat(chat.id)}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:shadow-md"
-              >
-                <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                  style={{ background: 'rgba(59,130,246,0.10)' }}
+          {visible.map((chat, i) => {
+            const meta = metaMap[chat.id]
+            const unread = !meta?.read
+            return (
+              <AnimatedRow key={chat.id} index={i}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openChat(chat.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openChat(chat.id) } }}
+                  className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:border-primary/20 hover:shadow-md"
                 >
-                  <MessageSquare size={17} strokeWidth={1.5} className="text-accent" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-bold text-text">{chat.agent}</span>
-                    {chat.sentiment && (
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                        style={SENTIMENT_STYLES[chat.sentiment] || SENTIMENT_STYLES.Unknown}
-                      >
-                        {chat.sentiment}
-                      </span>
+                  <span
+                    className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: 'rgba(59,130,246,0.10)' }}
+                  >
+                    <MessageSquare size={17} strokeWidth={1.5} className="text-accent" />
+                    {unread && (
+                      <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-accent" />
                     )}
                   </span>
-                  <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
-                    {chat.summary || chat.preview || 'No messages'}
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className={cn('text-sm text-text', unread ? 'font-extrabold' : 'font-semibold')}>
+                        {chat.agent}
+                      </span>
+                      {chat.sentiment && (
+                        <span
+                          className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                          style={SENTIMENT_STYLES[chat.sentiment] || SENTIMENT_STYLES.Unknown}
+                        >
+                          {chat.sentiment}
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
+                      {chat.summary || chat.preview || 'No messages'}
+                    </span>
                   </span>
-                </span>
-                <span className="shrink-0 text-right">
-                  <span className="block text-[13px] font-semibold text-text">
-                    {chat.messageCount} {chat.messageCount === 1 ? 'message' : 'messages'}
+                  <span className="shrink-0 text-right">
+                    <span className="block font-mono text-[13px] font-semibold text-text">
+                      {chat.messageCount} msg{chat.messageCount === 1 ? '' : 's'}
+                    </span>
+                    <span className="block text-xs text-[var(--color-text-muted)]" title={fmtDateTime(chat.startedAt)}>
+                      {timeAgo(chat.startedAt)}
+                    </span>
                   </span>
-                  <span className="block text-xs text-[var(--color-text-muted)]">{fmtDateTime(chat.startedAt)}</span>
-                </span>
-              </button>
-            </li>
-          ))}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleFlag(chat.id) }}
+                    title={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    aria-label={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    className={cn(
+                      'flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border-none bg-transparent transition-all hover:bg-black/[0.05]',
+                      meta?.flagged ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+                    )}
+                  >
+                    <Flag
+                      size={15}
+                      strokeWidth={1.5}
+                      color={meta?.flagged ? '#D97706' : 'currentColor'}
+                      fill={meta?.flagged ? '#D97706' : 'none'}
+                    />
+                  </button>
+                </div>
+              </AnimatedRow>
+            )
+          })}
         </ul>
       )}
 
@@ -200,6 +272,8 @@ export function ChatsTab() {
                 </div>
               )}
             </div>
+
+            <NotesSection notes={selectedMeta?.notes || []} onAdd={(text) => addNote(selectedId, text)} />
           </div>
         )}
       </DetailDrawer>

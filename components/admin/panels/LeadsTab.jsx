@@ -1,14 +1,20 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { ClipboardList } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ClipboardList, Flag } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { getIntakeQuestions } from '@/lib/intakeQuestions'
 import { ListState } from './ListState'
 import { DetailDrawer } from './DetailDrawer'
-import { fmtDateTime } from './format'
+import { Toolbar } from './Toolbar'
+import { AnimatedRow } from './AnimatedRow'
+import { NotesSection } from './NotesSection'
+import { useMeta } from './useMeta'
+import { fmtDateTime, timeAgo } from './format'
 
-/* Industry intake leads from Neon Postgres. The drawer maps each stored
-   answer id back to its wizard question label. */
+/* Industry intake leads from Neon Postgres. New leads show a dot and
+   bold name until opened; the drawer maps every stored answer back to
+   its wizard question. */
 
 const PAGE_SIZE = 50
 
@@ -18,11 +24,17 @@ export function LeadsTab() {
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [loadingMore, setLoadingMore] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
 
-  const load = useCallback(async (offset) => {
+  const ids = useMemo(() => items.map((l) => String(l.id)), [items])
+  const { metaMap, markRead, toggleFlag, addNote } = useMeta('lead', ids)
+
+  const load = useCallback(async (offset, { refresh = false } = {}) => {
     try {
       if (offset > 0) setLoadingMore(true)
+      if (refresh) setRefreshing(true)
       const res = await fetch(`/api/admin/leads?limit=${PAGE_SIZE}&offset=${offset}`)
       const data = await res.json()
       if (!res.ok || !data.ok) {
@@ -41,6 +53,7 @@ export function LeadsTab() {
       setError(err.message || 'Could not load leads.')
     } finally {
       setLoadingMore(false)
+      setRefreshing(false)
     }
   }, [])
 
@@ -51,47 +64,110 @@ export function LeadsTab() {
   if (status !== 'ready') {
     return <ListState status={status} error={error} onRetry={() => { setStatus('loading'); load(0) }} />
   }
-  if (items.length === 0) {
-    return <ListState status="empty" emptyLabel="No leads yet. Intake form submissions from the industry pages will appear here." />
-  }
+
+  const q = search.trim().toLowerCase()
+  const visible = items.filter((lead) => {
+    if (!q) return true
+    return [lead.business_name, lead.contact_name, lead.contact_email, lead.contact_phone, lead.industry_name]
+      .filter(Boolean)
+      .some((field) => String(field).toLowerCase().includes(q))
+  })
 
   const questionLabel = (slug, id) => {
-    const q = getIntakeQuestions(slug).find((question) => question.id === id)
-    return q?.label || id.replaceAll('_', ' ')
+    const question = getIntakeQuestions(slug).find((entry) => entry.id === id)
+    return question?.label || id.replaceAll('_', ' ')
   }
+
+  const selectedMeta = selected ? metaMap[String(selected.id)] : null
 
   return (
     <div>
-      <ul className="m-0 flex list-none flex-col gap-2 p-0">
-        {items.map((lead) => (
-          <li key={lead.id}>
-            <button
-              type="button"
-              onClick={() => setSelected(lead)}
-              className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:shadow-md"
-            >
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ background: 'rgba(56,89,168,0.10)' }}
-              >
-                <ClipboardList size={17} strokeWidth={1.5} className="text-primary" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2 min-w-0">
-                  <span className="truncate text-sm font-bold text-text">
-                    {lead.business_name || lead.contact_name || 'Unnamed lead'}
+      <Toolbar
+        searchValue={search}
+        onSearch={setSearch}
+        placeholder="Search leads by name, email, phone, or industry..."
+        onRefresh={() => load(0, { refresh: true })}
+        refreshing={refreshing}
+        resultCount={visible.length}
+      />
+
+      {visible.length === 0 ? (
+        <ListState
+          status="empty"
+          emptyLabel={
+            items.length === 0
+              ? 'No leads yet. Intake form submissions from the industry pages will appear here.'
+              : 'No leads match this search.'
+          }
+        />
+      ) : (
+        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+          {visible.map((lead, i) => {
+            const key = String(lead.id)
+            const meta = metaMap[key]
+            const unread = !meta?.read
+            return (
+              <AnimatedRow key={key} index={i}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => { setSelected(lead); markRead(key) }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(lead); markRead(key) } }}
+                  className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:border-primary/20 hover:shadow-md"
+                >
+                  <span
+                    className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: 'rgba(56,89,168,0.10)' }}
+                  >
+                    <ClipboardList size={17} strokeWidth={1.5} className="text-primary" />
+                    {unread && (
+                      <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-accent" />
+                    )}
                   </span>
-                  <StatusPill status={lead.status} />
-                </span>
-                <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
-                  {[lead.industry_name, lead.contact_email].filter(Boolean).join(' | ')}
-                </span>
-              </span>
-              <span className="shrink-0 text-xs text-[var(--color-text-muted)]">{fmtDateTime(lead.created_at)}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className={cn('truncate text-sm text-text', unread ? 'font-extrabold' : 'font-semibold')}>
+                        {lead.business_name || lead.contact_name || 'Unnamed lead'}
+                      </span>
+                      {unread && (
+                        <span
+                          className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                          style={{ background: 'rgba(59,130,246,0.10)', color: '#1D4ED8' }}
+                        >
+                          New
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
+                      {[lead.industry_name, lead.contact_email].filter(Boolean).join(' | ')}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-xs text-[var(--color-text-muted)]" title={fmtDateTime(lead.created_at)}>
+                    {timeAgo(lead.created_at)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleFlag(key) }}
+                    title={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    aria-label={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    className={cn(
+                      'flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border-none bg-transparent transition-all hover:bg-black/[0.05]',
+                      meta?.flagged ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+                    )}
+                  >
+                    <Flag
+                      size={15}
+                      strokeWidth={1.5}
+                      color={meta?.flagged ? '#D97706' : 'currentColor'}
+                      fill={meta?.flagged ? '#D97706' : 'none'}
+                    />
+                  </button>
+                </div>
+              </AnimatedRow>
+            )
+          })}
+        </ul>
+      )}
 
       {items.length < total && (
         <div className="mt-4 flex justify-center">
@@ -114,8 +190,6 @@ export function LeadsTab() {
               <Meta label="Industry" value={selected.industry_name} />
               <Meta label="Name" value={selected.contact_name} />
               <Meta label="Received" value={fmtDateTime(selected.created_at)} />
-              <Meta label="Status" value={<StatusPill status={selected.status} />} />
-              <Meta label="Last updated" value={selected.updated_at ? fmtDateTime(selected.updated_at) : null} />
               <Meta
                 label="Email"
                 value={
@@ -148,56 +222,20 @@ export function LeadsTab() {
                       <p className="m-0 mb-1 text-[13px] font-semibold text-[var(--color-text-secondary)]">
                         {questionLabel(selected.slug, id)}
                       </p>
-                      <p className="m-0 whitespace-pre-wrap text-sm text-text">
-                        {Array.isArray(value) ? value.join(', ') : String(value)}
-                      </p>
-                      <MapLink value={value} />
+                      <p className="m-0 whitespace-pre-wrap text-sm text-text">{String(value)}</p>
                     </div>
                   ))}
               </div>
             </div>
+
+            <NotesSection
+              notes={selectedMeta?.notes || []}
+              onAdd={(text) => addNote(String(selected.id), text)}
+            />
           </div>
         )}
       </DetailDrawer>
     </div>
-  )
-}
-
-/* Location answers shared from the chat carry coordinates; link them to a
-   map. The href is built from the extracted numbers only, never from the
-   raw submitted string. */
-function MapLink({ value }) {
-  if (typeof value !== 'string') return null
-  const m = value.match(/(-?\d{1,3}\.\d{3,}),\s*(-?\d{1,3}\.\d{3,})/)
-  if (!m) return null
-  return (
-    <a
-      href={`https://www.google.com/maps?q=${Number(m[1])},${Number(m[2])}`}
-      target="_blank"
-      rel="noreferrer"
-      className="mt-1.5 inline-block text-[13px] font-semibold text-primary"
-    >
-      View on map
-    </a>
-  )
-}
-
-/* Partial leads come from abandoned chats: the contact block arrived but
-   the conversation never finished. Rows without a status predate the
-   chat intake and are complete by definition. */
-function StatusPill({ status }) {
-  const partial = status === 'partial'
-  return (
-    <span
-      className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
-      style={
-        partial
-          ? { background: 'rgba(245,158,11,0.12)', color: '#B45309' }
-          : { background: 'rgba(56,89,168,0.10)', color: '#3859a8' }
-      }
-    >
-      {partial ? 'Partial' : 'Complete'}
-    </span>
   )
 }
 

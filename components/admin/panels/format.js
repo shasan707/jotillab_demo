@@ -13,6 +13,23 @@ export function fmtDateTime(value) {
   })
 }
 
+/* Compact relative time ("2h ago"); pair with title={fmtDateTime(...)}
+   so the exact moment is a hover away. */
+export function timeAgo(value) {
+  if (!value) return '—'
+  const d = typeof value === 'number' ? new Date(value) : new Date(String(value))
+  if (Number.isNaN(d.getTime())) return '—'
+  const seconds = Math.floor((Date.now() - d.getTime()) / 1000)
+  if (seconds < 60) return 'Just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export function fmtDuration(ms) {
   if (ms == null || !Number.isFinite(ms)) return '—'
   const totalSeconds = Math.round(ms / 1000)

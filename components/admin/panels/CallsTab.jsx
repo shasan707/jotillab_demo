@@ -1,30 +1,50 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { Phone } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Phone, Flag } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { ListState } from './ListState'
 import { DetailDrawer } from './DetailDrawer'
-import { fmtDateTime, fmtDuration, SENTIMENT_STYLES } from './format'
+import { Toolbar } from './Toolbar'
+import { AnimatedRow } from './AnimatedRow'
+import { NotesSection } from './NotesSection'
+import { useMeta } from './useMeta'
+import { fmtDateTime, fmtDuration, timeAgo, SENTIMENT_STYLES } from './format'
 
-/* Voice calls, listed live from Retell. Row click opens a drawer that
-   fetches the full call fresh (recording links can expire, so details
-   are never cached). */
+/* Voice calls, listed live from Retell. Unread calls show a dot and bold
+   name; opening one marks it read. Flags and notes persist in the
+   panel's own metadata store. */
+
+const SENTIMENT_CHIPS = [
+  { id: 'all', label: 'All' },
+  { id: 'Positive', label: 'Positive' },
+  { id: 'Neutral', label: 'Neutral' },
+  { id: 'Negative', label: 'Negative' },
+]
 
 export function CallsTab() {
   const [items, setItems] = useState([])
-  const [status, setStatus] = useState('loading') // loading | ready | error | unconfigured
+  const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [paginationKey, setPaginationKey] = useState(null)
   const [hasMore, setHasMore] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+
+  const [search, setSearch] = useState('')
+  const [sentimentChip, setSentimentChip] = useState('all')
 
   const [selectedId, setSelectedId] = useState(null)
   const [detail, setDetail] = useState(null)
   const [detailStatus, setDetailStatus] = useState('idle')
 
-  const load = useCallback(async (key) => {
+  const ids = useMemo(() => items.map((c) => c.id), [items])
+  const { metaMap, markRead, toggleFlag, addNote } = useMeta('call', ids)
+
+  const load = useCallback(async (key, { refresh = false } = {}) => {
     try {
       if (key) setLoadingMore(true)
+      if (refresh) setRefreshing(true)
       const params = new URLSearchParams()
       if (key) params.set('paginationKey', key)
       const res = await fetch(`/api/admin/calls?${params}`)
@@ -46,6 +66,7 @@ export function CallsTab() {
       setError(err.message || 'Could not load calls.')
     } finally {
       setLoadingMore(false)
+      setRefreshing(false)
     }
   }, [])
 
@@ -55,6 +76,7 @@ export function CallsTab() {
 
   async function openCall(id) {
     setSelectedId(id)
+    markRead(id)
     setDetail(null)
     setDetailStatus('loading')
     try {
@@ -71,57 +93,120 @@ export function CallsTab() {
   if (status !== 'ready') {
     return <ListState status={status} error={error} onRetry={() => { setStatus('loading'); load(null) }} />
   }
-  if (items.length === 0) {
-    return <ListState status="empty" emptyLabel="No calls yet. They will appear here as soon as someone talks to your AI." />
-  }
+
+  const q = search.trim().toLowerCase()
+  const visible = items.filter((call) => {
+    if (sentimentChip !== 'all' && call.sentiment !== sentimentChip) return false
+    if (!q) return true
+    return [call.agent, call.summary, call.fromNumber, call.toNumber]
+      .filter(Boolean)
+      .some((field) => field.toLowerCase().includes(q))
+  })
+
+  const selectedMeta = selectedId ? metaMap[selectedId] : null
 
   return (
     <div>
-      <ul className="m-0 flex list-none flex-col gap-2 p-0">
-        {items.map((call) => (
-          <li key={call.id}>
-            <button
-              type="button"
-              onClick={() => openCall(call.id)}
-              className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:shadow-md"
-            >
-              <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ background: 'rgba(56,89,168,0.10)' }}
-              >
-                <Phone size={17} strokeWidth={1.5} className="text-primary" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-bold text-text">{call.agent}</span>
-                  {call.sentiment && (
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                      style={SENTIMENT_STYLES[call.sentiment] || SENTIMENT_STYLES.Unknown}
-                    >
-                      {call.sentiment}
-                    </span>
-                  )}
-                  {call.status !== 'ended' && (
-                    <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-text-secondary)]">
-                      {call.status}
-                    </span>
-                  )}
-                </span>
-                {call.summary && (
-                  <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
-                    {call.summary}
+      <Toolbar
+        searchValue={search}
+        onSearch={setSearch}
+        placeholder="Search calls by agent, summary, or number..."
+        chips={SENTIMENT_CHIPS}
+        activeChip={sentimentChip}
+        onChipSelect={setSentimentChip}
+        onRefresh={() => load(null, { refresh: true })}
+        refreshing={refreshing}
+        resultCount={visible.length}
+      />
+
+      {visible.length === 0 ? (
+        <ListState
+          status="empty"
+          emptyLabel={
+            items.length === 0
+              ? 'No calls yet. They will appear here as soon as someone talks to your AI.'
+              : 'No calls match this search or filter.'
+          }
+        />
+      ) : (
+        <ul className="m-0 flex list-none flex-col gap-2 p-0">
+          {visible.map((call, i) => {
+            const meta = metaMap[call.id]
+            const unread = !meta?.read
+            return (
+              <AnimatedRow key={call.id} index={i}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openCall(call.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCall(call.id) } }}
+                  className="flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 text-left transition-all hover:-translate-y-px hover:border-primary/20 hover:shadow-md"
+                >
+                  <span
+                    className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: 'rgba(56,89,168,0.10)' }}
+                  >
+                    <Phone size={17} strokeWidth={1.5} className="text-primary" />
+                    {unread && (
+                      <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-accent" />
+                    )}
                   </span>
-                )}
-              </span>
-              <span className="shrink-0 text-right">
-                <span className="block text-[13px] font-semibold text-text">{fmtDuration(call.durationMs)}</span>
-                <span className="block text-xs text-[var(--color-text-muted)]">{fmtDateTime(call.startedAt)}</span>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className={cn('text-sm text-text', unread ? 'font-extrabold' : 'font-semibold')}>
+                        {call.agent}
+                      </span>
+                      {call.sentiment && (
+                        <span
+                          className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                          style={SENTIMENT_STYLES[call.sentiment] || SENTIMENT_STYLES.Unknown}
+                        >
+                          {call.sentiment}
+                        </span>
+                      )}
+                      {call.status !== 'ended' && (
+                        <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-text-secondary)]">
+                          {call.status}
+                        </span>
+                      )}
+                    </span>
+                    {call.summary && (
+                      <span className="mt-0.5 block truncate text-[13px] text-[var(--color-text-secondary)]">
+                        {call.summary}
+                      </span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-right">
+                    <span className="block font-mono text-[13px] font-semibold text-text">
+                      {fmtDuration(call.durationMs)}
+                    </span>
+                    <span className="block text-xs text-[var(--color-text-muted)]" title={fmtDateTime(call.startedAt)}>
+                      {timeAgo(call.startedAt)}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); toggleFlag(call.id) }}
+                    title={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    aria-label={meta?.flagged ? 'Remove flag' : 'Flag for follow-up'}
+                    className={cn(
+                      'flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border-none bg-transparent transition-all hover:bg-black/[0.05]',
+                      meta?.flagged ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+                    )}
+                  >
+                    <Flag
+                      size={15}
+                      strokeWidth={1.5}
+                      color={meta?.flagged ? '#D97706' : 'currentColor'}
+                      fill={meta?.flagged ? '#D97706' : 'none'}
+                    />
+                  </button>
+                </div>
+              </AnimatedRow>
+            )
+          })}
+        </ul>
+      )}
 
       {hasMore && (
         <div className="mt-4 flex justify-center">
@@ -192,6 +277,8 @@ export function CallsTab() {
                 </p>
               )}
             </div>
+
+            <NotesSection notes={selectedMeta?.notes || []} onAdd={(text) => addNote(selectedId, text)} />
           </div>
         )}
       </DetailDrawer>
