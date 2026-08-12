@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { verifyAdminRequest } from '@/lib/adminAuth'
-import { retellFetch, agentLabel } from '@/lib/retell'
+import { retellFetch, agentLabel, callPlatform } from '@/lib/retell'
 
 /* Admin-only list of Retell voice calls, fetched live from Retell
    (v3 cursor pagination; the v2 list endpoints are deprecated). */
@@ -32,6 +32,7 @@ export async function GET(request) {
     const items = (data.items || []).map((c) => ({
       id: c.call_id,
       type: c.call_type,
+      platform: callPlatform(c),
       agent: agentLabel(c.agent_id),
       status: c.call_status,
       startedAt: c.start_timestamp || null,

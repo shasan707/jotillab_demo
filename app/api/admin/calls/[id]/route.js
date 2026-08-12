@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { verifyAdminRequest } from '@/lib/adminAuth'
-import { retellFetch, agentLabel } from '@/lib/retell'
+import { retellFetch, agentLabel, callPlatform } from '@/lib/retell'
 
 /* Full detail for one Retell call. Always fetched fresh: signed
    recording URLs can expire, so nothing here is ever cached. */
@@ -24,6 +24,7 @@ export async function GET(request, { params }) {
       call: {
         id: c.call_id,
         type: c.call_type,
+        platform: callPlatform(c),
         agent: agentLabel(c.agent_id),
         status: c.call_status,
         startedAt: c.start_timestamp || null,

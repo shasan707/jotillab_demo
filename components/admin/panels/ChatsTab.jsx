@@ -8,6 +8,7 @@ import { DetailDrawer } from './DetailDrawer'
 import { Toolbar } from './Toolbar'
 import { AnimatedRow } from './AnimatedRow'
 import { NotesSection } from './NotesSection'
+import { PlatformBadge } from './PlatformBadge'
 import { useMeta } from './useMeta'
 import { fmtDateTime, timeAgo, SENTIMENT_STYLES } from './format'
 
@@ -162,6 +163,7 @@ export function ChatsTab() {
                       <span className={cn('text-sm text-text', unread ? 'font-extrabold' : 'font-semibold')}>
                         {chat.agent}
                       </span>
+                      <PlatformBadge platform={chat.platform} />
                       {chat.sentiment && (
                         <span
                           className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
@@ -235,6 +237,12 @@ export function ChatsTab() {
               <div>
                 <p className="m-0 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Agent</p>
                 <p className="m-0 mt-0.5 text-sm text-text">{detail.agent}</p>
+              </div>
+              <div>
+                <p className="m-0 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Channel</p>
+                <p className="m-0 mt-0.5 text-sm text-text">
+                  <PlatformBadge platform={detail.platform} />
+                </p>
               </div>
               <div>
                 <p className="m-0 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Started</p>

@@ -37,7 +37,9 @@ export async function POST(request) {
       const created = await fetch('https://api.retellai.com/create-chat', {
         method: 'POST',
         headers,
-        body: JSON.stringify({ agent_id: agentId }),
+        // metadata.channel lets the admin panel label where a chat came
+        // from once other platforms (WhatsApp, Messenger) are wired in.
+        body: JSON.stringify({ agent_id: agentId, metadata: { channel: 'website' } }),
         cache: 'no-store',
       })
       if (!created.ok) {

@@ -8,6 +8,7 @@ import { DetailDrawer } from './DetailDrawer'
 import { Toolbar } from './Toolbar'
 import { AnimatedRow } from './AnimatedRow'
 import { NotesSection } from './NotesSection'
+import { PlatformBadge } from './PlatformBadge'
 import { useMeta } from './useMeta'
 import { fmtDateTime, fmtDuration, timeAgo, SENTIMENT_STYLES } from './format'
 
@@ -156,6 +157,7 @@ export function CallsTab() {
                       <span className={cn('text-sm text-text', unread ? 'font-extrabold' : 'font-semibold')}>
                         {call.agent}
                       </span>
+                      <PlatformBadge platform={call.platform} />
                       {call.sentiment && (
                         <span
                           className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
@@ -234,6 +236,7 @@ export function CallsTab() {
           <div className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-3 text-sm">
               <Meta label="Agent" value={detail.agent} />
+              <Meta label="Channel" value={<PlatformBadge platform={detail.platform} />} />
               <Meta label="When" value={fmtDateTime(detail.startedAt)} />
               <Meta label="Duration" value={fmtDuration(detail.durationMs)} />
               <Meta label="Status" value={detail.status} />

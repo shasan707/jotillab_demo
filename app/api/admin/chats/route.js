@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { verifyAdminRequest } from '@/lib/adminAuth'
-import { retellFetch, agentLabel } from '@/lib/retell'
+import { retellFetch, agentLabel, chatPlatform } from '@/lib/retell'
 
 /* Admin-only list of Retell chat sessions, fetched live from Retell. */
 
@@ -40,6 +40,7 @@ export async function GET(request) {
       return {
         id: chat.chat_id,
         agent: agentLabel(chat.agent_id),
+        platform: chatPlatform(chat),
         status: chat.chat_status,
         startedAt: chat.start_timestamp || null,
         endedAt: chat.end_timestamp || null,
