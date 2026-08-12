@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Phone, MessageSquare, ClipboardList, Mail, MessageCircle, LogOut } from 'lucide-react'
+import { LayoutDashboard, Phone, MessageSquare, ClipboardList, Mail, MessageCircle, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { OverviewTab } from './panels/OverviewTab'
 import { CallsTab } from './panels/CallsTab'
 import { ChatsTab } from './panels/ChatsTab'
 import { LeadsTab } from './panels/LeadsTab'
@@ -16,6 +17,7 @@ import { CommentsTab } from './panels/CommentsTab'
    stay mounted (hidden) after, so switching back does not refetch. */
 
 const TABS = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: OverviewTab },
   { id: 'calls', label: 'Calls', icon: Phone, component: CallsTab, tint: 'rgba(56,89,168,0.10)', color: '#3859a8' },
   { id: 'chats', label: 'Chats', icon: MessageSquare, component: ChatsTab, tint: 'rgba(59,130,246,0.10)', color: '#3B82F6' },
   { id: 'leads', label: 'Leads', icon: ClipboardList, component: LeadsTab, tint: 'rgba(34,197,94,0.10)', color: '#15803D' },
@@ -23,11 +25,13 @@ const TABS = [
   { id: 'comments', label: 'Comments', icon: MessageCircle, component: CommentsTab, tint: 'rgba(15,17,41,0.06)', color: '#4A4D6A' },
 ]
 
+const STAT_CARDS = TABS.filter((tab) => tab.id !== 'overview')
+
 export function AdminPanel() {
   const router = useRouter()
   const reduce = useReducedMotion()
-  const [active, setActive] = useState('calls')
-  const [visited, setVisited] = useState(() => new Set(['calls']))
+  const [active, setActive] = useState('overview')
+  const [visited, setVisited] = useState(() => new Set(['overview']))
   const [stats, setStats] = useState(null)
   const [statsLoaded, setStatsLoaded] = useState(false)
 
@@ -80,7 +84,7 @@ export function AdminPanel() {
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
-          {TABS.map((tab, i) => {
+          {STAT_CARDS.map((tab, i) => {
             const Icon = tab.icon
             const value = stats?.[tab.id]
             const isActive = active === tab.id
